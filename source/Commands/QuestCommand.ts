@@ -37,8 +37,8 @@ export class QuestCommand extends AbstractCommand
                             let newQuestEmbed: MessageEmbed = new MessageEmbed()
                                 .setAuthor("A new quest has been commisioned")
                                 .setDescription(newQuest.description)
-                                .addField(`Assignor`, newQuest.assignor, true)
-                                .addField("Assignee", newQuest.assignee, true)
+                                .addField(`Assignor`, bot.users.resolve(newQuest.assignor.discordID), true)
+                                .addField("Assignee", bot.users.resolve(newQuest.assignee.discordID), true)
                                 .setTimestamp(newQuest.createdAt)
                                 .setFooter(`Quest ID: ${newQuest.id}`)
                                 .setColor("#573F26");
