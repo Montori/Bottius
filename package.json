@@ -1,0 +1,18 @@
+{
+  "name": "cooler-bottius",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Montori",
+  "license": "ISC",
+  "dependencies": {
+    "@types/node": "^13.11.0",
+    "discord.js": "^12.1.1",
+    "random-int": "^2.0.1",
+    "sqlite3": "^4.1.1",
+    "typeorm": "^0.2.24"
+  }
+}

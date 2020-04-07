@@ -1,0 +1,14 @@
+{
+  "compilerOptions": {
+    "target": "esnext",
+    "module": "commonjs",
+    "outDir": "./out",
+    "rootDir": "./source",
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "esModuleInterop": true,
+    "noImplicitUseStrict": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true
+  }
+}
