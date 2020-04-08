@@ -16,19 +16,19 @@ MessageService.initService(bot);
 const messageService: MessageService = MessageService.getInstance();
 const dbService: UserService = UserService.getInstance();
 
+const connection = createConnection({
+   type: "sqlite",
+   database:"./db.db",
+   entities: [User, Quest],
+   synchronize: true
+});
+
+connection.then(connection => connection.runMigrations());
+
 bot.on("ready", async () =>
 {
    await bot.user.setActivity("I am alive");
 
-   const connection = await createConnection({
-      type: "sqlite",
-      database:"./db.db",
-      entities: [User, Quest],
-      synchronize: true
-  });
-
-  connection.runMigrations();
-   
    console.log("INFO: All services loaded. Bot is ready.")
 });
 
