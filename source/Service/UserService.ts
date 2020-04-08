@@ -1,15 +1,9 @@
 import { User } from '../Material/User';
 import { GuildMember } from 'discord.js';
-import { userInfo } from 'os';
 
 export class UserService
 {
    private static instance: UserService;
-
-    constructor()
-    {
-        
-    }
 
     public static getInstance(): UserService
     {

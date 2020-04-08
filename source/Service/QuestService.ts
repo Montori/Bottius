@@ -4,11 +4,6 @@ export class QuestService
 {
     private static instance: QuestService;
 
-    constructor()
-    {
-        
-    }
-
     public static getInstance(): QuestService
     {
         if(!QuestService.instance)
