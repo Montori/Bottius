@@ -27,7 +27,7 @@ connection.then(connection => connection.runMigrations());
 
 bot.on("ready", async () =>
 {
-   await bot.user.setActivity("I am alive");
+   await bot.user.setActivity("Running in testing mode");
 
    console.log("INFO: All services loaded. Bot is ready.")
 });
