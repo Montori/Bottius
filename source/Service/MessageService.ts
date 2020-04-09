@@ -12,6 +12,7 @@ export class MessageService
     private userService: UserService;
     private bot: Client;
     private prefix: string = botConfig.prefix;
+    private readonly uwuRegex = "(?![mM]{3}|[nN]{3}|[wW]{3})[a-zA-Z][wWmMnN][a-zA-Z]";
 
     public static getInstance() : MessageService
     {
@@ -57,9 +58,9 @@ export class MessageService
 
     private reactToMessage(message: Message)
     {
-        let owoArray: Array<string> = ["owo", "uwu", "pwp", "qwq", "OwO", "UwU", "QwQ", "PwP", "bwb", "dwd"];
+        let owoArray: Array<string> = ["owo", "uwu", "pwp", "qwq", "OwO", "UwU", "QwQ", "PwP", "TwT"];
 
-        if(owoArray.includes(message.content.trim().toLowerCase())) message.channel.send(owoArray[randomInt(0, owoArray.length-1)]);
+        if(new RegExp(this.uwuRegex).test(message.content)) message.channel.send(owoArray[randomInt(0, owoArray.length-1)]);
         if(message.content.trim().toLowerCase() == "nullpo") message.channel.send("Gah!");
     }
 }
