@@ -4,12 +4,14 @@ import randomInt from "random-int";
 import botConfig from "../botconfig.json";
 import { UserService } from "./UserService";
 import { User } from "../Material/User";
+import { CooldownService } from "./CooldownService";
 
 export class MessageService
 {
     private static instance: MessageService;
     private commandService: CommandService;
     private userService: UserService;
+    private cooldownService: CooldownService;
     private bot: Client;
     private prefix: string = botConfig.prefix;
     private readonly uwuRegex = "^(?<a>[A-z])[wWMmNn]\\k<a>$";
@@ -32,6 +34,7 @@ export class MessageService
         this.bot = bot;
         this.commandService = CommandService.getInstance();
         this.userService = UserService.getInstance();
+        this.cooldownService = CooldownService.getInstance();
     }
 
     public async handleMessage(message: Message)
@@ -39,7 +42,7 @@ export class MessageService
         if(message.channel.type == "dm" || message.webhookID) return;
         if(message.author.bot) return;
 
-        this.reactToMessage(message);
+        this.reactToUWU(message);
         
         let user: User = await this.userService.getUser(message.member);
 
@@ -56,11 +59,14 @@ export class MessageService
         this.commandService.runCommand(command, this.bot, message, commandArgs);
     }
 
-    private reactToMessage(message: Message)
+    private reactToUWU(message: Message)
     {
-        let owoArray: Array<string> = ["owo", "uwu", "pwp", "qwq", "OwO", "UwU", "QwQ", "PwP", "TwT"];
-
-        if(new RegExp(this.uwuRegex).test(message.content)) message.channel.send(owoArray[randomInt(0, owoArray.length-1)]);
-        if(message.content.trim().toLowerCase() == "nullpo") message.channel.send("Gah!");
+        if(!this.cooldownService.isCooldown(message.member, "uwu"))
+        {
+            let owoArray: Array<string> = ["owo", "uwu", "pwp", "qwq", "OwO", "UwU", "QwQ", "PwP", "TwT"];
+    
+            if(new RegExp(this.uwuRegex).test(message.content)) message.channel.send(owoArray[randomInt(0, owoArray.length-1)]);
+            this.cooldownService.addCooldown(message.member, "uwu", 10);
+        }
     }
 }
