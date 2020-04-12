@@ -16,11 +16,11 @@ export class QuestService
 
     public async getQuest(questID: number)
     {
-        return await Quest.findOne({relations: ["assignor", "assignee"], where: {id: questID}});
+        return await Quest.findOne({relations: ["assignor", "assignees"], where: {id: questID}});
     }
 
     public async getAllQuest()
     {
-        return await Quest.find({relations: ["assignor", "assignee"]});
+        return await Quest.find({relations: ["assignor", "assignees"]});
     }
 }

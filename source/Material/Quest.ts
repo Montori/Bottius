@@ -13,18 +13,24 @@ export class Quest extends BaseEntity
     @ManyToOne(type => User)
     public readonly assignor!: User;
 
-    @ManyToOne(type => User, {cascade: ["insert"]})
-    public assignee!: User;
+    @ManyToMany(type => User, {cascade: ["insert", "update"]})
+    @JoinTable()
+    public assignees!: Array<User>;
 
     @Column()
     public description!: string;
 
-    constructor(assignor: User, assignee: User, description: string){
+    constructor(assignor: User, assignees: Array<User>, description: string){
         super();
 
         this.createdAt = new Date();
         this.assignor = assignor;
-        this.assignee = assignee;
+        this.assignees = assignees;
         this.description = description;
+    }
+
+    public addAssignee(user :User)
+    {
+        this.assignees.push(user);
     }
 }

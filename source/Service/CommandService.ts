@@ -15,7 +15,7 @@ export class CommandService
         return this.instance;
     }
 
-    public static initService(bot: Client)
+    public static init(bot: Client)
     {
         if(!CommandService.instance)
         {
