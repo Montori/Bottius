@@ -12,14 +12,14 @@ export class MessageService
     private userService: UserService;
     private bot: Client;
     private prefix: string = botConfig.prefix;
-    private readonly uwuRegex = "^(?![mM]{3}|[nN]{3}|[wW]{3})[a-zA-Z][wWmMnN][a-zA-Z]$";
+    private readonly uwuRegex = "^(?<a>[A-z])[wWMmNn]\\k<a>$";
 
     public static getInstance() : MessageService
     {
         return this.instance;
     }
 
-    public static initService(bot: Client)
+    public static init(bot: Client)
     {
         if(!MessageService.instance)
         {
