@@ -14,7 +14,7 @@ export class MessageService
     private cooldownService: CooldownService;
     private bot: Client;
     private prefix: string = botConfig.prefix;
-    private readonly uwuRegex = "^(?<a>[A-z])[wWMmNn]\\k<a>$";
+    private readonly uwuRegex = "^(?<a>(?![wWMmNn])[A-z])[wWMmNn]\\k<a>$";
 
     public static getInstance() : MessageService
     {
@@ -65,8 +65,12 @@ export class MessageService
         {
             let owoArray: Array<string> = ["owo", "uwu", "pwp", "qwq", "OwO", "UwU", "QwQ", "PwP", "TwT"];
     
-            if(new RegExp(this.uwuRegex).test(message.content)) message.channel.send(owoArray[randomInt(0, owoArray.length-1)]);
-            this.cooldownService.addCooldown(message.member, "uwu", 10);
+            if(new RegExp(this.uwuRegex).test(message.content))
+            {
+                message.channel.send(owoArray[randomInt(0, owoArray.length-1)]);
+                this.cooldownService.addCooldown(message.member, "uwu", 10);
+            } 
+            
         }
     }
 }
