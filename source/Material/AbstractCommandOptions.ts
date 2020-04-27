@@ -6,6 +6,6 @@ export abstract class AbstractCommandOptions
     public abstract commandName: string;
     public abstract description: string;
     public abstract usage: string;
-    public cooldown: number;
+    public cooldown: number = 5;
     public static prefix: string = botConfig.prefix;
 }

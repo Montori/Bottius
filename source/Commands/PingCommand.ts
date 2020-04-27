@@ -29,7 +29,6 @@ class PingCommandOptions extends AbstractCommandOptions{
         this.commandName = "ping";
         this.description = "returns Pong, lovely!";
         this.usage = `${AbstractCommandOptions.prefix}ping`;
-        this.cooldown = 5;
     }
 
 }
