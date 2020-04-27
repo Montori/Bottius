@@ -3,22 +3,20 @@ import {Client, Message, GuildMember} from 'discord.js';
 import * as Discord from 'discord.js';
 import { UserService } from "../Service/UserService";
 import {User} from "../Material/User";
-import { AbstractCommandHelpContent } from "../Material/AbstractCommandHelpContent";
-import { CooldownService } from "../Service/CooldownService";
+import { AbstractCommandOptions } from "../Material/AbstractCommandOptions";
 
 export class HeadpatCommand extends AbstractCommand
 {
-    public helpEmbedContent: HeadpatCommandHelp = new HeadpatCommandHelp();
+    public commandOptions: HeadpatCommandOptions = new HeadpatCommandOptions();
     private userService :UserService = UserService.getInstance();
-    private cooldownService: CooldownService = CooldownService.getInstance();
 
-    public async run(bot: Client, message: Message, messageArray: string[]) 
+    public async runInternal(bot: Client, message: Message, messageArray: string[]) 
     {
-        if(this.cooldownService.isCooldown(message.member, this.helpEmbedContent.commandName)) return message.channel.send("Slow down mate, your headpat energy needs to charge up again");
         let targetUser: GuildMember = message.mentions.members.first();
-
+        
         if(targetUser)
         {
+            if(this.cooldownService.isCooldown(message.member, this.commandOptions.commandName + "<functional")) return message.channel.send("Slow down mate, your headpat energy needs to charge up again");
             if(targetUser == message.member) return message.channel.send("You can't headpat yourself, you lonely bag of potatoes...");
             let userToHeadpat: User = await this.userService.getUser(message.mentions.members.first());
     
@@ -26,7 +24,7 @@ export class HeadpatCommand extends AbstractCommand
             userToHeadpat.save();
     
             message.channel.send(`${message.member} gave a headpat to ${message.mentions.members.first()}`);
-            this.cooldownService.addCooldown(message.member, this.helpEmbedContent.commandName, 1800);
+            this.cooldownService.addCooldown(message.member, this.commandOptions.commandName + "<functional", 1800);
         }
         if(!messageArray[0])
         {
@@ -37,15 +35,19 @@ export class HeadpatCommand extends AbstractCommand
 
 }
 
-class HeadpatCommandHelp extends AbstractCommandHelpContent
+class HeadpatCommandOptions extends AbstractCommandOptions
 {
-    public commandName: string = "headpat";
-    public description: string = "Headpats a user or tells you how many time you have been headpatted";
-    public usage: string = `${AbstractCommandHelpContent.prefix}headpat\n${AbstractCommandHelpContent.prefix}headpat {@User}`;
+    public commandName: string;
+    public description: string;
+    public usage: string;
+    public cooldown: number;
 
     constructor()
     {
         super();
+        this.commandName = "headpat";
+        this.description = "Headpats a user or tells you how many time you have been headpatted";
+        this.usage = `${AbstractCommandOptions.prefix}headpat\n${AbstractCommandOptions.prefix}headpat {@User}`;
     }
 
 }

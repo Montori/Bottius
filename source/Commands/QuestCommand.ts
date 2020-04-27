@@ -2,16 +2,16 @@ import { AbstractCommand } from "./AbstractCommand";
 import { Client, Message, MessageEmbed, DiscordAPIError } from "discord.js";
 import { UserService } from "../Service/UserService";
 import { Quest } from "../Material/Quest";
-import { AbstractCommandHelpContent } from "../Material/AbstractCommandHelpContent";
+import { AbstractCommandOptions } from "../Material/AbstractCommandOptions";
 import { QuestService } from "../Service/QuestService";
 import { User } from "../Material/User";
 
 
 export class QuestCommand extends AbstractCommand
 {
-    public helpEmbedContent: QuestCommandHelp = new QuestCommandHelp();
+    public commandOptions: QuestCommandOptions = new QuestCommandOptions();
 
-    public async run(bot: Client, message: Message, messageArray: string[]) 
+    public async runInternal(bot: Client, message: Message, messageArray: string[]) 
     {
         let questService: QuestService = QuestService.getInstance();
 
@@ -114,7 +114,7 @@ export class QuestCommand extends AbstractCommand
     }
 
 }
-class QuestCommandHelp extends AbstractCommandHelpContent
+class QuestCommandOptions extends AbstractCommandOptions
 {
     public commandName: string;
     public description: string;
@@ -125,6 +125,7 @@ class QuestCommandHelp extends AbstractCommandHelpContent
         super();
         this.commandName = "quest";
         this.description = "adds, lists or finishes a Quest";
-        this.usage = `${AbstractCommandHelpContent.prefix}quest add {@User} {description...}\n${AbstractCommandHelpContent.prefix}quest list\n${AbstractCommandHelpContent.prefix}quest finish {id}`;
+        this.usage = `${AbstractCommandOptions.prefix}quest add {@User} {description...}\n${AbstractCommandOptions.prefix}quest list\n${AbstractCommandOptions.prefix}quest finish {id}`;
+        this.cooldown = 5;
     }
 }

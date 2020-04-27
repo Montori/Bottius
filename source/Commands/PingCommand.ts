@@ -1,12 +1,12 @@
 import {AbstractCommand} from "./AbstractCommand";
 import {Client, Message} from 'discord.js';
-import { AbstractCommandHelpContent } from "../Material/AbstractCommandHelpContent";
+import { AbstractCommandOptions } from "../Material/AbstractCommandOptions";
 
 export class PingCommand extends AbstractCommand
 {
-    public helpEmbedContent: PingCommandHelp = new PingCommandHelp();
+    public commandOptions: PingCommandOptions = new PingCommandOptions();
 
-    public run(bot: Client, message: Message, messageArray: Array<string>)
+    public runInternal(bot: Client, message: Message, messageArray: Array<string>)
     {
         if(message.member.hasPermission("ADMINISTRATOR")){
             message.channel.send("Pong");
@@ -17,14 +17,19 @@ export class PingCommand extends AbstractCommand
     }
 }
 
-class PingCommandHelp extends AbstractCommandHelpContent{
-    public commandName: string = "ping";
-    public description: string = "returns Pong, lovely!";
-    public usage: string = `${AbstractCommandHelpContent.prefix}ping`;
+class PingCommandOptions extends AbstractCommandOptions{
+    public commandName: string;
+    public description: string;
+    public usage: string;
+    public cooldown: number;
 
     constructor()
     {
         super();
+        this.commandName = "ping";
+        this.description = "returns Pong, lovely!";
+        this.usage = `${AbstractCommandOptions.prefix}ping`;
+        this.cooldown = 5;
     }
 
 }

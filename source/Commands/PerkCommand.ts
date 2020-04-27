@@ -1,15 +1,15 @@
 import { AbstractCommand } from "./AbstractCommand";
-import { AbstractCommandHelpContent } from "../Material/AbstractCommandHelpContent";
+import { AbstractCommandOptions } from "../Material/AbstractCommandOptions";
 import { Client, Message, Role, MessageEmbed } from "discord.js";
 import { Perk } from "../Material/Perk";
 import { PerkService } from "../Service/PerkService";
 
 export class PerkCommand extends AbstractCommand
 {
-    public helpEmbedContent: AbstractCommandHelpContent = new PerkCommandHelp();
+    public commandOptions: AbstractCommandOptions = new PerkCommandOptions();
     private perkService: PerkService = PerkService.getInstance();
 
-    public async run(bot: Client, message: Message, messageArray: string[]) 
+    public async runInternal(bot: Client, message: Message, messageArray: string[]) 
     {
         if(message.member.hasPermission("ADMINISTRATOR"))
         {
@@ -80,17 +80,18 @@ export class PerkCommand extends AbstractCommand
 
 }
 
-class PerkCommandHelp extends AbstractCommandHelpContent
+class PerkCommandOptions extends AbstractCommandOptions
 {
     public commandName: string;
     public description: string;
     public usage: string;
+    public cooldown: number;
 
     constructor()
     {
         super();
         this.commandName = "perk";
         this.description = "adds, removes or lists leveling rewards";
-        this.usage = `${AbstractCommandHelpContent.prefix}perk add {lvl} {role}\n${AbstractCommandHelpContent.prefix}perk remove {role}\n${AbstractCommandHelpContent.prefix}perk list`;
+        this.usage = `${AbstractCommandOptions.prefix}perk add {lvl} {role}\n${AbstractCommandOptions.prefix}perk remove {role}\n${AbstractCommandOptions.prefix}perk list`;
     }
 }

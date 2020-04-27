@@ -1,5 +1,5 @@
 import { AbstractCommand } from "./AbstractCommand";
-import { AbstractCommandHelpContent } from "../Material/AbstractCommandHelpContent";
+import { AbstractCommandOptions } from "../Material/AbstractCommandOptions";
 import { Client, Message, MessageEmbed } from "discord.js";
 import { UserService } from "../Service/UserService";
 import { User } from "../Material/User";
@@ -7,13 +7,13 @@ import { CooldownService } from "../Service/CooldownService";
 
 export class StatsCommand extends AbstractCommand
 {
-    public helpEmbedContent: StatsCommandHelp = new StatsCommandHelp();
+    public commandOptions: StatsCommandHelp = new StatsCommandHelp();
     public userService: UserService = UserService.getInstance();
     public coolDownService: CooldownService = CooldownService.getInstance();
 
-    public async run(bot: Client, message: Message, messageArray: string[]) 
+    public async runInternal(bot: Client, message: Message, messageArray: string[]) 
     {
-        if(this.coolDownService.isCooldown(message.member, this.helpEmbedContent.commandName)) return
+        if(this.coolDownService.isCooldown(message.member, this.commandOptions.commandName)) return
         let user: User = await this.userService.getUser(message.member);
 
         let embed: MessageEmbed = new MessageEmbed()
@@ -29,15 +29,22 @@ export class StatsCommand extends AbstractCommand
         
         message.channel.send(embed);
 
-        this.coolDownService.addCooldown(message.member, this.helpEmbedContent.commandName, 30);
+        this.coolDownService.addCooldown(message.member, this.commandOptions.commandName, 30);
     }
 
 }
 
-class StatsCommandHelp extends AbstractCommandHelpContent
+class StatsCommandHelp extends AbstractCommandOptions
 {
     public commandName: string;
     public description: string;
     public usage: string;
+    public cooldown: number;
     
+    constructor(){
+        super();
+        this.commandName = "stats";
+        this.description = "shows the stats of a user";
+        this.usage = `${AbstractCommandOptions.prefix}stats\n${AbstractCommandOptions.prefix}stats {@User}`;
+    }
 }
