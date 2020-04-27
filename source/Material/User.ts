@@ -25,7 +25,11 @@ export class User extends BaseEntity
     @Column({default: 0})
     public headPats! : number;
 
-    constructor(discordID: string){
+    @Column({default: 0})
+    public xp!: number;
+
+    constructor(discordID: string)
+    {
         super();
 
         this.discordID = discordID;
@@ -34,5 +38,25 @@ export class User extends BaseEntity
         this.totalMessages = 0;
         this.totalPings = 0;
         this.headPats = 0;
+        this.xp = 0;
+    }
+
+    public getLevel(): number
+    {
+        let lvl: number = 1;
+        let xp: number = this.xp;
+
+        while(xp > 0)
+        {
+            let nextLvl: number = Math.pow(1.1,lvl)*1000;
+
+            if(xp >= nextLvl)
+            {
+                lvl++;
+            }
+            xp -= nextLvl;
+        }
+
+        return lvl;
     }
 }

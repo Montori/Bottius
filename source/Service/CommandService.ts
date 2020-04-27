@@ -3,6 +3,7 @@ import {AbstractCommand} from "../Commands/AbstractCommand";
 import {Client, Message} from "discord.js";
 import { HeadpatCommand } from "../Commands/HeadpatCommand";
 import { QuestCommand } from "../Commands/QuestCommand";
+import { StatsCommand } from "../Commands/StatsCommand";
 
 export class CommandService
 {
@@ -29,6 +30,7 @@ export class CommandService
         this.commandMap.set("ping", new PingCommand());
         this.commandMap.set("headpat", new HeadpatCommand());
         this.commandMap.set("quest", new QuestCommand());
+        this.commandMap.set("stats", new StatsCommand());
     }
 
     runCommand(name: string, bot: Client, message: Message, args: Array<string>)

@@ -46,17 +46,27 @@ export class MessageService
         
         let user: User = await this.userService.getUser(message.member);
 
-        user.totalMessages += 1;
+        user.totalMessages ++;
+        
+        if(message.content.substring(0, this.prefix.length) != this.prefix)
+        {
+            if(!this.cooldownService.isCooldown(message.member, "XP"))
+            {
+                user.xp += 10;
+                this.cooldownService.addCooldown(message.member, "XP", 60);
+            }
+        }
+        else
+        {
+            let messageArgs: Array<string> = message.content.split(" ");
+            messageArgs = messageArgs.filter(message => /\S/.test(message));
+            let command: string = messageArgs[0].slice(this.prefix.length);
+            let commandArgs: Array<string> = messageArgs.slice(1);
+            
+            this.commandService.runCommand(command, this.bot, message, commandArgs);
+        }
+
         await user.save();
-
-        if(message.content.substring(0, this.prefix.length) != this.prefix) return;
-   
-        let messageArgs: Array<string> = message.content.split(" ");
-        messageArgs = messageArgs.filter(message => /\S/.test(message));
-        let command: string = messageArgs[0].slice(this.prefix.length);
-        let commandArgs: Array<string> = messageArgs.slice(1);
-
-        this.commandService.runCommand(command, this.bot, message, commandArgs);
     }
 
     private reactToUWU(message: Message)
