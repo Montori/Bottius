@@ -4,14 +4,17 @@ import * as Discord from 'discord.js';
 import { UserService } from "../Service/UserService";
 import {User} from "../Material/User";
 import { AbstractCommandHelpContent } from "../Material/AbstractCommandHelpContent";
+import { CooldownService } from "../Service/CooldownService";
 
 export class HeadpatCommand extends AbstractCommand
 {
     public helpEmbedContent: HeadpatCommandHelp = new HeadpatCommandHelp();
     private userService :UserService = UserService.getInstance();
+    private cooldownService: CooldownService = CooldownService.getInstance();
 
     public async run(bot: Client, message: Message, messageArray: string[]) 
     {
+        if(this.cooldownService.isCooldown(message.member, this.helpEmbedContent.commandName)) return message.channel.send("Slow down mate, your headpat energy needs to charge up again");
         let targetUser: GuildMember = message.mentions.members.first();
 
         if(targetUser)
@@ -23,6 +26,7 @@ export class HeadpatCommand extends AbstractCommand
             userToHeadpat.save();
     
             message.channel.send(`${message.member} gave a headpat to ${message.mentions.members.first()}`);
+            this.cooldownService.addCooldown(message.member, this.helpEmbedContent.commandName, 1800);
         }
         if(!messageArray[0])
         {
