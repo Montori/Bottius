@@ -8,16 +8,16 @@ import { AbstractCommandHelpContent } from "../Material/AbstractCommandHelpConte
 export class HeadpatCommand extends AbstractCommand
 {
     public helpEmbedContent: HeadpatCommandHelp = new HeadpatCommandHelp();
+    private userService :UserService = UserService.getInstance();
 
     public async run(bot: Client, message: Message, messageArray: string[]) 
     {
-        let userService :UserService = UserService.getInstance();
-
         let targetUser: GuildMember = message.mentions.members.first();
 
         if(targetUser)
         {
-            let userToHeadpat: User = await userService.getUser(message.mentions.members.first());
+            if(targetUser == message.member) return message.channel.send("You can't headpat yourself, you lonely bag of potatoes...");
+            let userToHeadpat: User = await this.userService.getUser(message.mentions.members.first());
     
             userToHeadpat.headPats += 1;
             userToHeadpat.save();
@@ -26,7 +26,7 @@ export class HeadpatCommand extends AbstractCommand
         }
         if(!messageArray[0])
         {
-            message.channel.send(`${message.member} was headpatted ${(await userService.getUser(message.member)).headPats} times!`)
+            message.channel.send(`${message.member} was headpatted ${(await this.userService.getUser(message.member)).headPats} times!`)
         }
 
     }
