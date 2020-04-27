@@ -1,10 +1,12 @@
-import { Client, Message } from "discord.js";
+import { Client, Message, Role } from "discord.js";
 import { CommandService } from "./CommandService";
 import randomInt from "random-int";
 import botConfig from "../botconfig.json";
 import { UserService } from "./UserService";
 import { User } from "../Material/User";
 import { CooldownService } from "./CooldownService";
+import { PerkService } from "./PerkService";
+import { Perk } from "../Material/Perk";
 
 export class MessageService
 {
@@ -12,6 +14,7 @@ export class MessageService
     private commandService: CommandService;
     private userService: UserService;
     private cooldownService: CooldownService;
+    private perkService: PerkService;
     private bot: Client;
     private prefix: string = botConfig.prefix;
     private readonly uwuRegex = "^(?<a>(?![wWMmNn])[A-z])[wWMmNn]\\k<a>$";
@@ -35,6 +38,7 @@ export class MessageService
         this.commandService = CommandService.getInstance();
         this.userService = UserService.getInstance();
         this.cooldownService = CooldownService.getInstance();
+        this.perkService = PerkService.getInstance();
     }
 
     public async handleMessage(message: Message)
@@ -50,11 +54,7 @@ export class MessageService
         
         if(message.content.substring(0, this.prefix.length) != this.prefix)
         {
-            if(!this.cooldownService.isCooldown(message.member, "XP"))
-            {
-                user.xp += 10;
-                this.cooldownService.addCooldown(message.member, "XP", 60);
-            }
+            this.gainExperience(user, message);
         }
         else
         {
@@ -67,6 +67,26 @@ export class MessageService
         }
 
         await user.save();
+    }
+
+    private async gainExperience(user: User, message: Message)
+    {
+        if(!this.cooldownService.isCooldown(message.member, "XP"))
+        {
+                user.xp += 10;
+
+                let perks: Array<Perk> = await this.perkService.getAllPerks();
+
+                perks = perks.filter(perk => perk.reqLevel <= user.getLevel())
+
+                for(const perk of perks)
+                {
+                    let role: Role = await message.guild.roles.fetch(perk.role);
+                    message.member.roles.add(role);
+                }
+
+                this.cooldownService.addCooldown(message.member, "XP", 60);
+        }
     }
 
     private reactToUWU(message: Message)

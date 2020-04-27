@@ -7,7 +7,7 @@ import { CooldownService } from "../Service/CooldownService";
 
 export class StatsCommand extends AbstractCommand
 {
-    public helpEmbedContent: StatsCommandHelp = new StatsCommandHelp;
+    public helpEmbedContent: StatsCommandHelp = new StatsCommandHelp();
     public userService: UserService = UserService.getInstance();
     public coolDownService: CooldownService = CooldownService.getInstance();
 

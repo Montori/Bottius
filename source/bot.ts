@@ -6,6 +6,7 @@ import { UserService } from './Service/UserService';
 import { ConnectionOptions, Connection, createConnection } from "typeorm";
 import { User } from './Material/User';
 import { Quest } from './Material/Quest';
+import { Perk } from './Material/Perk';
 
 const bot: Discord.Client = new Discord.Client({disableMentions: "everyone"});
 
@@ -19,7 +20,7 @@ const dbService: UserService = UserService.getInstance();
 const connection = createConnection({
    type: "sqlite",
    database:"./db.db",
-   entities: [User, Quest],
+   entities: [User, Quest, Perk],
    synchronize: true
 });
 
