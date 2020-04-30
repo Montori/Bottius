@@ -43,20 +43,6 @@ export class User extends BaseEntity
 
     public getLevel(): number
     {
-        let lvl: number = 1;
-        let xp: number = this.xp;
-
-        while(xp > 0)
-        {
-            let nextLvl: number = Math.pow(1.1,lvl)*1000;
-
-            if(xp >= nextLvl)
-            {
-                lvl++;
-            }
-            xp -= nextLvl;
-        }
-
-        return lvl;
+        return Math.floor((Math.log((this.xp*Math.log(1.1))/(700)+1))/(Math.log(1.1)))+1;
     }
 }
