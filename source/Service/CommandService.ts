@@ -6,6 +6,7 @@ import { QuestCommand } from "../Commands/QuestCommand";
 import { StatsCommand } from "../Commands/StatsCommand";
 import { PerkCommand } from "../Commands/PerkCommand";
 import { LeaderboardCommand } from "../Commands/LeaderboardCommand";
+import { ActivityCommand } from "../Commands/ActivityCommand";
 
 export class CommandService
 {
@@ -35,6 +36,7 @@ export class CommandService
         this.commandMap.set("stats", new StatsCommand());
         this.commandMap.set("perk", new PerkCommand());
         this.commandMap.set("leaderboard", new LeaderboardCommand());
+        this.commandMap.set("setactivity", new ActivityCommand());
     }
 
     runCommand(name: string, bot: Client, message: Message, args: Array<string>)
