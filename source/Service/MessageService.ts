@@ -1,4 +1,4 @@
-import { Client, Message, Role } from "discord.js";
+import { Client, Message, Role, MessageEmbed } from "discord.js";
 import { CommandService } from "./CommandService";
 import randomInt from "random-int";
 import botConfig from "../botconfig.json";
@@ -83,6 +83,7 @@ export class MessageService
                 {
                     let role: Role = await message.guild.roles.fetch(perk.role);
                     message.member.roles.add(role);
+                    message.channel.send(new MessageEmbed().setAuthor(`${message.member.user.tag} leveled up!`).setDescription(`${message.member} reached level ${perk.reqLevel} and obtained the role ${role}`).setColor(role.color));
                 }
 
                 this.cooldownService.addCooldown(message.member, "XP", 60);

@@ -22,7 +22,7 @@ export class PerkCommand extends AbstractCommand
                 let role: Role = message.mentions.roles.first();
 
                 if(isNaN(level) || !role) return super.sendHelp(message);
-                if(await this.perkService.isPerkDuplicate(role.id)) return message.channel.send(new MessageEmbed().setAuthor("Perk duplicate").setColor("ff0000").setDescription("There is already a perk with the given role"));
+                if(await this.perkService.doesPerkExist(role.id)) return message.channel.send(new MessageEmbed().setAuthor("Perk duplicate").setColor("ff0000").setDescription("There is already a perk with the given role"));
                 
                 this.perkService.addPerk(level, role.id);
 
@@ -39,7 +39,7 @@ export class PerkCommand extends AbstractCommand
             {
                 let role: Role = message.mentions.roles.first();
                 if(!role) return super.sendHelp(message);
-                if(! await this.perkService.isPerkDuplicate(role.id)) return message.channel.send(new MessageEmbed().setAuthor("Perk not existent").setColor("ff0000").setDescription("There is no perk with this role"));
+                if(! await this.perkService.doesPerkExist(role.id)) return message.channel.send(new MessageEmbed().setAuthor("Perk not existent").setColor("ff0000").setDescription("There is no perk with this role"));
                 
                 this.perkService.removePerk(role.id);
 

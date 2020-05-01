@@ -14,7 +14,7 @@ export class PerkService
         return this.instance;
     }
 
-    public async isPerkDuplicate(roleID: string): Promise<boolean>
+    public async doesPerkExist(roleID: string): Promise<boolean>
     {
         let result: boolean = false;
         let perk: Perk = await Perk.findOne({where: {role: roleID}});

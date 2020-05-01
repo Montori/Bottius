@@ -7,6 +7,7 @@ import { ConnectionOptions, Connection, createConnection } from "typeorm";
 import { User } from './Material/User';
 import { Quest } from './Material/Quest';
 import { Perk } from './Material/Perk';
+import { PerkService } from './Service/PerkService';
 
 const bot: Discord.Client = new Discord.Client({disableMentions: "everyone"});
 
@@ -16,6 +17,7 @@ MessageService.init(bot);
 
 const messageService: MessageService = MessageService.getInstance();
 const dbService: UserService = UserService.getInstance();
+const perkService: PerkService = PerkService.getInstance();
 
 const connection = createConnection({
    type: "sqlite",
@@ -36,6 +38,11 @@ bot.on("ready", async () =>
 bot.on("message", async message =>
 {
    messageService.handleMessage(message);
+});
+
+bot.on("roleDelete", async role => 
+{
+   perkService.removePerk(role.id);
 });
 
 bot.login(botConfig.token);
