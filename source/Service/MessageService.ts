@@ -82,6 +82,8 @@ export class MessageService
                 for(const perk of perks)
                 {
                     let role: Role = await message.guild.roles.fetch(perk.role);
+                    if(!role) continue;
+                    if(message.member.roles.cache.has(role.id)) continue;
                     message.member.roles.add(role);
                     message.channel.send(new MessageEmbed().setAuthor(`${message.member.user.tag} leveled up!`).setDescription(`${message.member} reached level ${perk.reqLevel} and obtained the role ${role}`).setColor(role.color));
                 }
