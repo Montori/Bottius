@@ -11,105 +11,81 @@ export class QuestCommand extends AbstractCommand
 {
     public commandOptions: QuestCommandOptions = new QuestCommandOptions();
 
+    private questService: QuestService = QuestService.getInstance();
+    private userService: UserService = UserService.getInstance();
+
     public async runInternal(bot: Client, message: Message, messageArray: string[]) 
     {
-        let questService: QuestService = QuestService.getInstance();
-
-        if(message.member.hasPermission("ADMINISTRATOR"))
+        if(!message.member.hasPermission("ADMINISTRATOR")) return super.sendPermissionDenied(message);
+        
+        if(messageArray[0] == "add")
         {
-            let userService: UserService = UserService.getInstance();
-    
-                if(messageArray[0] == "add")
-                {
-                    messageArray = messageArray.slice(2);
-                    let discordAssignees = message.mentions.members.array();
-                    if(discordAssignees[0])
-                    {
-                        let assignees: Array<User> = new Array<User>();
-                        let assignor: User = await userService.getUser(message.member);
+            messageArray = messageArray.slice(2);
+            let discordAssignees = message.mentions.members.array();
 
-                        for(const member of discordAssignees)
-                        {
-                            assignees.push(await userService.getUser(member));
-                        }
+            if(!discordAssignees[0]) return message.channel.send(super.getFailedEmbed().setDescription("Please provide at least one assignee for this quest"));
+
+            let assignees: Array<User> = new Array<User>();
+            let assignor: User = await this.userService.getUser(message.member);
+
+            for(const member of discordAssignees)
+            {
+                assignees.push(await this.userService.getUser(member));
+            }
                         
-                        messageArray = messageArray.slice(assignees.length-1);
+            messageArray = messageArray.slice(assignees.length-1);
 
-                        if(messageArray[0])
-                        {
-                            let newQuest: Quest = new Quest(assignor, assignees, messageArray.join(" "));
-                            await newQuest.save();
+            if(!messageArray[0]) return message.channel.send(super.getFailedEmbed().setDescription("Please provide a description for this quest."));
+
+            let newQuest: Quest = new Quest(assignor, assignees, messageArray.join(" "));
+            await newQuest.save();
     
-                            let questEmbed: MessageEmbed = new MessageEmbed()
-                                .setAuthor("A new quest has been commissioned")
-                                .setDescription(newQuest.description)
-                                .setFooter(`Quest ID: ${newQuest.id}`)
-                                .setColor("#573F26")
-                                .addField("Assignor", message.member)
-                                .addField("Assignees", discordAssignees.join("\n") + " ");
+            let questEmbed: MessageEmbed = new MessageEmbed()
+                .setAuthor("A new quest has been commissioned")
+                .setDescription(newQuest.description)
+                .setFooter(`Quest ID: ${newQuest.id}`)
+                .setColor("#573F26")
+                .addField("Assignor", message.member)
+                .addField("Assignees", discordAssignees.join("\n") + " ");
     
-                            message.channel.send(questEmbed);
-                        }
-                        else
-                        {
-                            message.channel.send("Please provide a description for your quest");
-                        }
-                    }
-                    else
-                    {
-                        message.channel.send("Please provide an assignee for this quest")
-                    }
-                }
-                else if(messageArray[0] == "list")
+            message.channel.send(questEmbed);
+        }
+        else if(messageArray[0] == "list")
+        {
+            let allQuests: Array<Quest> = await this.questService.getAllQuest();
+
+            let questEmbed: MessageEmbed = new MessageEmbed();
+            if(allQuests.length > 0)
+            {
+                questEmbed.setAuthor("Here are your quests master");
+                allQuests.forEach(quest => questEmbed.addField(`A quest for ${bot.users.resolve(quest.assignees[0].discordID).tag} ID: ${quest.id}`, quest.description));
+            }
+            else
+            {
+                questEmbed.setAuthor("The quest board contains no quests");
+            }
+
+            message.channel.send(questEmbed);
+        }
+        else if(messageArray[0] == "finish")
+        {
+            if(isNaN(Number(messageArray[1]))) return message.channel.send("Please specify a valid ID");
+                let finishedQuest: Quest = await this.questService.getQuest(Number(messageArray[1]));
+
+                if(!finishedQuest) return message.channel.send("Specified Quest could not be found");
+                if(finishedQuest.assignees.some(assignee => assignee.discordID == message.member.id) || message.member.hasPermission("ADMINISTRATOR"))
                 {
-                    let allQuests: Array<Quest> = await questService.getAllQuest();
-
-                    let questEmbed: MessageEmbed = new MessageEmbed();
-                    if(allQuests.length > 0)
-                    {
-                        questEmbed.setAuthor("Here are your quests master");
-                        allQuests.forEach(quest => questEmbed.addField(`A quest for ${bot.users.resolve(quest.assignees[0].discordID).tag} ID: ${quest.id}`, quest.description));
-                    }
-                    else
-                    {
-                        questEmbed.setAuthor("The quest board contains no quests");
-                    }
-
-                    message.channel.send(questEmbed);
-                }
-                else if(messageArray[0] == "finish")
-                {
-                    if(!isNaN(Number(messageArray[1])))
-                    {
-                        let finishedQuest: Quest = await questService.getQuest(Number(messageArray[1]));
-
-                        if(finishedQuest)
-                        {
-                            if(finishedQuest.assignees.some(assignee => assignee.discordID == message.member.id) || message.member.hasPermission("ADMINISTRATOR"))
-                            {
-                                finishedQuest.remove();
-                                message.channel.send(`Quest with ID ${finishedQuest.id} is done.`);
-                            }
-                            else
-                            {
-                                message.channel.send("Thats not your quest.");
-                            }
-                        }else
-                        {
-                            message.channel.send("Specified Quest could not be found");
-                        }
-                    }else
-                    {
-                        message.channel.send("Please specify a valid ID");
-                    }
+                    finishedQuest.remove();
+                    message.channel.send(super.getSuccessEmbed().setDescription(`Quest with ID ${finishedQuest.id} is done.`));
                 }
                 else
                 {
-                    super.sendHelp(message);
+                    message.channel.send(super.getSuccessEmbed().setDescription("Thats not your quest."));
                 }
-        }else
+        }
+        else
         {
-            super.sendPermissionDenied(message);
+            super.sendHelp(message);
         }
     }
 

@@ -8,12 +8,9 @@ export class PingCommand extends AbstractCommand
 
     public runInternal(bot: Client, message: Message, messageArray: Array<string>)
     {
-        if(message.member.hasPermission("ADMINISTRATOR")){
-            message.channel.send("Pong");
-        }else
-        {
-            super.sendPermissionDenied(message);
-        }
+        if(!message.member.hasPermission("ADMINISTRATOR")) return super.sendPermissionDenied(message);
+        
+        message.channel.send("Pong");
     }
 }
 

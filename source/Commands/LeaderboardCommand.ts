@@ -10,11 +10,8 @@ export class LeaderboardCommand extends AbstractCommand
     {
         let topUsers: Array<User> = await User.find({order : {xp: "DESC"}, take: 10});
 
-        let leaderboardEmbed: MessageEmbed = new MessageEmbed()
-                                                    .setAuthor(`Leaderboard of ${message.guild.name}`)
-                                                    .setColor("00ff00")
-                                                    .setDescription("Here are the most honorable members of this server")
-                                                    .setTimestamp(new Date());
+        let leaderboardEmbed: MessageEmbed = super.getSuccessEmbed(`Leaderboard of ${message.guild.name}`)
+                                                    .setDescription("Here are the most honorable members of this server");
 
         topUsers.forEach(user => leaderboardEmbed.addField(`${bot.users.resolve(user.discordID).tag}`, `Level: ${user.getLevel()} \nXP: ${user.xp}`));
 

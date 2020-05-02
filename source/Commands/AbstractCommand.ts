@@ -47,5 +47,15 @@ export abstract class AbstractCommand
         message.channel.send(cooldownEmbed);
     }
 
+    public getFailedEmbed(title?: string): MessageEmbed
+    {
+        return new MessageEmbed().setColor("ff0000").setAuthor(title ? title : "Action failed").setTimestamp(new Date());
+    }
+
+    public getSuccessEmbed(title?: string): MessageEmbed
+    {
+        return new MessageEmbed().setColor("00ff00").setAuthor(title ? title : "Action successful").setTimestamp(new Date());
+    }
+
     public abstract commandOptions: AbstractCommandOptions;
 }

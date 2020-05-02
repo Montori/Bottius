@@ -12,7 +12,7 @@ export class ActivityCommand extends AbstractCommand
         if(!messageArray[0]) return super.sendHelp(message);
         if(messageArray.join(" ").length > 100) return message.channel.send(new MessageEmbed().setAuthor("Too many characters").setColor("ff0000"));
         bot.user.setActivity(messageArray.join(" "));
-        message.channel.send(new MessageEmbed().setTitle("Activity changed to:").setDescription(`\`${messageArray.join(" ")}\``).setColor("00ff00"));
+        message.channel.send(super.getSuccessEmbed("Activity changed").setDescription(`${messageArray.join(" ")}`).setColor("00ff00"));
     }
 
 }
