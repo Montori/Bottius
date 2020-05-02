@@ -13,6 +13,7 @@
     "discord.js": "^12.1.1",
     "random-int": "^2.0.1",
     "sqlite3": "^4.1.1",
+    "ts-node": "^8.9.1",
     "typeorm": "^0.2.24"
   }
 }
