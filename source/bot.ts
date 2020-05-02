@@ -19,12 +19,7 @@ const messageService: MessageService = MessageService.getInstance();
 const dbService: UserService = UserService.getInstance();
 const perkService: PerkService = PerkService.getInstance();
 
-const connection = createConnection({
-   type: "sqlite",
-   database:"db.db",
-   entities: [User, Quest, Perk],
-   synchronize: true
-});
+const connection = createConnection();
 
 connection.then(connection => connection.runMigrations());
 
