@@ -21,7 +21,7 @@ const perkService: PerkService = PerkService.getInstance();
 
 const connection = createConnection({
    type: "sqlite",
-   database:"./db.db",
+   database:"db.db",
    entities: [User, Quest, Perk],
    synchronize: true
 });
