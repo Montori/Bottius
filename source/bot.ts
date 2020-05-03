@@ -3,10 +3,7 @@ import { CommandService } from './Service/CommandService';
 import botConfig from "./botconfig.json";
 import { MessageService } from './Service/MessageService';
 import { UserService } from './Service/UserService';
-import { ConnectionOptions, Connection, createConnection } from "typeorm";
-import { User } from './Material/User';
-import { Quest } from './Material/Quest';
-import { Perk } from './Material/Perk';
+import { createConnection } from "typeorm";
 import { PerkService } from './Service/PerkService';
 
 const bot: Discord.Client = new Discord.Client({disableMentions: "everyone"});

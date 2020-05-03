@@ -3,6 +3,7 @@ import { AbstractCommandOptions } from "../Material/AbstractCommandOptions";
 import { Client, Message, Role, MessageEmbed } from "discord.js";
 import { Perk } from "../Material/Perk";
 import { PerkService } from "../Service/PerkService";
+import { PermissionLevel } from "../Material/PermissionLevel";
 
 export class PerkCommand extends AbstractCommand
 {
@@ -11,8 +12,6 @@ export class PerkCommand extends AbstractCommand
 
     public async runInternal(bot: Client, message: Message, messageArray: string[]) 
     {
-        if(!message.member.hasPermission("ADMINISTRATOR")) return super.sendPermissionDenied(message);
-        
         if(messageArray[0] == "add")
         {
             messageArray = messageArray.slice(1);
@@ -84,5 +83,6 @@ class PerkCommandOptions extends AbstractCommandOptions
         this.commandName = "perk";
         this.description = "adds, removes or lists leveling rewards";
         this.usage = `${AbstractCommandOptions.prefix}perk add {lvl} {role}\n${AbstractCommandOptions.prefix}perk remove {role}\n${AbstractCommandOptions.prefix}perk list`;
+        this.reqPermission = PermissionLevel.admin;
     }
 }

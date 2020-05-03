@@ -1,6 +1,7 @@
 import { AbstractCommand } from "./AbstractCommand";
 import { AbstractCommandOptions } from "../Material/AbstractCommandOptions";
 import { Client, Message, MessageEmbed } from "discord.js";
+import { PermissionLevel } from "../Material/PermissionLevel";
 
 export class ActivityCommand extends AbstractCommand
 {
@@ -8,7 +9,6 @@ export class ActivityCommand extends AbstractCommand
 
     public runInternal(bot: Client, message: Message, messageArray: string[]) 
     {
-        if(!message.member.hasPermission("ADMINISTRATOR")) return super.sendPermissionDenied(message);
         if(!messageArray[0]) return super.sendHelp(message);
         if(messageArray.join(" ").length > 100) return message.channel.send(new MessageEmbed().setAuthor("Too many characters").setColor("ff0000"));
         bot.user.setActivity(messageArray.join(" "));
@@ -29,5 +29,6 @@ class ActivityCommandOptions extends AbstractCommandOptions
         this.commandName = "setActivity";
         this.description = "sets the activity of the bot";
         this.usage = `${AbstractCommandOptions.prefix}setActivity {text}`;
+        this.reqPermission = PermissionLevel.admin;
     }
 }

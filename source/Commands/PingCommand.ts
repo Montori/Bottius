@@ -1,16 +1,17 @@
 import {AbstractCommand} from "./AbstractCommand";
 import {Client, Message} from 'discord.js';
 import { AbstractCommandOptions } from "../Material/AbstractCommandOptions";
+import { PermissionLevel } from "../Material/PermissionLevel";
+import { UserService } from "../Service/UserService";
 
 export class PingCommand extends AbstractCommand
 {
     public commandOptions: PingCommandOptions = new PingCommandOptions();
 
-    public runInternal(bot: Client, message: Message, messageArray: Array<string>)
+    public async runInternal(bot: Client, message: Message, messageArray: Array<string>)
     {
-        if(!message.member.hasPermission("ADMINISTRATOR")) return super.sendPermissionDenied(message);
-        
-        message.channel.send("Pong");
+        let userService: UserService = UserService.getInstance();
+        message.channel.send(`${(await userService.getUser(message.member)).permissionLevel} added: ${(await userService.getUser(message.member)).addedDate}`);
     }
 }
 
@@ -26,6 +27,7 @@ class PingCommandOptions extends AbstractCommandOptions{
         this.commandName = "ping";
         this.description = "returns Pong, lovely!";
         this.usage = `${AbstractCommandOptions.prefix}ping`;
+        this.reqPermission = PermissionLevel.trusted;
     }
 
 }

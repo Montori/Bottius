@@ -1,13 +1,19 @@
 import {Client, Message, MessageEmbed} from 'discord.js';
 import { AbstractCommandOptions } from '../Material/AbstractCommandOptions';
 import { CooldownService } from '../Service/CooldownService';
+import { UserService } from '../Service/UserService';
+import { User } from '../Material/User';
+import { PermissionLevel } from '../Material/PermissionLevel';
 
 export abstract class AbstractCommand 
 {
     public cooldownService: CooldownService = CooldownService.getInstance();
+    public userService: UserService = UserService.getInstance();
 
     public async run(bot: Client, message: Message, messageArray: Array<string>)
     {
+        let user: User = await this.userService.getUser(message.member);
+        if(user.permissionLevel < this.commandOptions.reqPermission) return this.sendPermissionDenied(message);
         if(this.cooldownService.isCooldown(message.member, this.commandOptions.commandName))
         {
             this.sendCooldownEmbed(message);
@@ -34,7 +40,7 @@ export abstract class AbstractCommand
 
     public sendPermissionDenied(message: Message)
     {
-        message.channel.send(new MessageEmbed().setAuthor("Permission Denied").setDescription(`You lack the permissions to use the \`${this.commandOptions.commandName}\` command`).setColor("ff0000"));
+        message.channel.send(new MessageEmbed().setAuthor("Permission Denied").setDescription(`You lack the permissions to use the \`${this.commandOptions.commandName}\` command.\nYou need to be \`${PermissionLevel[this.commandOptions.reqPermission]}\` or higher`).setColor("ff0000"));
     }
 
     public sendCooldownEmbed(message: Message)

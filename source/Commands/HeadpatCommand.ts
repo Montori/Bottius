@@ -8,7 +8,6 @@ import { AbstractCommandOptions } from "../Material/AbstractCommandOptions";
 export class HeadpatCommand extends AbstractCommand
 {
     public commandOptions: HeadpatCommandOptions = new HeadpatCommandOptions();
-    private userService :UserService = UserService.getInstance();
 
     public async runInternal(bot: Client, message: Message, messageArray: string[]) 
     {

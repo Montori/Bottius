@@ -3,6 +3,7 @@ import { AbstractCommandOptions } from "../Material/AbstractCommandOptions";
 import { Client, Message, MessageEmbed, GuildMember } from "discord.js";
 import { UserService } from "../Service/UserService";
 import { User } from "../Material/User";
+import { PermissionLevel } from "../Material/PermissionLevel";
 
 export class StatsCommand extends AbstractCommand
 {
@@ -29,11 +30,11 @@ export class StatsCommand extends AbstractCommand
                                     .setAuthor(`Stats of ${member.user.tag}`)
                                     .addField("Level", `${user.getLevel()}`)
                                     .addField("XP", `${user.xp}`, true)
-                                    .addField("XP to next level", `${user.getXPToNextLevel()}`, true)
+                                    .addField("XP to next level", `~${user.getXPToNextLevel()}`, true)
                                     .addField("Headpats", `${user.headPats}`)
                                     .addField("Total messages", `${user.totalMessages}`)
                                     .setTimestamp(new Date())
-                                    .setFooter(`You were pinged ${user.totalPings} times uwu`)
+                                    .setFooter(`Permission Level: ${PermissionLevel[user.permissionLevel]}`)
                                     .setColor(member.roles.hoist.color);
         return embed;
     }

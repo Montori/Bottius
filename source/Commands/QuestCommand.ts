@@ -5,6 +5,7 @@ import { Quest } from "../Material/Quest";
 import { AbstractCommandOptions } from "../Material/AbstractCommandOptions";
 import { QuestService } from "../Service/QuestService";
 import { User } from "../Material/User";
+import { PermissionLevel } from "../Material/PermissionLevel";
 
 
 export class QuestCommand extends AbstractCommand
@@ -12,12 +13,9 @@ export class QuestCommand extends AbstractCommand
     public commandOptions: QuestCommandOptions = new QuestCommandOptions();
 
     private questService: QuestService = QuestService.getInstance();
-    private userService: UserService = UserService.getInstance();
 
     public async runInternal(bot: Client, message: Message, messageArray: string[]) 
     {
-        if(!message.member.hasPermission("ADMINISTRATOR")) return super.sendPermissionDenied(message);
-        
         if(messageArray[0] == "add")
         {
             messageArray = messageArray.slice(2);
@@ -103,5 +101,6 @@ class QuestCommandOptions extends AbstractCommandOptions
         this.description = "adds, lists or finishes a Quest";
         this.usage = `${AbstractCommandOptions.prefix}quest add {@User} {description...}\n${AbstractCommandOptions.prefix}quest list\n${AbstractCommandOptions.prefix}quest finish {id}`;
         this.cooldown = 5;
+        this.reqPermission = PermissionLevel.moderator;
     }
 }
