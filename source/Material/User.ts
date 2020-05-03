@@ -43,6 +43,7 @@ export class User extends BaseEntity
         this.totalPings = 0;
         this.headPats = 0;
         this.xp = 0;
+        this.permissionLevel = PermissionLevel.member;
     }
 
     public getLevel(): number

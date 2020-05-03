@@ -35,7 +35,7 @@ export class StatsCommand extends AbstractCommand
                                     .addField("Total messages", `${user.totalMessages}`)
                                     .setTimestamp(new Date())
                                     .setFooter(`Permission Level: ${PermissionLevel[user.permissionLevel]}`)
-                                    .setColor(member.roles.hoist.color);
+                                    .setColor(member.roles.hoist == null ? "000000" : member.roles.hoist.color);
         return embed;
     }
 

@@ -8,6 +8,7 @@ import { PerkCommand } from "../Commands/PerkCommand";
 import { LeaderboardCommand } from "../Commands/LeaderboardCommand";
 import { ActivityCommand } from "../Commands/ActivityCommand";
 import { HelpCommand } from "../Commands/HelpCommand";
+import { PermissionCommand } from "../Commands/PermissionCommand";
 
 export class CommandService
 {
@@ -39,6 +40,7 @@ export class CommandService
         this.commandMap.set("leaderboard", new LeaderboardCommand());
         this.commandMap.set("setactivity", new ActivityCommand());
         this.commandMap.set("help", new HelpCommand());
+        this.commandMap.set("permission", new PermissionCommand());
     }
 
     runCommand(name: string, bot: Client, message: Message, args: Array<string>)

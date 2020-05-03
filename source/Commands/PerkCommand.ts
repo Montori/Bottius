@@ -82,7 +82,7 @@ class PerkCommandOptions extends AbstractCommandOptions
         super();
         this.commandName = "perk";
         this.description = "adds, removes or lists leveling rewards";
-        this.usage = `${AbstractCommandOptions.prefix}perk add {lvl} {role}\n${AbstractCommandOptions.prefix}perk remove {role}\n${AbstractCommandOptions.prefix}perk list`;
+        this.usage = `${AbstractCommandOptions.prefix}perk add {lvl} {@role}\n${AbstractCommandOptions.prefix}perk remove {role}\n${AbstractCommandOptions.prefix}perk list`;
         this.reqPermission = PermissionLevel.admin;
     }
 }

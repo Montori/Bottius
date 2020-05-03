@@ -4,5 +4,6 @@ export enum PermissionLevel
     trusted = 1,
     moderator = 2,
     admin = 3,
-    master = 4
+    owner = 4,
+    master = 5
 }
