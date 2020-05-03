@@ -10,8 +10,7 @@ export class PingCommand extends AbstractCommand
 
     public async runInternal(bot: Client, message: Message, messageArray: Array<string>)
     {
-        let userService: UserService = UserService.getInstance();
-        message.channel.send(`${(await userService.getUser(message.member)).permissionLevel} added: ${(await userService.getUser(message.member)).addedDate}`);
+        message.channel.send("Pong!");
     }
 }
 
