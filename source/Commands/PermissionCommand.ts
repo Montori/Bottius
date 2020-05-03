@@ -44,7 +44,7 @@ class PermissionCommandOptions extends AbstractCommandOptions
         super();
         this.commandName = "permission";
         this.description = "changes the permission level of a user";
-        this.usage = `${AbstractCommandOptions.prefix}permission change {@user} {permissionLevel}\n\nPermission levels: \nmember\ntrusted\nmoderator\nadmin`;
+        this.usage = `${AbstractCommandOptions.prefix}permission change {@user} {permissionLevel}`;
         this.reqPermission = PermissionLevel.admin;
     }
 }
