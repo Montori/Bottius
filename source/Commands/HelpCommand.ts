@@ -18,7 +18,7 @@ export class HelpCommand extends AbstractCommand
             return message.channel.send(helpEmbed);
         }else
         {
-            let command: AbstractCommand = commandMap.get(messageArray[0]);
+            let command: AbstractCommand = commandMap.get(messageArray[0].toLowerCase());
             if(!command) return message.channel.send(super.getFailedEmbed().setDescription(`${messageArray[0]} is not a command`));
             else return message.channel.send(command.sendHelp(message));
         }
