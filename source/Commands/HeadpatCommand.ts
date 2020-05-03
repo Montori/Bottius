@@ -26,9 +26,9 @@ export class HeadpatCommand extends AbstractCommand
             message.channel.send(`${message.member} gave a headpat to ${message.mentions.members.first()}`);
             this.cooldownService.addCooldown(message.member, this.commandOptions.commandName + "<functional", 1800);
         }
-        if(!messageArray[0])
+        else
         {
-            message.channel.send(`${message.member} was headpatted ${(await this.userService.getUser(message.member)).headPats} times!`)
+            message.channel.send("Specify a user to headpat")
         }
 
     }
@@ -46,8 +46,8 @@ class HeadpatCommandOptions extends AbstractCommandOptions
     {
         super();
         this.commandName = "headpat";
-        this.description = "Headpats a user or tells you how many time you have been headpatted";
-        this.usage = `${AbstractCommandOptions.prefix}headpat\n${AbstractCommandOptions.prefix}headpat {@User}`;
+        this.description = "Headpats a user";
+        this.usage = `${AbstractCommandOptions.prefix}headpat {@User}`;
     }
 
 }
