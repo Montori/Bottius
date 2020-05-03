@@ -29,6 +29,6 @@ class ActivityCommandOptions extends AbstractCommandOptions
         this.commandName = "setActivity";
         this.description = "sets the activity of the bot";
         this.usage = `${AbstractCommandOptions.prefix}setActivity {text}`;
-        this.reqPermission = PermissionLevel.admin;
+        this.reqPermission = PermissionLevel.master;
     }
 }

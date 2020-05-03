@@ -33,6 +33,7 @@ export abstract class AbstractCommand
             .setColor("#ff8000")
             .setAuthor(`Usage of Command: ${this.commandOptions.commandName}`)
             .setDescription(this.commandOptions.description)
+            .addField("Permission level", `${PermissionLevel[this.commandOptions.reqPermission]}`)
             .addField("Usage", this.commandOptions.usage);
 
             message.channel.send(helpEmbed);
