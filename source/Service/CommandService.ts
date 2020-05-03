@@ -7,6 +7,7 @@ import { StatsCommand } from "../Commands/StatsCommand";
 import { PerkCommand } from "../Commands/PerkCommand";
 import { LeaderboardCommand } from "../Commands/LeaderboardCommand";
 import { ActivityCommand } from "../Commands/ActivityCommand";
+import { HelpCommand } from "../Commands/HelpCommand";
 
 export class CommandService
 {
@@ -37,6 +38,7 @@ export class CommandService
         this.commandMap.set("perk", new PerkCommand());
         this.commandMap.set("leaderboard", new LeaderboardCommand());
         this.commandMap.set("setactivity", new ActivityCommand());
+        this.commandMap.set("help", new HelpCommand());
     }
 
     runCommand(name: string, bot: Client, message: Message, args: Array<string>)
@@ -47,5 +49,10 @@ export class CommandService
         {
             this.commandMap.get(name).run(bot, message, args);
         }
+    }
+
+    public getCommandMap(): Map<string, AbstractCommand>
+    {
+        return this.commandMap;
     }
 }
