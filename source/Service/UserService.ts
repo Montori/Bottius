@@ -21,7 +21,7 @@ export class UserService
         if(!foundUser)
         {
             foundUser = new User(guildMember.id);
-            foundUser.save();
+            (await foundUser.save()).reload();
         }
 
         return foundUser;

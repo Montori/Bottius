@@ -4,6 +4,7 @@ import { Client, Message, MessageEmbed, GuildMember } from "discord.js";
 import { UserService } from "../Service/UserService";
 import { User } from "../Material/User";
 import { PermissionLevel } from "../Material/PermissionLevel";
+import { MoreThan, MoreThanOrEqual, LessThan } from "typeorm";
 
 export class StatsCommand extends AbstractCommand
 {
@@ -25,16 +26,18 @@ export class StatsCommand extends AbstractCommand
     private async buildStatsEmbed(member: GuildMember): Promise<MessageEmbed>
     {
         let user: User = await this.userService.getUser(member);
+        let rank: number = await User.count({where: {xp: MoreThanOrEqual(user.xp), id: LessThan(user.id)}})+1;
 
         let embed: MessageEmbed = new MessageEmbed()
-                                    .setAuthor(`Stats of ${member.user.tag}`)
+                                    .setAuthor(`Stats of ${member.user.tag} ${rank == 1 ? "🥇" : rank == 2 ? "🥈" : rank == 3 ? "🥉" : ""}`)
                                     .addField("Level", `${user.getLevel()}`)
                                     .addField("XP", `${user.xp}`, true)
                                     .addField("XP to next level", `~${user.getXPToNextLevel()}`, true)
+                                    .addField("Leaderboard rank", `${rank}`)
                                     .addField("Headpats", `${user.headPats}`)
                                     .addField("Total messages", `${user.totalMessages}`)
                                     .setTimestamp(new Date())
-                                    .setFooter(`Permission Level: ${PermissionLevel[user.permissionLevel]}`)
+                                    .setFooter(`Permissions: ${PermissionLevel[user.permissionLevel]}`)
                                     .setColor(member.roles.hoist == null ? "000000" : member.roles.hoist.color);
         return embed;
     }
