@@ -42,6 +42,6 @@ export class PerkService
 
     public async getAllPerks() : Promise<Array<Perk>>
     {
-        return Perk.find();
+        return await Perk.find({order: {reqLevel:"DESC"}});
     }
 }
