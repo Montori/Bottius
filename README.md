@@ -7,7 +7,7 @@ Follow these easy steps to get your Bottius instance working <sub><sup>obviously
 
 1. clone Bottius Repo
 2. do `npm ci` in the Bottius root directory
-3. add a botconfig.json which should look like this:
+3. add a botconfig.json in `source/` directory which should look like this:
     ````json
     {
       "token": "yourTotallySafeBotToken",
