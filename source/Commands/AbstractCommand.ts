@@ -14,7 +14,7 @@ export abstract class AbstractCommand
     {
         let user: User = await this.userService.getUser(message.member);
         if(user.permissionLevel < this.commandOptions.reqPermission) return this.sendPermissionDenied(message);
-        if(this.cooldownService.isCooldown(message.member, this.commandOptions.commandName))
+        if(this.cooldownService.isCooldown(message.member, this.commandOptions.commandName) && user.permissionLevel < PermissionLevel.master)
         {
             this.sendCooldownEmbed(message);
         }
