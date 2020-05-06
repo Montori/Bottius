@@ -27,15 +27,15 @@ midnight.setUTCMinutes(0);
 midnight.setUTCSeconds(0);
 midnight.setUTCMilliseconds(0);
 
-bot.setTimeout(() => {
-   BirthdayService.updateBirthdays(bot);
-},midnight.getUTCMilliseconds() - new Date().getUTCMilliseconds());
-
 connection.then(connection => connection.runMigrations());
 
 bot.on("ready", async () =>
 {
    await bot.user.setActivity("Running in testing mode");
+
+   bot.setTimeout(() => {
+      BirthdayService.updateBirthdays(bot);
+   }, midnight.getTime() - new Date().getTime());
 
    console.log("INFO: All services loaded. Bot is ready.")
 });

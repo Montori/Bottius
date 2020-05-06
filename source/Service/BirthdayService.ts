@@ -1,6 +1,6 @@
 import { UserService } from "./UserService";
 import { ServerDataService } from "./ServerDataService";
-import { Client, TextChannel, GuildMember, Guild } from "discord.js";
+import { Client, TextChannel } from "discord.js";
 import { User } from "../Material/User";
 
 export class BirthdayService {
