@@ -5,6 +5,7 @@ import { MessageService } from './Service/MessageService';
 import { UserService } from './Service/UserService';
 import { createConnection } from "typeorm";
 import { PerkService } from './Service/PerkService';
+import { BirthdayService } from './Service/BirthdayService';
 
 const bot: Discord.Client = new Discord.Client({disableMentions: "everyone"});
 
@@ -15,8 +16,20 @@ MessageService.init(bot);
 const messageService: MessageService = MessageService.getInstance();
 const dbService: UserService = UserService.getInstance();
 const perkService: PerkService = PerkService.getInstance();
+const birthdayService: BirthdayService = BirthdayService.getInstance();
 
 const connection = createConnection();
+
+let d = new Date();
+d.setDate(d.getDate() + 1);
+d.setUTCHours(0);
+d.setUTCMinutes(0);
+d.setUTCSeconds(0);
+d.setUTCMilliseconds(0);
+
+bot.setTimeout(() => {
+
+},d.getUTCMilliseconds() - new Date().getUTCMilliseconds());
 
 connection.then(connection => connection.runMigrations());
 
