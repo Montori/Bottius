@@ -11,27 +11,30 @@ export class BirthdayService {
 	private static madeInterval: boolean = false;
 
 	public static getInstance(): BirthdayService {
-		return this.instance;
+		if (!BirthdayService.instance) {
+			BirthdayService.instance = new BirthdayService();
+		}
+
+		return BirthdayService.instance;
 	}
 
 	public static async updateBirthdays(bot: Client) {
-		let servers = await this.serverService.getAllServerData();
 		let today = new Date();
 
 		let yesterday = today;
 		yesterday.setDate(yesterday.getDate() - 1);
 
 		// Process every server
-		servers.forEach((s: ServerData, i: number) => {
+		for (const s of await this.serverService.getAllServerData()) {
 
-			let server = bot.guilds.cache.get(s.guildID);
+			let server = bot.guilds.resolve(s.guildID);
 
 			// Neither a channel nor role is set
 			if (!s.birthdayChannelID && !s.birthdayRoleID) return;
 
 			// Update every member
-			server.members.cache.forEach(async (u: GuildMember) => {
-				let user = await this.userService.getUser(u);
+			for (const u of await server.members.fetch()) {
+				let user = await this.userService.getUser(u[1]);
 
 				// The user doesn't have a birthday yet
 				if (!user.birthday) return;
@@ -43,7 +46,7 @@ export class BirthdayService {
 					// Say happy birthday
 					if (s.birthdayChannelID) {
 
-						let channel = bot.channels.cache.get(s.birthdayChannelID);
+						let channel = bot.channels.resolve(s.birthdayChannelID);
 						if (channel && channel.type == "text") {
 
 							//Channel is good
@@ -59,7 +62,7 @@ export class BirthdayService {
 
 					// Give them the birthday role
 					if (s.birthdayRoleID)
-						await server.members.cache.get(user.discordID).roles.add(s.birthdayRoleID);
+						await (await server.members.fetch(user.discordID)).roles.add(s.birthdayRoleID);
 
 					return;
 				}
@@ -70,10 +73,10 @@ export class BirthdayService {
 
 					// Take their birthday role :(
 					if (s.birthdayRoleID)
-						await server.members.cache.get(user.discordID).roles.remove(s.birthdayRoleID);
+						await (await server.members.fetch(user.discordID)).roles.remove(s.birthdayRoleID);
 				}
-			});
-		});
+			};
+		};
 
 		// Run every day
 		if (!this.madeInterval)

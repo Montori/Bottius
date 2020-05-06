@@ -20,16 +20,16 @@ const birthdayService: BirthdayService = BirthdayService.getInstance();
 
 const connection = createConnection();
 
-let d = new Date();
-d.setDate(d.getDate() + 1);
-d.setUTCHours(0);
-d.setUTCMinutes(0);
-d.setUTCSeconds(0);
-d.setUTCMilliseconds(0);
+let midnight = new Date();
+midnight.setDate(midnight.getDate() + 1);
+midnight.setUTCHours(0);
+midnight.setUTCMinutes(0);
+midnight.setUTCSeconds(0);
+midnight.setUTCMilliseconds(0);
 
 bot.setTimeout(() => {
-
-},d.getUTCMilliseconds() - new Date().getUTCMilliseconds());
+   BirthdayService.updateBirthdays(bot);
+},midnight.getUTCMilliseconds() - new Date().getUTCMilliseconds());
 
 connection.then(connection => connection.runMigrations());
 
