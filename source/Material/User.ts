@@ -32,6 +32,9 @@ export class User extends BaseEntity
     @Column({type: "integer", enum: PermissionLevel, default: PermissionLevel.member})
     public permissionLevel!: PermissionLevel;
 
+    @Column()
+    public birthday: Date;
+
     constructor(discordID: string)
     {
         super();

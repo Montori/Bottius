@@ -5,6 +5,7 @@ import { MessageService } from './Service/MessageService';
 import { UserService } from './Service/UserService';
 import { createConnection } from "typeorm";
 import { PerkService } from './Service/PerkService';
+import { BirthdayService } from './Service/BirthdayService';
 
 const bot: Discord.Client = new Discord.Client({disableMentions: "everyone"});
 
@@ -15,14 +16,26 @@ MessageService.init(bot);
 const messageService: MessageService = MessageService.getInstance();
 const dbService: UserService = UserService.getInstance();
 const perkService: PerkService = PerkService.getInstance();
+const birthdayService: BirthdayService = BirthdayService.getInstance();
 
 const connection = createConnection();
+
+let midnight = new Date();
+midnight.setDate(midnight.getDate() + 1);
+midnight.setUTCHours(0);
+midnight.setUTCMinutes(0);
+midnight.setUTCSeconds(0);
+midnight.setUTCMilliseconds(0);
 
 connection.then(connection => connection.runMigrations());
 
 bot.on("ready", async () =>
 {
    await bot.user.setActivity("Running in testing mode");
+
+   bot.setTimeout(() => {
+      BirthdayService.updateBirthdays(bot);
+   }, midnight.getTime() - new Date().getTime());
 
    console.log("INFO: All services loaded. Bot is ready.")
 });
