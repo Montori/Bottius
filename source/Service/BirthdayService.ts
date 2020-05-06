@@ -1,8 +1,7 @@
-import { MessageService } from "./MessageService";
 import { UserService } from "./UserService";
 import { ServerDataService } from "./ServerDataService";
-import { ServerData } from "../Material/ServerData";
-import { Client, GuildMember, TextChannel, Channel } from "discord.js";
+import { Client, TextChannel, GuildMember, Guild } from "discord.js";
+import { User } from "../Material/User";
 
 export class BirthdayService {
 	private static instance: BirthdayService;
@@ -24,25 +23,15 @@ export class BirthdayService {
 		let yesterday = today;
 		yesterday.setDate(yesterday.getDate() - 1);
 
-		// Process every server
-		for (const s of await this.serverService.getAllServerData()) {
+		let birthdayUsers = await User.find({ where: { birthday: { getUTCDate: today.getUTCDate(), getUTCMonth: today.getUTCMonth() } } });
+		let priorBirthdayUsers = await User.find({ where: { birthday: { getUTCDate: yesterday.getUTCDate(), getUTCMonth: yesterday.getUTCMonth() } } });
 
+		let guilds = await this.serverService.getAllServerData();
+
+		for (const s of guilds) {
 			let server = bot.guilds.resolve(s.guildID);
-
-			// Neither a channel nor role is set
-			if (!s.birthdayChannelID && !s.birthdayRoleID) return;
-
-			// Update every member
-			for (const u of await server.members.fetch()) {
-				let user = await this.userService.getUser(u[1]);
-
-				// The user doesn't have a birthday yet
-				if (!user.birthday) return;
-
-				// It's the user's birthday today
-				if (user.birthday.getUTCDate() == today.getUTCDate() &&
-					user.birthday.getUTCMonth() == today.getUTCMonth()) {
-
+			for (const user of birthdayUsers) {
+				if (server.members.resolve(user.discordID)) {
 					// Say happy birthday
 					if (s.birthdayChannelID) {
 
@@ -63,20 +52,16 @@ export class BirthdayService {
 					// Give them the birthday role
 					if (s.birthdayRoleID)
 						await (await server.members.fetch(user.discordID)).roles.add(s.birthdayRoleID);
-
-					return;
 				}
-				// It was the user's birthday yesterday
-				else if (
-					user.birthday.getUTCDate() == yesterday.getUTCDate() &&
-					user.birthday.getUTCMonth() == yesterday.getUTCMonth()) {
-
+			}
+			for (const user of priorBirthdayUsers) {
+				if (server.members.resolve(user.discordID)) {
 					// Take their birthday role :(
 					if (s.birthdayRoleID)
 						await (await server.members.fetch(user.discordID)).roles.remove(s.birthdayRoleID);
 				}
-			};
-		};
+			}
+		}
 
 		// Run every day
 		if (!this.madeInterval)
