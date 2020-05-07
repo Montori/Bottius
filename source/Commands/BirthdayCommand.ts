@@ -13,10 +13,7 @@ export class BirthdayCommand extends AbstractCommand {
 	public userService: UserService = UserService.getInstance();
 	public serverDataService: ServerDataService = ServerDataService.getInstance();
 
-	private static numberSuffix = ["th", "st", "nd", "rd", "th", "th", "th", "th", "th", "th"]; // 1st, 2nd, 3rd etc.
-
 	private static monthEnum = {
-		DECEMBER: "December",
 		JANUARY: "January",
 		FEBRUARY: "February",
 		MARCH: "March",
@@ -28,8 +25,24 @@ export class BirthdayCommand extends AbstractCommand {
 		SEPTEMBER: "September",
 		OCTOBER: "October",
 		NOVEMBER: "November",
-		DECEMBER12: "December"
+		DECEMBER: "December",
 	};
+
+	private static monthOrder = [
+		BirthdayCommand.monthEnum.DECEMBER, // December is stored as 0 in the Date type
+		BirthdayCommand.monthEnum.JANUARY,
+		BirthdayCommand.monthEnum.FEBRUARY,
+		BirthdayCommand.monthEnum.MARCH,
+		BirthdayCommand.monthEnum.APRIL,
+		BirthdayCommand.monthEnum.MAY,
+		BirthdayCommand.monthEnum.JUNE,
+		BirthdayCommand.monthEnum.JULY,
+		BirthdayCommand.monthEnum.AUGUST,
+		BirthdayCommand.monthEnum.SEPTEMBER,
+		BirthdayCommand.monthEnum.OCTOBER,
+		BirthdayCommand.monthEnum.NOVEMBER,
+		BirthdayCommand.monthEnum.DECEMBER
+	];
 
 	// Verifies that this is a valid date
 	public static validateBirthday(date: number, month: number): boolean {
@@ -312,7 +325,7 @@ export class BirthdayCommand extends AbstractCommand {
 							if (user.birthday)
 								return message.channel.send(super.getFailedEmbed().setDescription("Your birthday has not been set yet."));
 
-							return message.channel.send(super.getSuccessEmbed().setDescription(`Your birthday is on the ${user.birthday.getDate()}${BirthdayCommand.numberSuffix[user.birthday.getDate() % 10]} of ${BirthdayCommand.monthEnum[user.birthday.getMonth()]}. (PS. you can see your birthday with \`${AbstractCommandOptions.prefix}birthday\`)`));
+							return message.channel.send(super.getSuccessEmbed().setDescription(`Your birthday is on the ${user.birthday.getDate()}${HelperFunctions.getSuffix(user.birthday.getDate())} of ${BirthdayCommand.monthOrder[user.birthday.getMonth()]}. (PS. you can see your birthday with \`${AbstractCommandOptions.prefix}birthday\`)`));
 						}
 
 						let taggedUser: User = await this.userService.getUserWithID(taggedID);
@@ -321,14 +334,14 @@ export class BirthdayCommand extends AbstractCommand {
 							return message.channel.send(super.getFailedEmbed().setDescription(`<@!${taggedID}>'s birthday has not been set yet.`));
 
 						// Example: @Montori's birthday is on the 1st of January.
-						return message.channel.send(super.getSuccessEmbed().setDescription(`<@!${taggedID}>'s birthday is on the ${taggedUser.birthday.getDate()}${BirthdayCommand.numberSuffix[taggedUser.birthday.getDate() % 10]} of ${BirthdayCommand.monthEnum[taggedUser.birthday.getMonth()]}.`));
+						return message.channel.send(super.getSuccessEmbed().setDescription(`<@!${taggedID}>'s birthday is on the ${taggedUser.birthday.getDate()}${HelperFunctions.getSuffix(taggedUser.birthday.getDate())} of ${BirthdayCommand.monthOrder[taggedUser.birthday.getMonth()]}.`));
 				}
 
 			case 0:
 				if (!user.birthday)
 					return message.channel.send(super.getFailedEmbed().setDescription("Your birthday has not been set yet."));
 
-				return message.channel.send(super.getSuccessEmbed().setDescription(`Your birthday is on the ${user.birthday.getDate()}${BirthdayCommand.numberSuffix[user.birthday.getDate() % 10]} of ${BirthdayCommand.monthEnum[user.birthday.getMonth()]}.`));
+				return message.channel.send(super.getSuccessEmbed().setDescription(`Your birthday is on the ${user.birthday.getDate()}${HelperFunctions.getSuffix(user.birthday.getDate())} of ${BirthdayCommand.monthOrder[user.birthday.getMonth()]}.`));
 
 			default:
 				return super.sendHelp(message);
