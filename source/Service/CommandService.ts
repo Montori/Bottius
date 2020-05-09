@@ -9,7 +9,6 @@ import { LeaderboardCommand } from "../Commands/LeaderboardCommand";
 import { ActivityCommand } from "../Commands/ActivityCommand";
 import { HelpCommand } from "../Commands/HelpCommand";
 import { PermissionCommand } from "../Commands/PermissionCommand";
-import { BirthdayCommand } from "../Commands/BirthdayCommand";
 
 export class CommandService
 {
@@ -42,7 +41,6 @@ export class CommandService
         this.commandMap.set("setactivity", new ActivityCommand());
         this.commandMap.set("help", new HelpCommand());
         this.commandMap.set("permission", new PermissionCommand());
-        this.commandMap.set("birthday", new BirthdayCommand());
     }
 
     runCommand(name: string, bot: Client, message: Message, args: Array<string>)

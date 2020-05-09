@@ -39,9 +39,9 @@ export abstract class AbstractCommand
             message.channel.send(helpEmbed);
     }
 
-    public sendPermissionDenied(message: Message)
+    public sendPermissionDenied(message: Message, reqPermission?: PermissionLevel)
     {
-        message.channel.send(new MessageEmbed().setAuthor("Permission Denied").setDescription(`You lack the permissions to use the \`${this.commandOptions.commandName}\` command.\nYou need to be \`${PermissionLevel[this.commandOptions.reqPermission]}\` or higher`).setColor("ff0000"));
+        message.channel.send(new MessageEmbed().setAuthor("Permission Denied").setDescription(`You lack the permissions to use the \`${this.commandOptions.commandName}\` command.\nYou need to be \`${reqPermission ? PermissionLevel[reqPermission] : PermissionLevel[this.commandOptions.reqPermission]}\` or higher`).setColor("ff0000"));
     }
 
     public sendCooldownEmbed(message: Message)

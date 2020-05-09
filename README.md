@@ -32,7 +32,7 @@ Since we use [TypeORM](https://typeorm.io/#/) you can look up all the things the
 3. in Bottius root type `typeorm migration:generate -n NameOfYourMigration`
 4. tsc
 
-And voilà your migration is done! You can find it in source/Migration
+And voilà your migration is done! You can find it in `source/Migration`
 
 If something went wrong after a migration you can use `typeorm migration:revert`
 If something went really wrong follow these steps:

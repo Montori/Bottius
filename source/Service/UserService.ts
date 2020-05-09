@@ -26,14 +26,4 @@ export class UserService
 
         return foundUser;
     }
-
-    public async getUserWithID(id: string): Promise<User> {
-        let foundUser = await User.findOne({ where: { discordID: id } });
-        if (!foundUser) {
-            foundUser = new User(id);
-            foundUser.save();
-        }
-
-        return foundUser;
-    }
 }

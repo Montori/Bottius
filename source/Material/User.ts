@@ -1,5 +1,4 @@
-import {Entity, PrimaryGeneratedColumn, Column, BaseEntity, ManyToMany} from 'typeorm';
-import { Quest } from './Quest';
+import {Entity, PrimaryGeneratedColumn, Column, BaseEntity, ManyToMany, Timestamp} from 'typeorm';
 import { PermissionLevel } from './PermissionLevel';
 
 @Entity()
@@ -31,9 +30,6 @@ export class User extends BaseEntity
 
     @Column({type: "integer", enum: PermissionLevel, default: PermissionLevel.member})
     public permissionLevel!: PermissionLevel;
-
-    @Column()
-    public birthday: Date;
 
     constructor(discordID: string)
     {
