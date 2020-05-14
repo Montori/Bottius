@@ -5,11 +5,14 @@ import { UserService } from "../Service/UserService";
 import { User } from "../Material/User";
 import { PermissionLevel } from "../Material/PermissionLevel";
 import { MoreThan, MoreThanOrEqual, LessThan, Equal } from "typeorm";
+import { PartitionService } from "../Service/PartitionService";
+import { Partition } from "../Material/Partition";
 
 export class StatsCommand extends AbstractCommand
 {
     public commandOptions: StatsCommandHelp = new StatsCommandHelp();
     public userService: UserService = UserService.getInstance();
+    private partitionService: PartitionService = PartitionService.getInstance();
 
     public async runInternal(bot: Client, message: Message, messageArray: string[]) 
     {
@@ -26,7 +29,9 @@ export class StatsCommand extends AbstractCommand
     private async buildStatsEmbed(member: GuildMember): Promise<MessageEmbed>
     {
         let user: User = await this.userService.getUser(member, member.guild);
-        let rank: number = (await User.count({where: {xp: MoreThanOrEqual(user.xp)}}) - await User.count({where: {xp:Equal(user.xp), id:MoreThan(user.id)}}));
+        let partition: Partition = await this.partitionService.getPartition(member.guild);
+
+        let rank: number = (await User.count({where: {xp: MoreThanOrEqual(user.xp), partition: partition}}) - await User.count({where: {xp:Equal(user.xp), id:MoreThan(user.id), partition: partition}}));
 
         let embed: MessageEmbed = new MessageEmbed()
                                     .setAuthor(`Stats of ${member.user.tag} ${rank == 1 ? "🥇" : rank == 2 ? "🥈" : rank == 3 ? "🥉" : ""}`)
