@@ -1,13 +1,15 @@
-import {Entity, PrimaryGeneratedColumn, Column, BaseEntity, ManyToMany, Timestamp} from 'typeorm';
+import {Entity, PrimaryGeneratedColumn, Column} from 'typeorm';
 import { PermissionLevel } from './PermissionLevel';
+import { AbstractPartionable } from './AbstractPartionable';
+import { Partition } from './Partition';
 
 @Entity()
-export class User extends BaseEntity
+export class User extends AbstractPartionable
 {
     @PrimaryGeneratedColumn()
     public readonly id!: number;
 
-    @Column({default: "", unique: true})
+    @Column({default: ""})
     public readonly discordID!: string;
     
     @Column()
@@ -31,9 +33,9 @@ export class User extends BaseEntity
     @Column({type: "integer", enum: PermissionLevel, default: PermissionLevel.member})
     public permissionLevel!: PermissionLevel;
 
-    constructor(discordID: string)
+    constructor(discordID: string, partition: Partition)
     {
-        super();
+        super(partition);
 
         this.discordID = discordID;
         this.addedDate = new Date();

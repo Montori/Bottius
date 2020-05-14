@@ -23,7 +23,7 @@ export class PerkCommand extends AbstractCommand
             if(isNaN(level) || !role) return super.sendHelp(message);
             if(await this.perkService.doesPerkExist(role.id)) return message.channel.send(new MessageEmbed().setAuthor("Perk duplicate").setColor("ff0000").setDescription("There is already a perk with the given role"));
                 
-            this.perkService.addPerk(level, role.id);
+            this.perkService.addPerk(level, role.id, message.guild);
 
             let embed: MessageEmbed = new MessageEmbed()
                                         .setAuthor("Perk added")
@@ -40,7 +40,7 @@ export class PerkCommand extends AbstractCommand
             if(!role) return super.sendHelp(message);
             if(! await this.perkService.doesPerkExist(role.id)) return message.channel.send(new MessageEmbed().setAuthor("Perk not existent").setColor("ff0000").setDescription("There is no perk with this role"));
                 
-            this.perkService.removePerk(role.id);
+            this.perkService.removePerk(role.id, message.guild);
 
             let embed: MessageEmbed = super.getSuccessEmbed("Perk removed")
                                         .setDescription(`A perk has been removed`)
@@ -50,7 +50,7 @@ export class PerkCommand extends AbstractCommand
         }
         else if(messageArray[0] == "list")
         {
-            let perks: Array<Perk> = await this.perkService.getAllPerks();
+            let perks: Array<Perk> = await this.perkService.getAllPerks(message.guild);
 
             let embed: MessageEmbed = super.getSuccessEmbed("Perks of " + message.guild.name);
 

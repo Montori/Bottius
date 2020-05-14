@@ -12,7 +12,7 @@ export abstract class AbstractCommand
 
     public async run(bot: Client, message: Message, messageArray: Array<string>)
     {
-        let user: User = await this.userService.getUser(message.member);
+        let user: User = await this.userService.getUser(message.member, message.guild);
         if(user.permissionLevel < this.commandOptions.reqPermission) return this.sendPermissionDenied(message);
         if(this.cooldownService.isCooldown(message.member, this.commandOptions.commandName) && user.permissionLevel < PermissionLevel.master)
         {

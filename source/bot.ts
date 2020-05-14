@@ -34,7 +34,7 @@ bot.on("message", async message =>
 
 bot.on("roleDelete", async role => 
 {
-   perkService.removePerk(role.id);
+   perkService.removePerk(role.id, role.guild);
 });
 
 bot.login(botConfig.token);

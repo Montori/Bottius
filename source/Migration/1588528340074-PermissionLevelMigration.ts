@@ -9,10 +9,6 @@ export class PermissionLevelMigration1588528340074 implements MigrationInterface
         await queryRunner.query(`INSERT INTO "temporary_user"("id", "discordID", "addedDate", "lastMessage", "totalMessages", "totalPings", "headPats", "xp") SELECT "id", "discordID", "addedDate", "lastMessage", "totalMessages", "totalPings", "headPats", "xp" FROM "user"`, undefined);
         await queryRunner.query(`DROP TABLE "user"`, undefined);
         await queryRunner.query(`ALTER TABLE "temporary_user" RENAME TO "user"`, undefined);
-        for(const master of botConfig.masters)
-        {
-            await queryRunner.query(`INSERT INTO "user" (discordID, addedDate, lastMessage, totalMessages, totalPings, headPats, xp, permissionLevel) VALUES ('${master}', '${new Date()}', '${new Date()}', 0,0,0,0,5) ON CONFLICT (discordID) DO UPDATE SET permissionLevel=5`, undefined);
-        }
     }
 
     public async down(queryRunner: QueryRunner): Promise<void> {

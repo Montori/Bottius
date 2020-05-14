@@ -17,8 +17,8 @@ export class PermissionCommand extends AbstractCommand
         if(isNaN(permissionLevel)) return message.channel.send(super.getFailedEmbed().setDescription("Please specify a valid permission:\n\nmember\ntrusted\nmoderator\nadmin\nowner"));
         if(permissionLevel == PermissionLevel["master"]) return message.channel.send(super.getFailedEmbed("Insufficient Permissions").setDescription(`You are on this council ${message.member} but we do not grant ${recMember} the rank of a master`));
 
-        let executingUser: User = await this.userService.getUser(message.member);
-        let receivingUser: User = await this.userService.getUser(recMember);
+        let executingUser: User = await this.userService.getUser(message.member, message.guild);
+        let receivingUser: User = await this.userService.getUser(recMember, message.guild);
 
         if(permissionLevel >= executingUser.permissionLevel) return message.channel.send(super.getFailedEmbed("Insufficient Permissions").setDescription(`You need to be at least ${PermissionLevel[permissionLevel+1]} to assign ${PermissionLevel[permissionLevel]}`));
         if(receivingUser.permissionLevel == PermissionLevel.master) return message.channel.send(super.getFailedEmbed("Insufficient Permissions").setDescription("You cannot change the permissions of the highest beings."));

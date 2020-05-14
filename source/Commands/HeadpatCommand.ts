@@ -17,7 +17,7 @@ export class HeadpatCommand extends AbstractCommand
         {
             if(this.cooldownService.isCooldown(message.member, this.commandOptions.commandName + "<functional")) return message.channel.send("Slow down mate, your headpat energy needs to charge up again");
             if(targetUser == message.member) return message.channel.send("You can't headpat yourself, you lonely bag of potatoes...");
-            let userToHeadpat: User = await this.userService.getUser(message.mentions.members.first());
+            let userToHeadpat: User = await this.userService.getUser(message.mentions.members.first(), message.guild);
     
             userToHeadpat.headPats += 1;
             userToHeadpat.save();

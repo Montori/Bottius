@@ -25,7 +25,7 @@ export class StatsCommand extends AbstractCommand
 
     private async buildStatsEmbed(member: GuildMember): Promise<MessageEmbed>
     {
-        let user: User = await this.userService.getUser(member);
+        let user: User = await this.userService.getUser(member, member.guild);
         let rank: number = (await User.count({where: {xp: MoreThanOrEqual(user.xp)}}) - await User.count({where: {xp:Equal(user.xp), id:MoreThan(user.id)}}));
 
         let embed: MessageEmbed = new MessageEmbed()

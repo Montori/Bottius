@@ -2,13 +2,15 @@ import { AbstractCommand } from "./AbstractCommand";
 import { AbstractCommandOptions } from "../Material/AbstractCommandOptions";
 import { Client, Message, GuildMember, MessageEmbed } from "discord.js";
 import { User } from "../Material/User";
+import { UserService } from "../Service/UserService";
 export class LeaderboardCommand extends AbstractCommand
 {
     public commandOptions: AbstractCommandOptions = new LeaderboardCommandOptions();
 
     public async runInternal(bot: Client, message: Message, messageArray: string[]) 
     {
-        let topUsers: Array<User> = await User.find({order : {xp: "DESC"}, take: 10});
+        let userService: UserService = UserService.getInstance();
+        let topUsers: Array<User> = await userService.getLeaderbaord(message.guild);
 
         let leaderboardEmbed: MessageEmbed = super.getSuccessEmbed(`Leaderboard of ${message.guild.name}`)
                                                     .setDescription("Here are the most honorable members of this server");

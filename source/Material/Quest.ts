@@ -1,8 +1,10 @@
 import {Entity, PrimaryGeneratedColumn, Column, BaseEntity, ManyToMany,ManyToOne, JoinTable} from 'typeorm';
 import { User } from './User';
+import { AbstractPartionable } from './AbstractPartionable';
+import { Partition } from './Partition';
 
 @Entity()
-export class Quest extends BaseEntity
+export class Quest extends AbstractPartionable
 {
     @PrimaryGeneratedColumn()
     public readonly id!: number;
@@ -20,8 +22,8 @@ export class Quest extends BaseEntity
     @Column()
     public description!: string;
 
-    constructor(assignor: User, assignees: Array<User>, description: string){
-        super();
+    constructor(assignor: User, assignees: Array<User>, description: string, partition: Partition){
+        super(partition);
 
         this.createdAt = new Date();
         this.assignor = assignor;

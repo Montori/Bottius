@@ -48,7 +48,7 @@ export class MessageService
 
         this.reactToUWU(message);
         
-        let user: User = await this.userService.getUser(message.member);
+        let user: User = await this.userService.getUser(message.member, message.guild);
 
         user.totalMessages ++;
         
@@ -75,7 +75,7 @@ export class MessageService
         {
                 user.xp += 10;
 
-                let perks: Array<Perk> = await this.perkService.getAllPerks();
+                let perks: Array<Perk> = await this.perkService.getAllPerks(message.guild);
 
                 perks = perks.filter(perk => perk.reqLevel <= user.getLevel())
 

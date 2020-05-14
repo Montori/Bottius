@@ -1,8 +1,12 @@
 import { Perk } from "../Material/Perk";
+import { PartitionService } from "./PartitionService";
+import { Guild } from "discord.js";
+import { Partition } from "../Material/Partition";
 
 export class PerkService
 {
     private static instance: PerkService;
+    private partitionService: PartitionService = PartitionService.getInstance();
 
     public static getInstance(): PerkService
     {
@@ -23,25 +27,29 @@ export class PerkService
         return result;
     }
 
-    public addPerk(lvl: number, roleID: string)
+    public async addPerk(lvl: number, roleID: string, guild: Guild)
     {
-        let perk: Perk = new Perk(lvl, roleID);
+        let partition: Partition = await this.partitionService.getPartition(guild);
+        let perk: Perk = new Perk(lvl, roleID, partition);
         perk.save();
     }
 
-    public async getPerk(roleID: string) : Promise<Perk>
+    public async getPerk(roleID: string, guild: Guild) : Promise<Perk>
     {
-        return Perk.findOne({where: {role: roleID}});
+        let partition: Partition = await this.partitionService.getPartition(guild);
+        return Perk.findOne({where: {role: roleID, partition: partition}});
     }
 
-    public async removePerk(roleID: string)
+    public async removePerk(roleID: string, guild: Guild)
     {
-        let perk: Perk = await Perk.findOne({where: {role: roleID}});
+        let partition: Partition = await this.partitionService.getPartition(guild);
+        let perk: Perk = await Perk.findOne({where: {role: roleID, partition: partition}});
         perk.remove();
     }
 
-    public async getAllPerks() : Promise<Array<Perk>>
+    public async getAllPerks(guild: Guild) : Promise<Array<Perk>>
     {
-        return await Perk.find({order: {reqLevel:"DESC"}});
+        let partition: Partition = await this.partitionService.getPartition(guild);
+        return await Perk.find({order: {reqLevel:"DESC"}, where: {partition: partition}});
     }
 }
