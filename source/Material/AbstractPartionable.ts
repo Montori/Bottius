@@ -3,7 +3,7 @@ import { Partition } from "./Partition";
 
 export abstract class AbstractPartionable extends BaseEntity
 {
-    @ManyToOne(type => Partition)
+    @ManyToOne(type => Partition, {onDelete: "CASCADE"})
     public readonly partition!: Partition;
 
     constructor(partition: Partition)

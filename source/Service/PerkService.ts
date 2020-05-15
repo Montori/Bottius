@@ -44,7 +44,7 @@ export class PerkService
     {
         let partition: Partition = await this.partitionService.getPartition(guild);
         let perk: Perk = await Perk.findOne({where: {role: roleID, partition: partition}});
-        perk.remove();
+        if(perk) perk.remove();
     }
 
     public async getAllPerks(guild: Guild) : Promise<Array<Perk>>
