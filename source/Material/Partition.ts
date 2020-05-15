@@ -9,6 +9,9 @@ export class Partition extends BaseEntity
     @Column()
     public readonly guildID: string;
 
+    @Column({nullable: true})
+    public suggestChannel: string;
+
     constructor(guildID: string)
     {
         super();
