@@ -9,6 +9,7 @@ import { LeaderboardCommand } from "../Commands/LeaderboardCommand";
 import { ActivityCommand } from "../Commands/ActivityCommand";
 import { HelpCommand } from "../Commands/HelpCommand";
 import { PermissionCommand } from "../Commands/PermissionCommand";
+import { SuggestCommand } from "../Commands/SuggestCommand";
 
 export class CommandService
 {
@@ -41,6 +42,7 @@ export class CommandService
         this.commandMap.set("setactivity", new ActivityCommand());
         this.commandMap.set("help", new HelpCommand());
         this.commandMap.set("permission", new PermissionCommand());
+        this.commandMap.set("suggest", new SuggestCommand());
     }
 
     runCommand(name: string, bot: Client, message: Message, args: Array<string>)
