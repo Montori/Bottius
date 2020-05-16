@@ -17,13 +17,13 @@ export class CooldownService
     }
     public addCooldown(member: GuildMember, command: String, seconds: number)
     {
-        this.cooldownList.add(`${member.id}#${command}`);
+        this.cooldownList.add(`${member.guild.id}:${member.id}#${command}`);
 
-        setTimeout(() => this.cooldownList.delete(`${member.id}#${command}`), seconds*1000);
+        setTimeout(() => this.cooldownList.delete(`${member.guild.id}:${member.id}#${command}`), seconds*1000);
     }
 
     public isCooldown(member: GuildMember, command: String) : boolean
     {
-        return this.cooldownList.has(`${member.id}#${command}`);
+        return this.cooldownList.has(`${member.guild.id}:${member.id}#${command}`);
     }
 }
