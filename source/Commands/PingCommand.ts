@@ -14,12 +14,8 @@ export class PingCommand extends AbstractCommand
     }
 }
 
-class PingCommandOptions extends AbstractCommandOptions{
-    public commandName: string;
-    public description: string;
-    public usage: string;
-    public cooldown: number;
-
+class PingCommandOptions extends AbstractCommandOptions
+{
     constructor()
     {
         super();

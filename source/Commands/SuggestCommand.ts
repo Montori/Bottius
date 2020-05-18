@@ -14,6 +14,12 @@ export class SuggestCommand extends AbstractCommand
     public async runInternal(bot: Client, message: Message, messageArray: Array<string>)
     {  
         let partition: Partition = await this.partitionService.getPartition(message.guild);
+
+        if(!messageArray[0])
+        {
+            message.channel.send(super.getFailedEmbed().setDescription("You cannot make a suggestion without any content")).then(message => setTimeout(() => message.delete(), 5000));
+            return message.delete();
+        } 
         
         if((await this.userService.getUser(message.member, message.guild)).permissionLevel >= PermissionLevel.admin && messageArray[0] == "channel")
         {
@@ -70,11 +76,6 @@ export class SuggestCommand extends AbstractCommand
 }
 
 class SuggestCommandOptions extends AbstractCommandOptions{
-    public commandName: string;
-    public description: string;
-    public usage: string;
-    public cooldown: number;
-
     constructor()
     {
         super();

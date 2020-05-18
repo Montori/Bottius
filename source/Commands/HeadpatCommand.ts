@@ -36,11 +36,6 @@ export class HeadpatCommand extends AbstractCommand
 
 class HeadpatCommandOptions extends AbstractCommandOptions
 {
-    public commandName: string;
-    public description: string;
-    public usage: string;
-    public cooldown: number;
-
     constructor()
     {
         super();

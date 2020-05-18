@@ -72,11 +72,6 @@ export class PerkCommand extends AbstractCommand
 
 class PerkCommandOptions extends AbstractCommandOptions
 {
-    public commandName: string;
-    public description: string;
-    public usage: string;
-    public cooldown: number;
-
     constructor()
     {
         super();

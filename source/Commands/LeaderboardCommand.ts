@@ -23,10 +23,6 @@ export class LeaderboardCommand extends AbstractCommand
 
 class LeaderboardCommandOptions extends AbstractCommandOptions
 {
-    public commandName: string;
-    public description: string;
-    public usage: string;
-    
     constructor()
     {
         super();

@@ -4,9 +4,9 @@ import { PermissionLevel } from './PermissionLevel';
 export abstract class AbstractCommandOptions
 {
     public color: string = "#ff8000";
-    public abstract commandName: string;
-    public abstract description: string;
-    public abstract usage: string;
+    public commandName: string = "A command";
+    public description: string = "Haha Developer stupid, forgot to add a description";
+    public usage: string = "Dunno man ¯\_(ツ)_/¯";
     public cooldown: number = 5;
     public reqPermission: PermissionLevel = PermissionLevel.member;
     public static prefix: string = botConfig.prefix;

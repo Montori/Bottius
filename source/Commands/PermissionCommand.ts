@@ -35,10 +35,6 @@ export class PermissionCommand extends AbstractCommand
 
 class PermissionCommandOptions extends AbstractCommandOptions
 {
-    public commandName: string;
-    public description: string;
-    public usage: string;
-    
     constructor()
     {
         super();

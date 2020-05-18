@@ -29,10 +29,6 @@ export class HelpCommand extends AbstractCommand
 
 class HelpCommandOptions extends AbstractCommandOptions
 {
-    public commandName: string;
-    public description: string;
-    public usage: string;
-    
     constructor()
     {
         super();

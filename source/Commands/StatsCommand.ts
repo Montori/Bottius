@@ -51,11 +51,6 @@ export class StatsCommand extends AbstractCommand
 
 class StatsCommandHelp extends AbstractCommandOptions
 {
-    public commandName: string;
-    public description: string;
-    public usage: string;
-    public cooldown: number;
-    
     constructor(){
         super();
         this.commandName = "stats";

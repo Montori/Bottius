@@ -87,10 +87,6 @@ export class QuestCommand extends AbstractCommand
 }
 class QuestCommandOptions extends AbstractCommandOptions
 {
-    public commandName: string;
-    public description: string;
-    public usage: string;
-    
     constructor()
     {
         super();

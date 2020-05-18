@@ -19,10 +19,6 @@ export class ActivityCommand extends AbstractCommand
 
 class ActivityCommandOptions extends AbstractCommandOptions
 {
-    public commandName: string;
-    public description: string;
-    public usage: string;
-    
     constructor()
     {
         super();
