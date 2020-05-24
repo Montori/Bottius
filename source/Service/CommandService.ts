@@ -10,6 +10,7 @@ import { ActivityCommand } from "../Commands/ActivityCommand";
 import { HelpCommand } from "../Commands/HelpCommand";
 import { PermissionCommand } from "../Commands/PermissionCommand";
 import { SuggestCommand } from "../Commands/SuggestCommand";
+import { HugCommand } from "../Commands/HugCommand";
 
 export class CommandService
 {
@@ -43,6 +44,7 @@ export class CommandService
         this.commandMap.set("help", new HelpCommand());
         this.commandMap.set("permission", new PermissionCommand());
         this.commandMap.set("suggest", new SuggestCommand());
+        this.commandMap.set("hug", new HugCommand());
     }
 
     runCommand(name: string, bot: Client, message: Message, args: Array<string>)
