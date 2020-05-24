@@ -1,7 +1,7 @@
-import {AbstractCommand} from "./AbstractCommand";
-import {Client, Message} from 'discord.js';
+import { AbstractCommand } from "./AbstractCommand";
+import {Client, Message, GuildMember} from 'discord.js';
+import * as Discord from 'discord.js';
 import { AbstractCommandOptions } from "../Material/AbstractCommandOptions";
-import { UserService } from "../Service/UserService";
 
 export class HugCommand extends AbstractCommand
 {
@@ -9,18 +9,21 @@ export class HugCommand extends AbstractCommand
 
     public async runInternal(bot: Client, message: Message, messageArray: Array<string>)
     {
-        const taggedUser = message.mentions.users.first();
-        if(this.cooldownService.isCooldown(message.member, this.commandOptions.commandName + "<functional")) return message.channel.send("Woah there, you can't just give out hugs like thst like your some sort of charity. You need your arms to gather its strength back.");
-        if(!taggedUser) {
-            message.channel.send('Please specify a user to hug');
+        let taggedUser = message.mentions.users.first();
+        
+        if(taggedUser) {
+            if(this.cooldownService.isCooldown(message.member, this.commandOptions.commandName + "<functional")) return message.channel.send("Woah there, you can't just give out hugs like thst like your some sort of charity. You need your arms to gather its strength back.");
+            if(message.author == taggedUser) {
+                    message.channel.send('You hugged yourself, it doesn\'t feel the same as someone else hugging you ;-;');
+                }
+                else {
+                    message.channel.send(`<@${message.author.id}> gave a hug to <@${taggedUser.id}>`);
+                }
+            this.cooldownService.addCooldown(message.member, this.commandOptions.commandName + "<functional", 1200);
         }
-        else if(message.author == taggedUser) {
-                message.channel.send('You hugged yourself, it doesn\'t feel the same as someone else hugging you ;-;');
-            }
-            else {
-                message.channel.send(`<@${message.author.id}> gave a hug to <@${taggedUser.id}>`);
-            }
-        this.cooldownService.addCooldown(message.member, this.commandOptions.commandName + "<functional", 1200);
+        else {
+            message.channel.send("Specify a user to headpat");
+        }
     }
 }
 
