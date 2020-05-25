@@ -12,7 +12,7 @@ export class HugCommand extends AbstractCommand
         let taggedUser = message.mentions.users.first();
         
         if(taggedUser) {
-            if(this.cooldownService.isCooldown(message.member, this.commandOptions.commandName + "<functional")) return message.channel.send("Woah there, you can't just give out hugs like thst like your some sort of charity. You need your arms to gather its strength back.");
+            if(this.cooldownService.isCooldown(message.member, this.commandOptions.commandName + "<functional")) return message.channel.send("Woah there, you can't just give out hugs like that, as if you're some sort of charity. Wait a bit until you have enough energy to hug someone");
             if(message.author == taggedUser) {
                     message.channel.send('You hugged yourself, it doesn\'t feel the same as someone else hugging you ;-;');
                 }
@@ -22,7 +22,7 @@ export class HugCommand extends AbstractCommand
             this.cooldownService.addCooldown(message.member, this.commandOptions.commandName + "<functional", 1200);
         }
         else {
-            message.channel.send("Specify a user to headpat");
+            message.channel.send("Specify a user to hug");
         }
     }
 }
