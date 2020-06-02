@@ -11,6 +11,7 @@ import { HelpCommand } from "../Commands/HelpCommand";
 import { PermissionCommand } from "../Commands/PermissionCommand";
 import { SuggestCommand } from "../Commands/SuggestCommand";
 import { LyricCommand } from "../Commands/LyricCommand";
+import { HugCommand } from "../Commands/HugCommand";
 
 export class CommandService
 {
@@ -45,6 +46,7 @@ export class CommandService
         this.commandMap.set("permission", new PermissionCommand());
         this.commandMap.set("suggest", new SuggestCommand());
         this.commandMap.set("lyrics", new LyricCommand());
+        this.commandMap.set("hug", new HugCommand());
     }
 
     runCommand(name: string, bot: Client, message: Message, args: Array<string>)
