@@ -1,6 +1,5 @@
 import { AbstractCommand } from "./AbstractCommand";
-import {Client, Message, GuildMember} from 'discord.js';
-import * as Discord from 'discord.js';
+import { Client, Message } from 'discord.js';
 import { AbstractCommandOptions } from "../Material/AbstractCommandOptions";
 
 export class HugCommand extends AbstractCommand
@@ -9,35 +8,37 @@ export class HugCommand extends AbstractCommand
 
     public async runInternal(bot: Client, message: Message, messageArray: Array<string>)
     {
-        let taggedUser = message.mentions.users.first();
+        let taggedMember = message.mentions.members.first();
         
-        if(taggedUser) {
-            if(this.cooldownService.isCooldown(message.member, this.commandOptions.commandName + "<functional")) return message.channel.send("Woah there, you can't just give out hugs like that, as if you're some sort of charity. Wait a bit until you have enough energy to hug someone");
-            if(message.author == taggedUser) {
-                    message.channel.send('You hugged yourself, it doesn\'t feel the same as someone else hugging you ;-;');
-                }
-                else {
-                    message.channel.send(`<@${message.author.id}> gave a hug to <@${taggedUser.id}>`);
-                }
+        if(taggedMember) 
+        {
+            if(this.cooldownService.isCooldown(message.member, this.commandOptions.commandName + "<functional")) return message.channel.send("Woah there, you can't give out hugs like that, as if you're some sort of charity.");
+            
+            if(message.member == taggedMember) 
+            {
+                message.channel.send('You hugged yourself, it doesn\'t feel the same as someone else hugging you ;-;');
+            }
+            else 
+            {
+                message.channel.send(`${message.member} gave a hug to ${taggedMember}`);
+            }
+
             this.cooldownService.addCooldown(message.member, this.commandOptions.commandName + "<functional", 1200);
         }
-        else {
+        else 
+        {
             message.channel.send("Specify a user to hug");
         }
     }
 }
 
-class HugCommandOptions extends AbstractCommandOptions{
-    public commandName: string;
-    public description: string;
-    public usage: string;
-    public cooldown: number;
-
+class HugCommandOptions extends AbstractCommandOptions
+{
     constructor()
     {
         super();
         this.commandName = "hug";
-        this.description = "Hugs a user UwU";
+        this.description = "Hugs a user";
         this.usage = `${AbstractCommandOptions.prefix}hug {user}`;
     }
 
