@@ -15,7 +15,12 @@ export class LeaderboardCommand extends AbstractCommand
         let leaderboardEmbed: MessageEmbed = super.getSuccessEmbed(`Leaderboard of ${message.guild.name}`)
                                                     .setDescription("Here are the most honorable members of this server");
 
-        topUsers.forEach(user => leaderboardEmbed.addField(`${bot.users.resolve(user.discordID).tag}`, `Level: ${user.getLevel()} \nXP: ${user.xp}`));
+        topUsers.forEach(user => 
+            {
+                let discordUser = bot.users.resolve(user.discordID);
+                let firstField = discordUser ? discordUser.tag : `<@${user.discordID}>`;
+                leaderboardEmbed.addField(firstField, `Level: ${user.getLevel()} \nXP: ${user.xp}`)
+            });
 
         message.channel.send(leaderboardEmbed);
     }
