@@ -92,7 +92,7 @@ class setleaveCommandOptions extends AbstractCommandOptions
         super();
         this.commandName = "setLeave";
         this.description = "Configures  the leave message settings.";
-        this.usage = `${AbstractCommandOptions.prefix}!!setleave`;
+        this.usage = `${AbstractCommandOptions.prefix}setleave, \n ${AbstractCommandOptions.prefix}setleave channel set {channel], \n ${AbstractCommandOptions.prefix}setleave channel remove, \n ${AbstractCommandOptions.prefix}setleave description set {description...}, \n ${AbstractCommandOptions.prefix}setleave description reset`;
         this.reqPermission = PermissionLevel.admin;
     }
 
