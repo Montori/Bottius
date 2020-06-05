@@ -13,7 +13,7 @@ import { SuggestCommand } from "../Commands/SuggestCommand";
 import { LyricCommand } from "../Commands/LyricCommand";
 import { HugCommand } from "../Commands/HugCommand";
 import { SlapCommand } from "../Commands/SlapCommand";
-import { setleaveCommand } from "../Commands/setLeaveCommand";
+import { LeaveMessageCommand } from "../Commands/LeaveMessageCommand";
 
 export class CommandService
 {
@@ -50,7 +50,7 @@ export class CommandService
         this.commandMap.set("lyrics", new LyricCommand());
         this.commandMap.set("hug", new HugCommand());
         this.commandMap.set("slap", new SlapCommand());
-        this.commandMap.set("setleave", new setleaveCommand());
+        this.commandMap.set("leavemessage", new LeaveMessageCommand());
     }
 
     runCommand(name: string, bot: Client, message: Message, args: Array<string>)
