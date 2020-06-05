@@ -5,37 +5,44 @@ import { PermissionLevel } from "../Material/PermissionLevel";
 import { UserService } from "../Service/UserService";
 import { PartitionService } from "../Service/PartitionService";
 import { Partition } from "../Material/Partition";
-import { User } from "../Material/User";
 
-export class LeaveMessageCommand extends AbstractCommand
+export class setleaveCommand extends AbstractCommand
 {
-    public commandOptions: LeaveMessageCommandOptions = new LeaveMessageCommandOptions();
+    public commandOptions: setleaveCommandOptions = new setleaveCommandOptions();
 
     private partitionService: PartitionService = PartitionService.getInstance();
 
     public async runInternal(bot: Client, message: Message, messageArray: Array<string>)
     {
         let partition: Partition = await this.partitionService.getPartition(message.guild);
-        let user: User = await this.userService.getUser(message.member, message.guild)
 
+        if(message.member.hasPermission('ADMINISTRATOR'))
+        {
             // Activate and deactivate command
-            if(messageArray[0] == "toggle") 
+            if(messageArray[0] == "activate") 
             {
-                if(partition.leaveMessageActive)
-                {
-                    partition.leaveMessageActive = false;
-                    message.channel.send(super.getSuccessEmbed().setDescription(`Member leave messages have been turned off.`));
-                }
+                if(partition.leaveMessageActive === true) return message.channel.send(super.getFailedEmbed().setDescription(`Member leave message is already on`));
                 else
                 {
                     partition.leaveMessageActive = true;
-                    message.channel.send(super.getSuccessEmbed().setDescription(`Member leave messages have been turned on.`));
+                    message.channel.send(super.getSuccessEmbed().setDescription(`Member leave message has been turned on.`));
                 }
             }
+            else if(messageArray[0] == "deactivate") 
+            {
+                if(partition.leaveMessageActive === false) return message.channel.send(super.getFailedEmbed().setDescription(`Member leave message is already off`));
+                else
+                {
+                    partition.leaveMessageActive = false;
+                    message.channel.send(super.getSuccessEmbed().setDescription(`Member leave message has been turned off.`));
+                }
+            } //End of Activate and deactivate command
+
+
             //Add channel to send leave message
             if(messageArray[0] == "channel")
             {
-                if(messageArray[1] == "reset")
+                if(messageArray[1] == "remove")
                 {
                     if(!partition.leaveChannel) return message.channel.send(super.getFailedEmbed().setDescription(`Leave channel has not been set`));
                     else
@@ -44,15 +51,10 @@ export class LeaveMessageCommand extends AbstractCommand
                         message.channel.send(super.getSuccessEmbed().setDescription(`Leave channel has been removed`));
                     }
                 }
-                else if(messageArray[1] == "set")
+                else(messageArray[1] == "set")
                 {
-                    let channel = message.mentions.channels.first();
-                    if(channel)
-                    {
-                        partition.leaveChannel = message.mentions.channels.first().id;
-                        message.channel.send(super.getSuccessEmbed().setDescription(`leave channel has been set to ${message.mentions.channels.first()}`));
-                    }
-                    else message.channel.send(super.getFailedEmbed().setDescription("Please provide a valid channel"));
+                    partition.leaveChannel = message.mentions.channels.first().id;
+                    message.channel.send(super.getSuccessEmbed().setDescription(`leave channel has been set to ${message.mentions.channels.first()}`));
                 }
             }//End of "channel"
 
@@ -72,27 +74,25 @@ export class LeaveMessageCommand extends AbstractCommand
                 else if(messageArray[1] == "set")
                 {
                     let descMessage: string = messageArray.slice(2).join(' ');
-                    if(descMessage)
-                    {
-                        partition.leaveMessage = descMessage;
-                        message.channel.send(super.getSuccessEmbed().setDescription(`leave message has been set to: "**${descMessage}**"`));
-                    }
-                    else message.channel.send(super.getFailedEmbed().setDescription("Please provide a description"));
+                    partition.leaveMessage = descMessage;
+                    message.channel.send(super.getSuccessEmbed().setDescription(`leave message has been set to: "**${descMessage}**"`));
                 }
             } //End of "description"
 
-            partition.save();
+            return partition.save();
+            
+        } //End of "has permission ADMINISTRATOR"   
     }
 }
 
-class LeaveMessageCommandOptions extends AbstractCommandOptions
+class setleaveCommandOptions extends AbstractCommandOptions
 {
     constructor()
     {
         super();
-        this.commandName = "leavemessage";
-        this.description = "Configures the leave message settings.";
-        this.usage = `${AbstractCommandOptions.prefix}leavemessage\n${AbstractCommandOptions.prefix}leavemessage channel set {channel}, \n ${AbstractCommandOptions.prefix}leavemessage channel remove, \n ${AbstractCommandOptions.prefix}leavemessage description set {description...}, \n ${AbstractCommandOptions.prefix}leavemessage description reset`;
+        this.commandName = "setLeave";
+        this.description = "Configures  the leave message settings.";
+        this.usage = `${AbstractCommandOptions.prefix}setleave, \n ${AbstractCommandOptions.prefix}setleave channel set {channel], \n ${AbstractCommandOptions.prefix}setleave channel remove, \n ${AbstractCommandOptions.prefix}setleave description set {description...}, \n ${AbstractCommandOptions.prefix}setleave description reset`;
         this.reqPermission = PermissionLevel.admin;
     }
 

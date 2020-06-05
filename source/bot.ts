@@ -1,15 +1,20 @@
 import * as Discord from 'discord.js';
-import {TextChannel} from 'discord.js';
+import {Client, Message, MessageEmbed, TextChannel, GuildChannel} from 'discord.js';
 import { CommandService } from './Service/CommandService';
 import botConfig from "./botconfig.json";
 import { MessageService } from './Service/MessageService';
 import { UserService } from './Service/UserService';
 import { createConnection } from "typeorm";
 import { PerkService } from './Service/PerkService';
+import { User } from './Material/User';
+import { PermissionLevel } from './Material/PermissionLevel';
 import { PartitionService } from './Service/PartitionService';
 import { Partition } from './Material/Partition';
 
 const bot: Discord.Client = new Discord.Client({disableMentions: "everyone"});
+
+const client = new Discord.Client();
+
 
 //init all Services needing the bot here
 CommandService.init(bot);
@@ -54,24 +59,11 @@ bot.on("guildDelete", async guild =>
 bot.on("guildMemberRemove", async member => 
 {
    let partition: Partition = await partitionService.getPartition(member.guild);
-
-   if(partition.leaveMessageActive) 
-   {
-      if(partition.leaveChannel) 
-      {
+   if(partition.leaveMessageActive) {
+      if(partition.leaveChannel) {
          let channel: TextChannel = member.guild.channels.resolve(partition.leaveChannel) as TextChannel;
-         if(channel)
-         {
-            let leaveEmbed: Discord.MessageEmbed = new Discord.MessageEmbed()
-               .setColor("ff0000")
-               .setThumbnail(member.user.avatarURL())
-               .setAuthor("❌ Member left")
-               .setDescription(`**${member.user.tag}** ${partition.leaveMessage ? partition.leaveMessage : "has left the server."}`);
-
-            channel.send(leaveEmbed);
-         }
+         channel.send(`**${member.displayName}** ${partition.leaveMessage}`)
       }   
    }
 });
-
 bot.login(botConfig.token);
