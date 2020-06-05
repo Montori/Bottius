@@ -1,4 +1,5 @@
 import * as Discord from 'discord.js';
+import {Client, Message, MessageEmbed, TextChannel, GuildChannel} from 'discord.js';
 import { CommandService } from './Service/CommandService';
 import botConfig from "./botconfig.json";
 import { MessageService } from './Service/MessageService';
@@ -11,6 +12,9 @@ import { PartitionService } from './Service/PartitionService';
 import { Partition } from './Material/Partition';
 
 const bot: Discord.Client = new Discord.Client({disableMentions: "everyone"});
+
+const client = new Discord.Client();
+
 
 //init all Services needing the bot here
 CommandService.init(bot);
@@ -52,4 +56,14 @@ bot.on("guildDelete", async guild =>
    partitionService.deletePartition(guild);
 });
 
+bot.on("guildMemberRemove", async member => 
+{
+   let partition: Partition = await partitionService.getPartition(member.guild);
+   if(partition.leaveMessageActive) {
+      if(partition.leaveChannel) {
+         let channel: TextChannel = member.guild.channels.resolve(partition.leaveChannel) as TextChannel;
+         channel.send(`**${member.displayName}** ${partition.leaveMessage}`)
+      }   
+   }
+});
 bot.login(botConfig.token);
