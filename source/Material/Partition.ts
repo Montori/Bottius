@@ -12,15 +12,6 @@ export class Partition extends BaseEntity
     @Column({nullable: true})
     public suggestChannel: string;
 
-    @Column({nullable: true})
-    public leaveChannel: string;
-
-    @Column({nullable: true})
-    public leaveMessage: string;
-
-    @Column({nullable: true})
-    public leaveMessageActive: boolean;
-
     constructor(guildID: string)
     {
         super();
