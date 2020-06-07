@@ -13,6 +13,7 @@ import { SuggestCommand } from "../Commands/SuggestCommand";
 import { LyricCommand } from "../Commands/LyricCommand";
 import { HugCommand } from "../Commands/HugCommand";
 import { SlapCommand } from "../Commands/SlapCommand";
+import { BugCommand } from "../Commands/BugCommand";
 
 export class CommandService
 {
@@ -49,6 +50,7 @@ export class CommandService
         this.commandMap.set("lyrics", new LyricCommand());
         this.commandMap.set("hug", new HugCommand());
         this.commandMap.set("slap", new SlapCommand());
+        this.commandMap.set("bug", new BugCommand());
     }
 
     runCommand(name: string, bot: Client, message: Message, args: Array<string>)
