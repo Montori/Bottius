@@ -34,7 +34,7 @@ export class BugCommand extends AbstractCommand
     
             message.channel.send(BugEmbed);
         }//End of "report"
-        if(!PermissionLevel.master) return message.channel.send(super.getFailedEmbed().setDescription("You haven't got the right permissions to use this command."));
+        if((await this.userService.getUser(message.member, message.guild)).permissionLevel < PermissionLevel.master) return message.channel.send(super.getFailedEmbed().setDescription("You haven't got the right permissions to use this command."));
         else
         {
             if(messageArray[0] == "remove")
