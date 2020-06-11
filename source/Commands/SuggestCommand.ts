@@ -20,27 +20,6 @@ export class SuggestCommand extends AbstractCommand
             message.channel.send(super.getFailedEmbed().setDescription("You cannot make a suggestion without any content")).then(message => setTimeout(() => message.delete(), 5000));
             return message.delete();
         } 
-        
-        if((await this.userService.getUser(message.member, message.guild)).permissionLevel >= PermissionLevel.admin && messageArray[0] == "channel")
-        {
-            if(messageArray[1] == "remove")
-            {
-                if(!partition.suggestChannel) return message.channel.send(super.getFailedEmbed().setDescription(`Suggest channel has not been set`));
-
-                partition.suggestChannel = null;
-                message.channel.send(super.getSuccessEmbed().setDescription(`Suggest channel has been removed`));
-            } 
-            else
-            {
-                if(!message.mentions.channels.first()) return super.sendHelp(message);
-        
-                partition.suggestChannel = message.mentions.channels.first().id;
-        
-                message.channel.send(super.getSuccessEmbed().setDescription(`Suggest channel has been set to ${message.mentions.channels.first()}`));
-            }
-    
-            return partition.save();
-        }
         else
         {
             let suggestMessage: string = messageArray.join(' ');
