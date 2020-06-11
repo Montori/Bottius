@@ -15,9 +15,32 @@ export class ServerCommand extends AbstractCommand
         switch(messageArray[0])
         {
             case "suggestchannel": this.handleSuggestChannelCommand(bot, message, messageArray.slice(1)); break;
+            case "ignorexp": this.handleXPIgnore(bot, message, messageArray.slice(1));
         }
     }
     
+    private async handleXPIgnore(bot: Client, message: Message, messageArray: string[])
+    {
+        let partition: Partition = await this.partitionService.getPartition(message.guild);
+        let channel: TextChannel = message.mentions.channels.first();
+
+        if(messageArray[0] == "add")
+        {
+            if(!channel) return message.channel.send(super.getFailedEmbed().setDescription("Please provide a valid channel"));
+            if(partition.getXPIgnoreList().some(string => string == channel.id)) return message.channel.send(super.getFailedEmbed().setDescription("XP gain has already been disabled in this channel"));
+            partition.addToXPIgnoreList(channel.id);
+            partition.save();
+            message.channel.send(super.getSuccessEmbed().setDescription(`XP gain is now disabled in ${channel}`));
+        }
+        else if(messageArray[0] == "remove")
+        {
+            if(!channel) return message.channel.send(super.getFailedEmbed().setDescription("Please provide a valid channel"));
+            if(!partition.getXPIgnoreList().some(string => string == channel.id)) return message.channel.send(super.getFailedEmbed().setDescription("XP gain is not disabled in this channel"));
+            partition.removeFromXPIgnoreList(channel.id);
+            partition.save();
+            message.channel.send(super.getSuccessEmbed().setDescription(`XP gain is now enabled in ${channel}`));
+        }
+    }
 
     private async handleSuggestChannelCommand(bot: Client, message: Message, messageArray: string[])
     {

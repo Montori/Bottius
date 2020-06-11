@@ -1,4 +1,4 @@
-import { Entity, BaseEntity, PrimaryGeneratedColumn, Column } from "typeorm";
+import { Entity, BaseEntity, PrimaryGeneratedColumn, Column, ManyToMany, JoinTable, OneToMany } from "typeorm";
 
 @Entity()
 export class Partition extends BaseEntity
@@ -11,6 +11,27 @@ export class Partition extends BaseEntity
 
     @Column({nullable: true})
     public suggestChannel: string;
+
+    @Column("simple-array")
+    private xpIgnoreList: Array<string>;
+
+    public getXPIgnoreList(): Array<string>
+    {
+        if(this.xpIgnoreList == null) this.xpIgnoreList = new Array<string>();
+        return this.xpIgnoreList;
+    }
+
+    public addToXPIgnoreList(channelID: string)
+    {
+        if(this.xpIgnoreList == null) this.xpIgnoreList = new Array<string>();
+        this.xpIgnoreList.push(channelID);
+    }
+
+    public removeFromXPIgnoreList(channelID: string)
+    {
+        if(this.xpIgnoreList == null) this.xpIgnoreList = new Array<string>();
+        this.xpIgnoreList = this.xpIgnoreList.filter(string => string != channelID);
+    }
 
     constructor(guildID: string)
     {
