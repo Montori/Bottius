@@ -71,10 +71,11 @@ class ServerCommandOptions extends AbstractCommandOptions
 {
     constructor()
     {
+        let prefix = AbstractCommandOptions.prefix;
         super();
         this.commandName = "server";
         this.description = "command for editing the settings of the current server"
-        this.usage = ""; //TODO add usage
+        this.usage = `${prefix}${this.commandName} suggestchannel {set|remove} {#channel}\n${prefix}${this.commandName} ignorexp {add|remove} {#channel}` //TODO add usage
         this.reqPermission = PermissionLevel.admin;
     }
 }
