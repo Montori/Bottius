@@ -7,6 +7,8 @@ import { User } from "../Material/User";
 import { CooldownService } from "./CooldownService";
 import { PerkService } from "./PerkService";
 import { Perk } from "../Material/Perk";
+import { PartitionService } from "./PartitionService";
+import { Partition } from "../Material/Partition";
 
 export class MessageService
 {
@@ -15,6 +17,7 @@ export class MessageService
     private userService: UserService;
     private cooldownService: CooldownService;
     private perkService: PerkService;
+    private partitionService: PartitionService;
     private bot: Client;
     private prefix: string = botConfig.prefix;
     private readonly uwuRegex = "^(?<a>(?![wWMmNn])[A-z])[wWMmNn]\\k<a>$";
@@ -39,6 +42,7 @@ export class MessageService
         this.userService = UserService.getInstance();
         this.cooldownService = CooldownService.getInstance();
         this.perkService = PerkService.getInstance();
+        this.partitionService = PartitionService.getInstance();
     }
 
     public async handleMessage(message: Message)
@@ -71,7 +75,9 @@ export class MessageService
 
     private async gainExperience(user: User, message: Message)
     {
-        if(!this.cooldownService.isCooldown(message.member, "XP"))
+        let partition: Partition = await this.partitionService.getPartition(message.guild);
+
+        if(!this.cooldownService.isCooldown(message.member, "XP") && !partition.getXPIgnoreList().some(channel => channel == message.channel.id))
         {
                 user.xp += 10;
 
