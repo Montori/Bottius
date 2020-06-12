@@ -12,7 +12,7 @@ export class Partition extends BaseEntity
     @Column({nullable: true})
     public suggestChannel: string;
 
-    @Column("simple-array")
+    @Column("simple-array", {nullable: true})
     private xpIgnoreList: Array<string>;
 
     public getXPIgnoreList(): Array<string>

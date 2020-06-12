@@ -1,4 +1,4 @@
-import {Entity, PrimaryGeneratedColumn, Column, BaseEntity, ManyToMany,ManyToOne, JoinTable} from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, BaseEntity,ManyToOne } from 'typeorm';
 import { User } from './User';
 
 @Entity()
@@ -14,7 +14,7 @@ export class Bug extends BaseEntity
     public description!: string;
 
     @ManyToOne(type => User)
-    public readonly assignor!: User;
+    public assignor!: User;
 
     constructor(assignor: User, description: string){
         super();
