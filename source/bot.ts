@@ -23,7 +23,12 @@ const partitionService: PartitionService = PartitionService.getInstance();
 
 const connection = createConnection();
 
-connection.then(connection => connection.runMigrations());
+connection.then(async connection => 
+   {
+      await connection.query('PRAGMA foreign_keys=OFF');
+      await connection.runMigrations();
+      await connection.query('PRAGMA foreign_keys=ON');
+   });
 
 bot.on("ready", async () =>
 {
