@@ -61,7 +61,7 @@ class SpinnerCommandOptions extends AbstractCommandOptions {
         super();
         this.commandName = "spin";
         this.description = "spins a fidget spinner";
-        this.usage = `${AbstractCommandOptions.prefix}spin`;
+        this.usage = `${AbstractCommandOptions.prefix}spin [color]`;
         this.cooldown = 0;
     }
 }
