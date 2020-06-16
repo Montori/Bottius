@@ -5,21 +5,23 @@ import { MessageService } from './Service/MessageService';
 import { UserService } from './Service/UserService';
 import { createConnection } from "typeorm";
 import { PerkService } from './Service/PerkService';
-import { User } from './Material/User';
-import { PermissionLevel } from './Material/PermissionLevel';
 import { PartitionService } from './Service/PartitionService';
-import { Partition } from './Material/Partition';
+import { DelayedTaskService } from './Service/DelayedTaskService';
+import { DelayedTask } from './Material/DelayedTask';
+import { DelayedTaskType } from './Material/DelayedTaskType';
 
 const bot: Discord.Client = new Discord.Client({disableMentions: "everyone"});
 
 //init all Services needing the bot here
 CommandService.init(bot);
 MessageService.init(bot);
+DelayedTaskService.init(bot);
 
 const messageService: MessageService = MessageService.getInstance();
 const userService: UserService = UserService.getInstance();
 const perkService: PerkService = PerkService.getInstance();
 const partitionService: PartitionService = PartitionService.getInstance();
+const delayedTaskService: DelayedTaskService = DelayedTaskService.getInstance();
 
 const connection = createConnection();
 
@@ -34,6 +36,8 @@ bot.on("ready", async () =>
 {
    await bot.user.setActivity("Running in testing mode");
 
+   await delayedTaskService.handleDueDelayedTasks()
+   setInterval(() => delayedTaskService.handleDueDelayedTasks(), 600000);
    console.log("INFO: All services loaded. Bot is ready.")
 });
 

@@ -7,6 +7,7 @@ import { PermissionLevel } from "../Material/PermissionLevel";
 import { MoreThan, MoreThanOrEqual, LessThan, Equal } from "typeorm";
 import { PartitionService } from "../Service/PartitionService";
 import { Partition } from "../Material/Partition";
+import { Months, getDateSuffix } from "../Material/DateFormatting";
 
 export class StatsCommand extends AbstractCommand
 {
@@ -44,6 +45,9 @@ export class StatsCommand extends AbstractCommand
                                     .setTimestamp(new Date())
                                     .setFooter(`Permissions: ${PermissionLevel[user.permissionLevel]}`)
                                     .setColor(member.roles.hoist == null ? "000000" : member.roles.hoist.color);
+        
+        if(user.birthdate) embed.addField("Birthdate", `${Months[user.birthdate.getMonth()]} ${user.birthdate.getDate()}${getDateSuffix(user.birthdate.getDate())}`);
+        
         return embed;
     }
 

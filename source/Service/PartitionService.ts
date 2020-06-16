@@ -1,5 +1,7 @@
 import { Partition } from "../Material/Partition";
 import { Guild } from "discord.js";
+import { Not, IsNull } from "typeorm";
+import { isNull } from "util";
 
 export class PartitionService
 {
@@ -25,6 +27,11 @@ export class PartitionService
         }
         
         return foundPartition;
+    }
+
+    public async getPartitionsWithBirthday(): Promise<Array<Partition>>
+    {
+        return Partition.find({where: [{birthdayChannel: Not(IsNull())}, {birthdayRole: Not(IsNull())}]});  
     }
 
     public deletePartition(guild: Guild) 

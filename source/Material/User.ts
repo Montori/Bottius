@@ -33,6 +33,9 @@ export class User extends AbstractPartionable
     @Column({type: "integer", enum: PermissionLevel, default: PermissionLevel.member})
     public permissionLevel!: PermissionLevel;
 
+    @Column({nullable: true})
+    public birthdate: Date;
+
     constructor(discordID: string, partition: Partition)
     {
         super(partition);
