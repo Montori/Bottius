@@ -48,10 +48,6 @@ export class BugCommand extends AbstractCommand
                     removeBug.remove();
                     message.channel.send(super.getSuccessEmbed().setDescription(`Bug with ID: ${removeBug.id} has been removed.`));
                 }
-                else
-                {
-                    message.channel.send(super.getFailedEmbed().setDescription("Something went wrong :/"));
-                }
             }//End of "remove"  
             else if(messageArray[0] == "list")
             {
