@@ -1,5 +1,5 @@
 import { AbstractCommand } from "./AbstractCommand";
-import {Client, Message, GuildMember} from 'discord.js';
+import {Client, Message, GuildMember, MessageEmbed} from 'discord.js';
 import * as Discord from 'discord.js';
 import { UserService } from "../Service/UserService";
 import {User} from "../Material/User";
@@ -15,19 +15,19 @@ export class HeadpatCommand extends AbstractCommand
         
         if(targetUser)
         {
-            if(this.cooldownService.isCooldown(message.member, this.commandOptions.commandName + "<functional")) return message.channel.send("Slow down mate, your headpat energy needs to charge up again");
-            if(targetUser == message.member) return message.channel.send("You can't headpat yourself, you lonely bag of potatoes...");
+            if(this.cooldownService.isCooldown(message.member, this.commandOptions.commandName + "<functional")) return message.channel.send(new MessageEmbed().setColor("#ff0000").setDescription("Slow down mate, your headpat energy needs to charge up again"));
+            if(targetUser == message.member) return message.channel.send(new MessageEmbed().setColor("#ff0000").setDescription("You can't headpat yourself, you lonely bag of potatoes..."));
             let userToHeadpat: User = await this.userService.getUser(message.mentions.members.first(), message.guild);
     
             userToHeadpat.headPats += 1;
             userToHeadpat.save();
     
-            message.channel.send(`${message.member} gave a headpat to ${message.mentions.members.first()}`);
+            message.channel.send(new MessageEmbed().setColor("#00FF00").setDescription(`${message.member} gave a headpat to ${message.mentions.members.first()}`));
             this.cooldownService.addCooldown(message.member, this.commandOptions.commandName + "<functional", 1800);
         }
         else
         {
-            message.channel.send("Specify a user to headpat")
+            message.channel.send(new MessageEmbed().setColor("#ff0000").setDescription("Specify a user to headpat"))
         }
 
     }
@@ -40,7 +40,7 @@ class HeadpatCommandOptions extends AbstractCommandOptions
     {
         super();
         this.commandName = "headpat";
-        this.description = "Headpats a user";
+        this.description = "headpats a user";
         this.usage = `${AbstractCommandOptions.prefix}headpat {@User}`;
     }
 

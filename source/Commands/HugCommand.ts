@@ -1,5 +1,5 @@
 import { AbstractCommand } from "./AbstractCommand";
-import { Client, Message } from 'discord.js';
+import { Client, Message, MessageEmbed } from 'discord.js';
 import { AbstractCommandOptions } from "../Material/AbstractCommandOptions";
 
 export class HugCommand extends AbstractCommand
@@ -12,22 +12,22 @@ export class HugCommand extends AbstractCommand
         
         if(taggedMember) 
         {
-            if(this.cooldownService.isCooldown(message.member, this.commandOptions.commandName + "<functional")) return message.channel.send("Woah there, you can't give out hugs like that, as if you're some sort of charity.");
+            if(this.cooldownService.isCooldown(message.member, this.commandOptions.commandName + "<functional")) return message.channel.send(new MessageEmbed().setColor("#ff0000").setDescription("Woah there, you can't give out hugs like that, as if you're some sort of charity."));
             
             if(message.member == taggedMember) 
             {
-                message.channel.send('You hugged yourself, it doesn\'t feel the same as someone else hugging you ;-;');
+                message.channel.send(new MessageEmbed().setColor("#ff0000").setDescription('You hugged yourself, it doesn\'t feel the same as someone else hugging you ;-;'));
             }
             else 
             {
-                message.channel.send(`${message.member} gave a hug to ${taggedMember}`);
+                message.channel.send(new MessageEmbed().setColor("#00FF00").setDescription(`${message.member} gave a hug to ${taggedMember}`));
             }
 
-            this.cooldownService.addCooldown(message.member, this.commandOptions.commandName + "<functional", 1200);
+            this.cooldownService.addCooldown(message.member, this.commandOptions.commandName + "<functional", 600);
         }
         else 
         {
-            message.channel.send("Specify a user to hug");
+            message.channel.send(new MessageEmbed().setColor("#ff0000").setDescription("Specify a user to hug"));
         }
     }
 }
@@ -38,7 +38,7 @@ class HugCommandOptions extends AbstractCommandOptions
     {
         super();
         this.commandName = "hug";
-        this.description = "Hugs a user";
+        this.description = "hugs a user";
         this.usage = `${AbstractCommandOptions.prefix}hug {user}`;
     }
 

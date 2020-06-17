@@ -52,7 +52,7 @@ class SlapCommandOptions extends AbstractCommandOptions
     {
         super();
         this.commandName = "slap";
-        this.description = "Slaps a user and takes away 1 headpat";
+        this.description = "slaps a user and takes away 1 headpat";
         this.reqPermission = PermissionLevel.trusted;
         this.usage = `${AbstractCommandOptions.prefix}slap {@User}`;
     }

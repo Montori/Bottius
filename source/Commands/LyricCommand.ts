@@ -51,7 +51,7 @@ class LyricCommandOptions extends AbstractCommandOptions
     {
         super();
         this.commandName = "lyrics";
-        this.description = "Sends lyrics that have been added to the database."
+        this.description = "sends lyrics that have been added to the database."
         this.usage = `${AbstractCommandOptions.prefix}lyrics\n${AbstractCommandOptions.prefix}lyrics add {artist} {lyrics}\n${AbstractCommandOptions.prefix}lyrics remove {id}`
     }
 }
