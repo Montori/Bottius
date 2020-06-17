@@ -34,19 +34,19 @@ export class BugCommand extends AbstractCommand
     
             message.channel.send(BugEmbed);
         }//End of "report"
-        if((await this.userService.getUser(message.member, message.guild)).permissionLevel < PermissionLevel.master) return message.channel.send(super.getFailedEmbed().setDescription("You haven't got the right permissions to use this command."));
+        else if((await this.userService.getUser(message.member, message.guild)).permissionLevel < PermissionLevel.master) return super.sendPermissionDenied(message, PermissionLevel.master)
         else
         {
             if(messageArray[0] == "remove")
             {
-                if(isNaN(Number(messageArray[1]))) return message.channel.send("Please specify a valid ID");
-                let finishedBug: Bug = await this.bugService.getBug(Number(messageArray[1]));
+                if(isNaN(Number(messageArray[1]))) return message.channel.send(super.getFailedEmbed().setAuthor("Please specify a valid ID"));
+                let removeBug: Bug = await this.bugService.getBug(Number(messageArray[1]));
 
-                if(!finishedBug) return message.channel.send("Specified Bug could not be found");
-                if(finishedBug)
+                if(!removeBug) return message.channel.send(super.getFailedEmbed().setAuthor("Specified Bug could not be found"));
+                if(removeBug)
                 {
-                    finishedBug.remove();
-                    message.channel.send(super.getSuccessEmbed().setDescription(`Bug with ID: ${finishedBug.id} has been removed.`));
+                    removeBug.remove();
+                    message.channel.send(super.getSuccessEmbed().setDescription(`Bug with ID: ${removeBug.id} has been removed.`));
                 }
                 else
                 {
@@ -83,7 +83,6 @@ class BugCommandOptions extends AbstractCommandOptions
         this.commandName = "Bug";
         this.description = "reports a bug to the developers!";
         this.usage = `${AbstractCommandOptions.prefix}bug report {description...}, \n ${AbstractCommandOptions.prefix}bug remove {ID}, \n ${AbstractCommandOptions.prefix}bug list`;
-        this.reqPermission = PermissionLevel.admin;
     }
 
 }
