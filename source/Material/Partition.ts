@@ -21,6 +21,9 @@ export class Partition extends BaseEntity
     @Column("simple-array", {nullable: true})
     private xpIgnoreList: Array<string>;
 
+    @Column({nullable: true})
+    public customPrefix: string; // prefix in db
+
     public getXPIgnoreList(): Array<string>
     {
         if(this.xpIgnoreList == null) this.xpIgnoreList = new Array<string>();

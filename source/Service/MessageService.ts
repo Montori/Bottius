@@ -55,8 +55,11 @@ export class MessageService
         let user: User = await this.userService.getUser(message.member, message.guild);
 
         user.totalMessages ++;
-        
-        if(message.content.substring(0, this.prefix.length) != this.prefix)
+
+        let customPrefix: string = (await (await this.partitionService).getPartition(message.guild)).customPrefix; // get custom prefix from db
+        let prefixInvalid: boolean = customPrefix == null; // check if prefix exists | true = invalid
+
+        if(message.content.substring(0, prefixInvalid ? this.prefix.length : customPrefix.length) != (prefixInvalid ? this.prefix : customPrefix)) // use custom prefix or set prefix checks
         {
             this.gainExperience(user, message);
         }
@@ -64,7 +67,7 @@ export class MessageService
         {
             let messageArgs: Array<string> = message.content.split(" ");
             messageArgs = messageArgs.filter(message => /\S/.test(message));
-            let command: string = messageArgs[0].slice(this.prefix.length);
+            let command: string = messageArgs[0].slice(prefixInvalid ? this.prefix.length : customPrefix.length); // use custom prefix or set prefix check
             let commandArgs: Array<string> = messageArgs.slice(1);
             
             this.commandService.runCommand(command, this.bot, message, commandArgs);
