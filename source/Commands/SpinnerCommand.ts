@@ -7,25 +7,53 @@ import { EventEmitter } from "events";
 class SpinnerObject extends EventEmitter {
     private time: number = 1;
 
-    public color: String; 
+    public color: string; 
 
     private interval: NodeJS.Timeout;
 
     private eventInfo: any/*json*/;
 
-    constructor(pMessage: Message, pColor: String) 
+    // get color codes
+    private getColorCodes(color: string) {
+        switch(color) {
+            case "iron":
+                return "#d4d4d4";
+            case "grey":
+                return "#808080";
+            case "red":
+                return "#ff0000";
+            case "blue":
+                return "#0000ff";
+            case "green":
+                return "#00ff00";
+            case "yellow":
+                return "#dee600";
+            case "purple":
+                return "#aa00ff";
+            case "pink":
+                return "#ff00bf";
+            case "orange":
+                return "#ff8c00";
+            case "white":
+                return "#f5f5f5";
+            case "black":
+                return "#000000";
+        }
+    }
+
+    constructor(pMessage: Message, pColor: string) 
     { 
         super();
         this.color = pColor;
         this.eventInfo = {"detail": pMessage.member.id}; // safe member.id for event emitter
         this.interval = setInterval(() => { this.spinThaThing(pMessage) }, 1000); // start the spin breaker
-        pMessage.channel.send(new MessageEmbed().setColor("00ff00").setDescription(`${pMessage.member} You spun your ${this.color} spinner`));
+        pMessage.channel.send(new MessageEmbed().setColor(this.getColorCodes(this.color)).setDescription(`${pMessage.member} You spun your ${this.color} spinner`));
     }
 
     private spinThaThing(message: Message) 
     {
         if (Math.random() > Math.pow(Math.E, -(this.time++ / 500))) { 
-            message.channel.send(new MessageEmbed().setColor("fa5000").setDescription(`${message.member} Your ${this.color} spinner spun for **${this.time}** seconds!`));
+            message.channel.send(new MessageEmbed().setColor(this.getColorCodes(this.color)).setDescription(`${message.member} Your ${this.color} spinner spun for **${this.time}** seconds!`));
             clearInterval(this.interval); // delete this interval
             this.emit("spinnerFinished", this.eventInfo); // send spinnerFinished event
             return;
@@ -36,7 +64,16 @@ class SpinnerObject extends EventEmitter {
 export class SpinnerCommand extends AbstractCommand {
     public commandOptions: SpinnerCommandOptions = new SpinnerCommandOptions();
 
-    private colors: Array<string> = ["red", "blue", "green", "yellow", "purple", "pink", "orange", "white", "black"]; // spinner colors
+    // TODO: iron is temp as color and exclusive to 555778541732495385 (IronBeagle)
+    private colors: Array<string> = ["iron", "grey", "red", "blue", "green", "yellow", "purple", "pink", "orange", "white", "black"]; // spinner colors
+    /* TODO: Reimplement
+    private typeMap: Map<string, number> = new Map([["wood", 1], 
+                                                    ["plastic", 2],
+                                                    ["calcium", 5],
+                                                    ["titan", 7],
+                                                    ["yttrium", 8],
+                                                    ["aluminium", 10]]);
+                                                    */
     private users: Map<String, SpinnerObject> = new Map();
 
     public async runInternal(bot: Client, message: Message, messageArray: Array<string>) 
@@ -49,6 +86,9 @@ export class SpinnerCommand extends AbstractCommand {
             return;
         } else if (this.users.has(message.member.id)) { // prevent multiple spins
             message.channel.send(new MessageEmbed().setColor("ff0000").setDescription(`Oi ${message.member}, calm down, your ${this.users.get(message.member.id).color} spinner is still spinning`));
+            return;
+        } else if (messageArray[0] == "iron" && message.member.id != "555778541732495385") { // IronBealge case
+            message.channel.send(new MessageEmbed().setColor("ff0000").setDescription(`This spinner is exclusive to <@555778541732495385>`));
             return;
         }
 
@@ -65,7 +105,7 @@ class SpinnerCommandOptions extends AbstractCommandOptions
         super();
         this.commandName = "spin";
         this.description = "spins a fidget spinner";
-        this.usage = `${AbstractCommandOptions.prefix}spin [color]`;
+        this.usage = `${AbstractCommandOptions.prefix}spin {color}`;
         this.cooldown = 0;
     }
 } 
