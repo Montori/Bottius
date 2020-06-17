@@ -24,6 +24,9 @@ export class Partition extends BaseEntity
     @Column({nullable: true})
     public customPrefix: string; // prefix in db
 
+    @Column("simple-array", {nullable: true})
+    private disabledCommandsList: Array<string>; // stores disabled commands
+
     public getXPIgnoreList(): Array<string>
     {
         if(this.xpIgnoreList == null) this.xpIgnoreList = new Array<string>();
@@ -40,6 +43,24 @@ export class Partition extends BaseEntity
     {
         if(this.xpIgnoreList == null) this.xpIgnoreList = new Array<string>();
         this.xpIgnoreList = this.xpIgnoreList.filter(string => string != channelID);
+    }
+
+    public getDisabledCommandsList(): Array<string> // self explanatory
+    {
+        if(this.disabledCommandsList == null) this.disabledCommandsList = new Array<string>();
+        return this.disabledCommandsList;
+    }
+
+    public addToDisabledCommandList(command: string)
+    {
+        if(this.disabledCommandsList == null) this.disabledCommandsList = new Array<string>();
+        this.disabledCommandsList.push(command);
+    }
+
+    public removeFromDisabledCommandList(command: string)
+    {
+        if(this.disabledCommandsList == null) this.disabledCommandsList = new Array<string>();
+        this.disabledCommandsList = this.disabledCommandsList.filter(string => string != command);
     }
 
     constructor(guildID: string)

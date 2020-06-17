@@ -1,6 +1,6 @@
 import {PingCommand} from "../Commands/PingCommand";
 import {AbstractCommand} from "../Commands/AbstractCommand";
-import {Client, Message} from "discord.js";
+import {Client, Message, MessageEmbed} from "discord.js";
 import { HeadpatCommand } from "../Commands/HeadpatCommand";
 import { QuestCommand } from "../Commands/QuestCommand";
 import { StatsCommand } from "../Commands/StatsCommand";
@@ -17,6 +17,7 @@ import { BugCommand } from "../Commands/BugCommand";
 import { ServerCommand } from "../Commands/ServerCommand";
 import { BirthdayCommand } from "../Commands/BirthdayCommand";
 import { SpinnerCommand } from "../Commands/SpinnerCommand";
+import { MessageService } from "./MessageService";
 
 export class CommandService
 {
@@ -35,6 +36,10 @@ export class CommandService
         {
             this.instance = new CommandService(bot);
         }
+    }
+
+    public disabledCommandError(message: Message, command: string) { // returns error for disabled commands
+        message.channel.send(new MessageEmbed().setColor("ff0000").setAuthor("Command disabled").setDescription(`${command} has been disabled!`));
     }
 
     private constructor(bot: Client)
@@ -63,10 +68,13 @@ export class CommandService
     {
         name = name.toLowerCase();
 
-        if(this.commandMap.get(name))
-        {
-            this.commandMap.get(name).run(bot, message, args);
-        }
+        // Get the message service in order to get the partition service in order to get the partition of the server
+        // the command was issued on, then check if command is disabled ? error : exec command
+        MessageService.getInstance().getPartitionService().getPartition(message.guild)
+            .then(partition => { 
+                if (partition.getDisabledCommandsList().indexOf(name) != -1) this.disabledCommandError(message, name);
+                else if(this.commandMap.get(name)) this.commandMap.get(name).run(bot, message, args);
+            });
     }
 
     public getCommandMap(): Map<string, AbstractCommand>
