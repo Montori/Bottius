@@ -15,7 +15,28 @@ export class ServerCommand extends AbstractCommand
         switch(messageArray[0])
         {
             case "suggestchannel": this.handleSuggestChannelCommand(bot, message, messageArray.slice(1)); break;
-            case "ignorexp": this.handleXPIgnore(bot, message, messageArray.slice(1));
+            case "ignorexp": this.handleXPIgnore(bot, message, messageArray.slice(1)); break; // added break
+            case "prefix": this.customPrefix(bot, message, messageArray.slice(1)); // prefix case
+        }
+    }
+
+    private async customPrefix(bot: Client, message: Message, messageArray: string[])
+    {
+        let partition: Partition = await this.partitionService.getPartition(message.guild);
+        if (messageArray[0] == "set")
+        {
+            // only valid input
+            if (messageArray.length != 2) return message.channel.send(super.getFailedEmbed().setDescription("Please provide a valid prefix, the prefix may not have spaces or be empty"));
+            let prefix = messageArray[1]; // parse prefix
+            partition.customPrefix = prefix; // set prefix in db and save
+            partition.save();
+            message.channel.send(super.getSuccessEmbed().setDescription(`The prefix now is \`${prefix}\``)); // feedback
+        }
+        else if (messageArray[0] == "reset")
+        {
+            partition.customPrefix = null; // reset, save and feedback
+            partition.save();
+            message.channel.send(super.getSuccessEmbed().setDescription(`The prefix has been successfully reset to ${AbstractCommandOptions.prefix}`));
         }
     }
     
@@ -75,7 +96,7 @@ class ServerCommandOptions extends AbstractCommandOptions
         super();
         this.commandName = "server";
         this.description = "command for editing the settings of the current server"
-        this.usage = `${prefix}${this.commandName} suggestchannel {set|remove} {#channel}\n${prefix}${this.commandName} ignorexp {add|remove} {#channel}` //TODO add usage
+        this.usage = `${prefix}${this.commandName} suggestchannel {set|remove} {#channel}\n${prefix}${this.commandName} ignorexp {add|remove} {#channel}\n${prefix}${this.commandName} prefix {set|reset} {prefix}` //TODO add usage
         this.reqPermission = PermissionLevel.admin;
     }
 }
