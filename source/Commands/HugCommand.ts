@@ -12,11 +12,11 @@ export class HugCommand extends AbstractCommand
         
         if(taggedMember) 
         {
-            if(this.cooldownService.isCooldown(message.member, this.commandOptions.commandName + "<functional")) return message.channel.send(new MessageEmbed().setColor("#ff0000").setDescription("Woah there, you can't give out hugs like that, as if you're some sort of charity."));
+            if(this.cooldownService.isCooldown(message.member, this.commandOptions.commandName + "<functional")) return message.channel.send(super.getFailedEmbed().setDescription("Woah there, you can't give out hugs like that, as if you're some sort of charity."));
             
             if(message.member == taggedMember) 
             {
-                message.channel.send(new MessageEmbed().setColor("#ff0000").setDescription('You hugged yourself, it doesn\'t feel the same as someone else hugging you ;-;'));
+                message.channel.send(new MessageEmbed().setColor("#00FF00").setDescription('You hugged yourself, it doesn\'t feel the same as someone else hugging you ;-;'));
             }
             else 
             {
@@ -27,7 +27,7 @@ export class HugCommand extends AbstractCommand
         }
         else 
         {
-            message.channel.send(new MessageEmbed().setColor("#ff0000").setDescription("Specify a user to hug"));
+            message.channel.send(super.getFailedEmbed().setDescription("Specify a user to hug"));
         }
     }
 }
