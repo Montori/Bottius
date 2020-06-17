@@ -15,7 +15,7 @@ export class HeadpatCommand extends AbstractCommand
         
         if(targetUser)
         {
-            if(this.cooldownService.isCooldown(message.member, this.commandOptions.commandName + "<functional")) return message.channel.send(new MessageEmbed().setColor("#ff0000").setDescription("Slow down mate, your headpat energy needs to charge up again"));
+            if(this.cooldownService.isCooldown(message.member, this.commandOptions.commandName + "<functional")) return message.channel.send(super.getFailedEmbed().setDescription("Slow down mate, your headpat energy needs to charge up again"));
             if(targetUser == message.member) return message.channel.send(new MessageEmbed().setColor("#ff0000").setDescription("You can't headpat yourself, you lonely bag of potatoes..."));
             let userToHeadpat: User = await this.userService.getUser(message.mentions.members.first(), message.guild);
     
@@ -27,7 +27,7 @@ export class HeadpatCommand extends AbstractCommand
         }
         else
         {
-            message.channel.send(new MessageEmbed().setColor("#ff0000").setDescription("Specify a user to headpat"))
+            message.channel.send(super.getFailedEmbed().setDescription("Specify a user to headpat"))
         }
 
     }
