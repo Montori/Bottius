@@ -41,6 +41,7 @@ export class StatsCommand extends AbstractCommand
                                     .addField("XP to next level", `~${user.getXPToNextLevel()}`, true)
                                     .addField("Leaderboard rank", `${rank}`)
                                     .addField("Headpats", `${user.headPats}`)
+                                    .addField("Total pings", `${user.totalPings}`)
                                     .addField("Total messages", `${user.totalMessages}`)
                                     .setTimestamp(new Date())
                                     .setFooter(`Permissions: ${PermissionLevel[user.permissionLevel]}`)
