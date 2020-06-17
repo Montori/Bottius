@@ -62,6 +62,7 @@ export class MessageService
         if(message.content.substring(0, prefixInvalid ? this.prefix.length : customPrefix.length) != (prefixInvalid ? this.prefix : customPrefix)) // use custom prefix or set prefix checks
         {
             this.gainExperience(user, message);
+            this.addToTotalPings(user, message);
         }
         else
         {
@@ -99,6 +100,21 @@ export class MessageService
 
                 this.cooldownService.addCooldown(message.member, "XP", 60);
         }
+    }
+    
+    private async addToTotalPings(user: User, message:Message)
+    {
+        let taggedMember = message.mentions.members.first();
+
+        if(taggedMember != message.member)
+        {
+            if(taggedMember)
+            {
+                let pingedMember: User = await this.userService.getUser(message.mentions.members.first(), message.guild);
+                pingedMember.totalPings ++;
+                pingedMember.save();
+            }
+        }   
     }
 
     private reactToUWU(message: Message)
