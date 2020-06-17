@@ -30,7 +30,7 @@ export class ActivityCommand extends AbstractCommand
             message.channel.send(embed);
             bot.user.setActivity(setActivity, { type: "WATCHING" });
         }
-        else if(messageArray[0] == "listening")
+        else if(messageArray[0] == "listening to")
         {
             if(messageArray.join(" ").length > 100) return message.channel.send(new MessageEmbed().setAuthor("Too many characters").setColor("ff0000"));
             message.channel.send(embed);

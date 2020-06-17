@@ -22,11 +22,13 @@ export class SlapCommand extends AbstractCommand
             else 
             {
                 if(targetMember == message.member) return message.channel.send(super.getFailedEmbed().setDescription("Stop hating yourself. You don't deserve that."));
+
                 let userToSlap: User = await this.userService.getUser(targetMember, message.guild);
             
                 if(userToSlap.headPats === 0) 
                 {
                     message.channel.send(super.getFailedEmbed().setDescription("Looks like they have no headpats left."))
+
                 } 
                 else 
                 {
