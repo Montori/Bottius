@@ -21,12 +21,14 @@ export class SlapCommand extends AbstractCommand
                 return message.channel.send(new MessageEmbed().setColor("#ff0000").setDescription(randomCooldownMessage[Math.floor(Math.random() * 2)]));
             else 
             {
-                if(targetMember == message.member) return message.channel.send(new MessageEmbed().setColor("#ff0000").setDescription("Stop hating yourself. You don't deserve that."));
+                if(targetMember == message.member) return message.channel.send(super.getFailedEmbed().setDescription("Stop hating yourself. You don't deserve that."));
+
                 let userToSlap: User = await this.userService.getUser(targetMember, message.guild);
             
                 if(userToSlap.headPats === 0) 
                 {
-                    message.channel.send(new MessageEmbed().setColor("#ff0000").setDescription("Looks like they have no headpats left."))
+                    message.channel.send(super.getFailedEmbed().setDescription("Looks like they have no headpats left."))
+
                 } 
                 else 
                 {
@@ -59,7 +61,7 @@ export class SlapCommand extends AbstractCommand
         }
         else
         {
-            message.channel.send(new MessageEmbed().setColor("#ff0000").setDescription("Specify a user to slap"))
+            message.channel.send(super.getFailedEmbed().setDescription("Specify a user to slap"))
         }
 
     }
@@ -72,7 +74,7 @@ class SlapCommandOptions extends AbstractCommandOptions
     {
         super();
         this.commandName = "slap";
-        this.description = "Slaps a user and takes away 1 headpat";
+        this.description = "slaps a user and takes away 1 headpat";
         this.reqPermission = PermissionLevel.trusted;
         this.usage = `${AbstractCommandOptions.prefix}slap {@User}`;
     }
