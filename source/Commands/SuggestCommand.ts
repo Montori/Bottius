@@ -59,7 +59,7 @@ class SuggestCommandOptions extends AbstractCommandOptions{
     {
         super();
         this.commandName = "suggest";
-        this.description = "Creates an embed with your suggestion or manages the channel where the suggestions should be sent into";
+        this.description = "creates an embed with your suggestion or manages the channel where the suggestions should be sent into";
         this.usage = `${AbstractCommandOptions.prefix}suggest {suggestion ...}\n${AbstractCommandOptions.prefix}suggest channel {channel}\n${AbstractCommandOptions.prefix}suggest channel remove`;
         this.cooldown = 1800;
     }
