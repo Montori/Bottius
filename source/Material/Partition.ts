@@ -42,6 +42,24 @@ export class Partition extends BaseEntity
         this.xpIgnoreList = this.xpIgnoreList.filter(string => string != channelID);
     }
 
+    public getNoMicList(): Array<string>
+    {
+        if(this.xpIgnoreList == null) this.xpIgnoreList = new Array<string>();
+        return this.xpIgnoreList;
+    }
+
+    public addToNoMicList(channelID: string)
+    {
+        if(this.xpIgnoreList == null) this.xpIgnoreList = new Array<string>();
+        this.xpIgnoreList.push(channelID);
+    }
+
+    public removeFromNoMicList(channelID: string)
+    {
+        if(this.xpIgnoreList == null) this.xpIgnoreList = new Array<string>();
+        this.xpIgnoreList = this.xpIgnoreList.filter(string => string != channelID);
+    }
+
     constructor(guildID: string)
     {
         super();

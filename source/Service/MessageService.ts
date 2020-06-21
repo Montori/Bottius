@@ -9,6 +9,7 @@ import { PerkService } from "./PerkService";
 import { Perk } from "../Material/Perk";
 import { PartitionService } from "./PartitionService";
 import { Partition } from "../Material/Partition";
+import { isRegExp } from "util";
 
 export class MessageService
 {
@@ -62,6 +63,7 @@ export class MessageService
         if(message.content.substring(0, prefixInvalid ? this.prefix.length : customPrefix.length) != (prefixInvalid ? this.prefix : customPrefix)) // use custom prefix or set prefix checks
         {
             this.gainExperience(user, message);
+            this.gainVCExperience(user, message);
         }
         else
         {
@@ -98,6 +100,19 @@ export class MessageService
                 }
 
                 this.cooldownService.addCooldown(message.member, "XP", 60);
+        }
+
+    }
+
+    private async gainVCExperience(user: User, message: Message)
+    {
+        let partition: Partition = await this.partitionService.getPartition(message.guild);
+
+        if(!this.cooldownService.isCooldown(message.member, "VCXP") && partition.getNoMicList().some(channel => channel == message.channel.id))
+        {
+                user.vcxp += 10;
+
+                this.cooldownService.addCooldown(message.member, "VCXP", 60);
         }
     }
 

@@ -16,6 +16,7 @@ export class ServerCommand extends AbstractCommand
         {
             case "suggestchannel": this.handleSuggestChannelCommand(bot, message, messageArray.slice(1)); break;
             case "ignorexp": this.handleXPIgnore(bot, message, messageArray.slice(1)); break; // added break
+            case "nomic": this.handleNoMic(bot, message, messageArray.slice(1)); break; // added break
             case "prefix": this.customPrefix(bot, message, messageArray.slice(1)); // prefix case
         }
     }
@@ -60,6 +61,29 @@ export class ServerCommand extends AbstractCommand
             partition.removeFromXPIgnoreList(channel.id);
             partition.save();
             message.channel.send(super.getSuccessEmbed().setDescription(`XP gain is now enabled in ${channel}`));
+        }
+    }
+
+    private async handleNoMic(bot: Client, message: Message, messageArray: string[])
+    {
+        let partition: Partition = await this.partitionService.getPartition(message.guild);
+        let channel: TextChannel = message.mentions.channels.first();
+
+        if(messageArray[0] == "add")
+        {
+            if(!channel) return message.channel.send(super.getFailedEmbed().setDescription("Please provide a valid channel"));
+            if(partition.getNoMicList().some(string => string == channel.id)) return message.channel.send(super.getFailedEmbed().setDescription("VC XP gain has already been enabled in this channel"));
+            partition.addToNoMicList(channel.id);
+            partition.save();
+            message.channel.send(super.getSuccessEmbed().setDescription(`VC XP will now be gained in ${channel}`));
+        }
+        else if(messageArray[0] == "remove")
+        {
+            if(!channel) return message.channel.send(super.getFailedEmbed().setDescription("Please provide a valid channel"));
+            if(!partition.getNoMicList().some(string => string == channel.id)) return message.channel.send(super.getFailedEmbed().setDescription("VC XP gain is not enabled in this channel"));
+            partition.removeFromNoMicList(channel.id);
+            partition.save();
+            message.channel.send(super.getSuccessEmbed().setDescription(`Regular XP gain is now enabled in ${channel}`));
         }
     }
 
