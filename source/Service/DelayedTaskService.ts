@@ -5,7 +5,7 @@ import { UserService } from "./UserService";
 import { PartitionService } from "./PartitionService";
 import { Partition } from "../Material/Partition";
 import { User } from "../Material/User";
-import { Client, Guild, GuildMember, TextChannel, Role, MessageEmbed, Message } from "discord.js";
+import { Client, Guild, GuildMember, TextChannel, Role, MessageEmbed } from "discord.js";
 
 export class DelayedTaskService
 {
@@ -38,7 +38,7 @@ export class DelayedTaskService
         let now: string = new Date().toISOString().replace("T", " ").replace("Z","");
         let dueTasks: Array<DelayedTask> = await DelayedTask.find({where: {dueDate: LessThanOrEqual(now)}});
 
-        if(dueTasks.length && dueTasks.length > 0) console.log(`INFO: ${dueTasks.length} delayed tasks will be processed`);
+        if(dueTasks && dueTasks.length > 0) console.log(`INFO: ${dueTasks.length} delayed tasks will be processed`);
 
         dueTasks.forEach(task => 
         {

@@ -9,6 +9,7 @@ import { PartitionService } from './Service/PartitionService';
 import { DelayedTaskService } from './Service/DelayedTaskService';
 import { DelayedTask } from './Material/DelayedTask';
 import { DelayedTaskType } from './Material/DelayedTaskType';
+import { VoiceChatExperienceService } from './Service/VoiceChatExperienceService';
 
 const bot: Discord.Client = new Discord.Client({disableMentions: "everyone"});
 
@@ -16,12 +17,14 @@ const bot: Discord.Client = new Discord.Client({disableMentions: "everyone"});
 CommandService.init(bot);
 MessageService.init(bot);
 DelayedTaskService.init(bot);
+VoiceChatExperienceService.init(bot);
 
 const messageService: MessageService = MessageService.getInstance();
 const userService: UserService = UserService.getInstance();
 const perkService: PerkService = PerkService.getInstance();
 const partitionService: PartitionService = PartitionService.getInstance();
 const delayedTaskService: DelayedTaskService = DelayedTaskService.getInstance();
+const voiceChatService: VoiceChatExperienceService = VoiceChatExperienceService.getInstance()
 
 const connection = createConnection();
 
@@ -38,6 +41,7 @@ bot.on("ready", async () =>
 
    await delayedTaskService.handleDueDelayedTasks()
    setInterval(() => delayedTaskService.handleDueDelayedTasks(), 600000);
+   setInterval(() => voiceChatService.distributeVoiceExperience(), 60000);
    console.log("INFO: All services loaded. Bot is ready.")
 });
 
@@ -60,5 +64,10 @@ bot.on("guildDelete", async guild =>
 {
    partitionService.deletePartition(guild);
 });
+
+bot.on("voiceStateUpdate", (oldState, newState) => {
+   voiceChatService.handleVoiceStateEvent(oldState, newState);
+});
+
 
 bot.login(botConfig.token);
