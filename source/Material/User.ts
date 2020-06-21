@@ -30,6 +30,9 @@ export class User extends AbstractPartionable
     @Column({default: 0})
     public xp!: number;
 
+    @Column({default: 0})
+    public vcxp!: number;
+
     @Column({type: "integer", enum: PermissionLevel, default: PermissionLevel.member})
     public permissionLevel!: PermissionLevel;
 
@@ -47,6 +50,7 @@ export class User extends AbstractPartionable
         this.totalPings = 0;
         this.headPats = 0;
         this.xp = 0;
+        this.vcxp = 0;
         this.permissionLevel = PermissionLevel.member;
     }
 
@@ -58,5 +62,10 @@ export class User extends AbstractPartionable
     public getXPToNextLevel(): number
     {
         return Math.ceil(((0.1 * 700)/Math.pow(Math.log(1.1), 2)) * (Math.pow(1.1, this.getLevel())-1) - this.xp);
+    }
+
+    public getVCLevel(): number
+    {
+        return Math.floor((Math.log((this.vcxp*Math.log(1.1))/(700)+1))/(Math.log(1.1)))+1;
     }
 }

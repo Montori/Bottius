@@ -35,11 +35,12 @@ export class StatsCommand extends AbstractCommand
         let rank: number = (await User.count({where: {xp: MoreThanOrEqual(user.xp), partition: partition}}) - await User.count({where: {xp:Equal(user.xp), id:MoreThan(user.id), partition: partition}}));
 
         let embed: MessageEmbed = new MessageEmbed()
-                                    .setAuthor(`Stats of ${member.user.tag} ${rank == 1 ? "🥇" : rank == 2 ? "🥈" : rank == 3 ? "🥉" : ""}`)
-                                    .addField("Level", `${user.getLevel()}`)
+                                    .setAuthor(`Stats of ${member.user.tag} ${rank == 1 ? "🥇" : rank == 2 ? "🥈" : rank == 3 ? "🥉" : ""}`, member.user.displayAvatarURL())
+                                    .addField("Level", `${user.getLevel()}`, true)
                                     .addField("XP", `${user.xp}`, true)
-                                    .addField("XP to next level", `~${user.getXPToNextLevel()}`, true)
                                     .addField("Leaderboard rank", `${rank}`)
+                                    .addField("Voice level", `${user.getVCLevel()}`, true)
+                                    .addField("Voice XP", `${user.vcxp}`, true)
                                     .addField("Headpats", `${user.headPats}`)
                                     .addField("Total messages", `${user.totalMessages}`)
                                     .setTimestamp(new Date())

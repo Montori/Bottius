@@ -37,7 +37,7 @@ export class VoiceChatExperienceService
                     if(!voiceMember.isMuted)
                     {
                         let user: User = await this.userService.getUser(voiceMember.member, voiceMember.member.guild);
-                        user.xp += 2;
+                        user.vcxp += 10;
                         await user.save();
                     }
                 }
