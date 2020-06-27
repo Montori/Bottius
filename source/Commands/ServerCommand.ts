@@ -20,12 +20,13 @@ export class ServerCommand extends AbstractCommand
             case "nomic": this.handleNoMic(bot, message, messageArray.slice(1)); break; // added break
             case "prefix": this.customPrefix(bot, message, messageArray.slice(1)); break; // prefix case
             case "enable": this.enableCommand(bot, message, messageArray.slice(1)); break;
-            case "disable": this.disableCommand(bot, message, messageArray.slice(1)); 
+            case "disable": this.disableCommand(bot, message, messageArray.slice(1)); break; 
+            default: super.sendHelp(message);
         }
     }
 
     private async enableCommand(bot: Client, message: Message, messageArray: string[])
-    {   // should be pretty self explanatory
+    {   
         let partition: Partition = await this.partitionService.getPartition(message.guild);
         if (partition.getDisabledCommandsList().indexOf(messageArray[0]) == -1) return message.channel.send(super.getFailedEmbed().setDescription("This command is not disabled!"));
         partition.removeFromDisabledCommandList(messageArray[0]);
@@ -37,13 +38,11 @@ export class ServerCommand extends AbstractCommand
     {
         let partition: Partition = await this.partitionService.getPartition(message.guild);
         
-        // all kinds of checks
         if (messageArray.length == 0 || !(CommandService.getInstance().getCommandMap().has(messageArray[0]))) 
             return message.channel.send(super.getFailedEmbed().setDescription("Please specify a valid command!"));
         if (messageArray[0] == "server") return message.channel.send(super.getFailedEmbed().setDescription("You cannot disable this command!"));
         if (partition.getDisabledCommandsList().indexOf(messageArray[0]) != -1) return message.channel.send(super.getFailedEmbed().setDescription("This command is already disabled!"));
 
-        // self explanatory
         partition.addToDisabledCommandList(messageArray[0].toLowerCase());
         partition.save();
         message.channel.send(super.getSuccessEmbed().setDescription(`The command \`${messageArray[0]}\` has been disabled!`)); 
@@ -66,6 +65,10 @@ export class ServerCommand extends AbstractCommand
             partition.customPrefix = null; // reset, save and feedback
             partition.save();
             message.channel.send(super.getSuccessEmbed().setDescription(`The prefix has been successfully reset to ${AbstractCommandOptions.prefix}`));
+        }
+        else
+        {
+            super.sendHelp(message);
         }
     }
     
@@ -90,6 +93,10 @@ export class ServerCommand extends AbstractCommand
             partition.save();
             message.channel.send(super.getSuccessEmbed().setDescription(`XP gain is now enabled in ${channel}`));
         }
+        else
+        {
+            super.sendHelp(message);
+        }
     }
 
     private async handleNoMic(bot: Client, message: Message, messageArray: string[])
@@ -112,6 +119,10 @@ export class ServerCommand extends AbstractCommand
             partition.removeFromNoMicList(channel.id);
             partition.save();
             message.channel.send(super.getSuccessEmbed().setDescription(`Regular XP gain is now enabled in ${channel}`));
+        }
+        else
+        {
+            super.sendHelp(message);
         }
     }
 
@@ -149,9 +160,9 @@ class ServerCommandOptions extends AbstractCommandOptions
         super();
         this.commandName = "server";
         this.description = "command for editing the settings of the current server"
-        // added linebreak 
         this.usage = `${prefix}${this.commandName} suggestchannel {set|remove} {#channel}\n${prefix}${this.commandName} ignorexp {add|remove} {#channel}\n` + 
-                     `${prefix}${this.commandName} prefix {set|reset} {prefix}\n${prefix}${this.commandName} {enable|disable} {command}` //TODO add usage
+                     `${prefix}${this.commandName} prefix {set|reset} {prefix}\n${prefix}${this.commandName} {enable|disable} {command}\n`+
+                     `${prefix}${this.commandName} nomic {add|remove} {#channel}`;
         this.reqPermission = PermissionLevel.admin;
     }
 }
