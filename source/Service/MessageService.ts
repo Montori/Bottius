@@ -62,6 +62,7 @@ export class MessageService
         if(message.content.substring(0, prefixInvalid ? this.prefix.length : customPrefix.length) != (prefixInvalid ? this.prefix : customPrefix)) // use custom prefix or set prefix checks
         {
             this.gainExperience(user, message);
+            this.gainVCExperience(user, message);
         }
         else
         {
@@ -82,6 +83,8 @@ export class MessageService
 
         if(!this.cooldownService.isCooldown(message.member, "XP") && !partition.getXPIgnoreList().some(channel => channel == message.channel.id))
         {
+            if(!partition.getNoMicList().some(channel => channel == message.channel.id))
+            {
                 user.xp += 10;
 
                 let perks: Array<Perk> = await this.perkService.getAllPerks(message.guild);
@@ -97,7 +100,25 @@ export class MessageService
                     message.channel.send(new MessageEmbed().setAuthor(`${message.member.user.tag} leveled up!`).setDescription(`${message.member} reached level ${perk.reqLevel} and obtained the role ${role}`).setColor(role.color));
                 }
 
-                this.cooldownService.addCooldown(message.member, "XP", 60);
+                this.cooldownService.addCooldown(message.member, "XP", 60);                
+            }
+
+        }
+
+    }
+
+    private async gainVCExperience(user: User, message: Message)
+    {
+        let partition: Partition = await this.partitionService.getPartition(message.guild);
+
+        if(!this.cooldownService.isCooldown(message.member, "VCXP") && partition.getNoMicList().some(channel => channel == message.channel.id))
+        {
+            if(!partition.getXPIgnoreList().some(channel => channel == message.channel.id))
+            {
+                user.vcxp += 10;
+
+                this.cooldownService.addCooldown(message.member, "VCXP", 60);                
+            }
         }
     }
 

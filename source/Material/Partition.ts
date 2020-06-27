@@ -27,6 +27,9 @@ export class Partition extends BaseEntity
     @Column("simple-array", {nullable: true})
     private disabledCommandsList: Array<string>; // stores disabled commands
 
+    @Column("simple-array", {nullable: true})
+    private noMicList: Array<string>;
+
     public getXPIgnoreList(): Array<string>
     {
         if(this.xpIgnoreList == null) this.xpIgnoreList = new Array<string>();
@@ -61,6 +64,24 @@ export class Partition extends BaseEntity
     {
         if(this.disabledCommandsList == null) this.disabledCommandsList = new Array<string>();
         this.disabledCommandsList = this.disabledCommandsList.filter(string => string != command);
+    }
+
+    public getNoMicList(): Array<string>
+    {
+        if(this.noMicList == null) this.noMicList = new Array<string>();
+        return this.noMicList;
+    }
+
+    public addToNoMicList(channelID: string)
+    {
+        if(this.noMicList == null) this.noMicList = new Array<string>();
+        this.noMicList.push(channelID);
+    }
+
+    public removeFromNoMicList(channelID: string)
+    {
+        if(this.noMicList == null) this.noMicList = new Array<string>();
+        this.noMicList = this.noMicList.filter(string => string != channelID);
     }
 
     constructor(guildID: string)
