@@ -4,6 +4,7 @@ import { AbstractCommandOptions } from "../Material/AbstractCommandOptions";
 import { PermissionLevel } from "../Material/PermissionLevel";
 import { PartitionService } from "../Service/PartitionService";
 import { Partition } from "../Material/Partition";
+import { CommandService } from "../Service/CommandService";
 
 export class ServerCommand extends AbstractCommand
 {
@@ -16,8 +17,35 @@ export class ServerCommand extends AbstractCommand
         {
             case "suggestchannel": this.handleSuggestChannelCommand(bot, message, messageArray.slice(1)); break;
             case "ignorexp": this.handleXPIgnore(bot, message, messageArray.slice(1)); break; // added break
-            case "prefix": this.customPrefix(bot, message, messageArray.slice(1)); // prefix case
+            case "prefix": this.customPrefix(bot, message, messageArray.slice(1)); break; // prefix case
+            case "enable": this.enableCommand(bot, message, messageArray.slice(1)); break;
+            case "disable": this.disableCommand(bot, message, messageArray.slice(1)); 
         }
+    }
+
+    private async enableCommand(bot: Client, message: Message, messageArray: string[])
+    {   // should be pretty self explanatory
+        let partition: Partition = await this.partitionService.getPartition(message.guild);
+        if (partition.getDisabledCommandsList().indexOf(messageArray[0]) == -1) return message.channel.send(super.getFailedEmbed().setDescription("This command is not disabled!"));
+        partition.removeFromDisabledCommandList(messageArray[0]);
+        partition.save();
+        message.channel.send(super.getSuccessEmbed().setDescription(`The command \`${messageArray[0]}\` has been enabled!`)); 
+    }
+
+    private async disableCommand(bot: Client, message: Message, messageArray: string[])
+    {
+        let partition: Partition = await this.partitionService.getPartition(message.guild);
+        
+        // all kinds of checks
+        if (messageArray.length == 0 || !(CommandService.getInstance().getCommandMap().has(messageArray[0]))) 
+            return message.channel.send(super.getFailedEmbed().setDescription("Please specify a valid command!"));
+        if (messageArray[0] == "server") return message.channel.send(super.getFailedEmbed().setDescription("You cannot disable this command!"));
+        if (partition.getDisabledCommandsList().indexOf(messageArray[0]) != -1) return message.channel.send(super.getFailedEmbed().setDescription("This command is already disabled!"));
+
+        // self explanatory
+        partition.addToDisabledCommandList(messageArray[0].toLowerCase());
+        partition.save();
+        message.channel.send(super.getSuccessEmbed().setDescription(`The command \`${messageArray[0]}\` has been disabled!`)); 
     }
 
     private async customPrefix(bot: Client, message: Message, messageArray: string[])
@@ -96,7 +124,9 @@ class ServerCommandOptions extends AbstractCommandOptions
         super();
         this.commandName = "server";
         this.description = "command for editing the settings of the current server"
-        this.usage = `${prefix}${this.commandName} suggestchannel {set|remove} {#channel}\n${prefix}${this.commandName} ignorexp {add|remove} {#channel}\n${prefix}${this.commandName} prefix {set|reset} {prefix}` //TODO add usage
+        // added linebreak 
+        this.usage = `${prefix}${this.commandName} suggestchannel {set|remove} {#channel}\n${prefix}${this.commandName} ignorexp {add|remove} {#channel}\n` + 
+                     `${prefix}${this.commandName} prefix {set|reset} {prefix}\n${prefix}${this.commandName} {enable|disable} {command}` //TODO add usage
         this.reqPermission = PermissionLevel.admin;
     }
 }
