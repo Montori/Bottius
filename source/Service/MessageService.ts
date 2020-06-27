@@ -27,11 +27,6 @@ export class MessageService
         return this.instance;
     }
 
-    public getPartitionService() : PartitionService // get partition service for CommandService
-    {
-        return this.partitionService;
-    }
-
     public static init(bot: Client)
     {
         if(!MessageService.instance)

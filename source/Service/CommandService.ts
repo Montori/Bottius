@@ -18,10 +18,12 @@ import { ServerCommand } from "../Commands/ServerCommand";
 import { BirthdayCommand } from "../Commands/BirthdayCommand";
 import { SpinnerCommand } from "../Commands/SpinnerCommand";
 import { MessageService } from "./MessageService";
+import { PartitionService } from "./PartitionService";
 
 export class CommandService
 {
     private static instance: CommandService;
+    private partitionService: PartitionService;
     private bot: Client;
     private commandMap: Map<string, AbstractCommand> = new Map();
 
@@ -45,6 +47,8 @@ export class CommandService
     private constructor(bot: Client)
     {
         this.bot = bot;
+        this.partitionService = PartitionService.getInstance();
+
         this.commandMap.set("ping", new PingCommand());
         this.commandMap.set("headpat", new HeadpatCommand());
         this.commandMap.set("quest", new QuestCommand());
@@ -70,7 +74,7 @@ export class CommandService
 
         // Get the message service in order to get the partition service in order to get the partition of the server
         // the command was issued on, then check if command is disabled ? error : exec command
-        MessageService.getInstance().getPartitionService().getPartition(message.guild)
+        this.partitionService.getPartition(message.guild)
             .then(partition => { 
                 if (partition.getDisabledCommandsList().indexOf(name) != -1) this.disabledCommandError(message, name);
                 else if(this.commandMap.get(name)) this.commandMap.get(name).run(bot, message, args);
