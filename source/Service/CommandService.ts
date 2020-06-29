@@ -17,6 +17,7 @@ import { BugCommand } from "../Commands/BugCommand";
 import { ServerCommand } from "../Commands/ServerCommand";
 import { BirthdayCommand } from "../Commands/BirthdayCommand";
 import { SpinnerCommand } from "../Commands/SpinnerCommand";
+import { UwUifyCommand } from "../Commands/UwUifyCommand";
 import { MessageService } from "./MessageService";
 import { PartitionService } from "./PartitionService";
 
@@ -66,6 +67,7 @@ export class CommandService
         this.commandMap.set("server", new ServerCommand());
         this.commandMap.set("birthday", new BirthdayCommand());
         this.commandMap.set("spin", new SpinnerCommand());
+        this.commandMap.set("uwuify", new UwUifyCommand());
     }
 
     runCommand(name: string, bot: Client, message: Message, args: Array<string>)
