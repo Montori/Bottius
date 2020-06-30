@@ -11,7 +11,7 @@ export class UwUifyCommand extends AbstractCommand
     public async runInternal(bot: Client, message: Message, messageArray: Array<string>)
     {
         if (!messageArray.length) {
-            message.channel.send(super.getFailedEmbed().setDescription('Well, what do you want me to UwUify'));
+            message.channel.send(super.sendHelp(message));
         }
         else 
         {
