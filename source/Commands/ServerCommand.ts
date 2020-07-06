@@ -244,7 +244,7 @@ class ServerCommandOptions extends AbstractCommandOptions
         this.usage = `${prefix}${this.commandName} suggestchannel {set|remove} {#channel}\n${prefix}${this.commandName} ignorexp {add|remove} {#channel}\n` + 
                      `${prefix}${this.commandName} prefix {set|reset} {prefix}\n${prefix}${this.commandName} {enable|disable} {command}\n`+
                      `${prefix}${this.commandName} nomic {add|remove} {#channel}\n`+
-                     `${prefix}${this.commandName} setleave channel {set|remove} {#channel}, \n${prefix}${this.commandName} setleave message {set|reset} {message}, \n${prefix}${this.commandName} setleave toggle`;
+                     `${prefix}${this.commandName} setleave channel {set|remove} {#channel} \n${prefix}${this.commandName} setleave message {set|reset} {message} \n${prefix}${this.commandName} setleave toggle`;
         this.reqPermission = PermissionLevel.admin;
     }
 }
