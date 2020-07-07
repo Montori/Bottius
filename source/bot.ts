@@ -1,4 +1,6 @@
+
 import * as Discord from 'discord.js';
+import {Client, Message, MessageEmbed, TextChannel, GuildChannel} from 'discord.js';
 import { CommandService } from './Service/CommandService';
 import botConfig from "./botconfig.json";
 import { MessageService } from './Service/MessageService';
@@ -37,8 +39,6 @@ connection.then(async connection =>
 
 bot.on("ready", async () =>
 {
-   await bot.user.setActivity("Running in testing mode");
-
    await delayedTaskService.handleDueDelayedTasks()
    setInterval(() => delayedTaskService.handleDueDelayedTasks(), 600000);
    setInterval(() => voiceChatService.distributeVoiceExperience(), 60000);
@@ -48,6 +48,14 @@ bot.on("ready", async () =>
 bot.on("message", async message =>
 {
    messageService.handleMessage(message);
+
+   let partition = await partitionService.getPartition(message.guild);
+
+   if(partition.botActivityStatus == "streaming")  { bot.user.setActivity(partition.botActivityMessage, { type: "STREAMING", url: "https://www.twitch.tv/smexy-briccs" }) }
+   else if(partition.botActivityStatus == "playing")  { bot.user.setActivity(partition.botActivityMessage, { type: "PLAYING" }) }
+   else if(partition.botActivityStatus == "watching")  { bot.user.setActivity(partition.botActivityMessage, { type: "WATCHING" }) }
+   else if(partition.botActivityStatus == "listening")  { bot.user.setActivity(partition.botActivityMessage, { type: "LISTENING" }) }
+   else if(partition.botActivityStatus == "none")  { bot.user.setActivity(partition.botActivityMessage) }
 });
 
 bot.on("roleDelete", async role => 
@@ -67,6 +75,19 @@ bot.on("guildDelete", async guild =>
 
 bot.on("voiceStateUpdate", (oldState, newState) => {
    voiceChatService.handleVoiceStateEvent(oldState, newState);
+});
+
+bot.on("guildMemberRemove", async member => 
+{
+   let partition = await partitionService.getPartition(member.guild);
+   if(partition.leaveMessageActive === true) 
+   {
+      if(partition.leaveChannel) 
+      {
+         let channel: TextChannel = member.guild.channels.resolve(partition.leaveChannel) as TextChannel;
+         channel.send(new MessageEmbed().setColor("ff0000").setDescription(`**${member.displayName}** ${partition.leaveMessage}`))
+      }   
+   }
 });
 
 
