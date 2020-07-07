@@ -19,6 +19,7 @@ import { BirthdayCommand } from "../Commands/BirthdayCommand";
 import { SpinnerCommand } from "../Commands/SpinnerCommand";
 import { MessageService } from "./MessageService";
 import { PartitionService } from "./PartitionService";
+import { LickCommand } from "../Commands/LickCommand";
 
 export class CommandService
 {
@@ -66,6 +67,7 @@ export class CommandService
         this.commandMap.set("server", new ServerCommand());
         this.commandMap.set("birthday", new BirthdayCommand());
         this.commandMap.set("spin", new SpinnerCommand());
+        this.commandMap.set("lick", new LickCommand());
     }
 
     runCommand(name: string, bot: Client, message: Message, args: Array<string>)
