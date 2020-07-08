@@ -1,5 +1,5 @@
 import {AbstractCommand} from "./AbstractCommand";
-import {Client, Message} from 'discord.js';
+import { Client, Message, MessageEmbed } from 'discord.js';
 import { AbstractCommandOptions } from "../Material/AbstractCommandOptions";
 import { PermissionLevel } from "../Material/PermissionLevel";
 import { UserService } from "../Service/UserService";
@@ -10,7 +10,8 @@ export class PingCommand extends AbstractCommand
 
     public async runInternal(bot: Client, message: Message, messageArray: Array<string>)
     {
-        message.channel.send("Pong!");
+        const pingMessage = await message.channel.send(new MessageEmbed().setColor("#ff0000").setDescription("Ping?"));
+        pingMessage.edit(new MessageEmbed().setColor("#00FF00").setAuthor("Pong!").setDescription(`Latency: \`${pingMessage.createdTimestamp - message.createdTimestamp}\`ms \nAPI Latency: \`${Math.round(bot.ws.ping)}\`ms`));
     }
 }
 
@@ -20,9 +21,7 @@ class PingCommandOptions extends AbstractCommandOptions
     {
         super();
         this.commandName = "ping";
-        this.description = "returns Pong, lovely!";
+        this.description = "returns the bots ping";
         this.usage = `${AbstractCommandOptions.prefix}ping`;
-        this.reqPermission = PermissionLevel.trusted;
     }
-
 }
