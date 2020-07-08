@@ -73,12 +73,15 @@ bot.on("voiceStateUpdate", (oldState, newState) => {
 bot.on("guildMemberRemove", async member => 
 {
    let partition = await partitionService.getPartition(member.guild);
-   if(partition.leaveMessageActive === true) 
+   if(partition.leaveMessageActive) 
    {
       if(partition.leaveChannel) 
       {
          let channel: TextChannel = member.guild.channels.resolve(partition.leaveChannel) as TextChannel;
-         channel.send(new MessageEmbed().setColor("ff0000").setDescription(`**${member.displayName}** ${partition.leaveMessage}`))
+         if(channel)
+         {
+            channel.send(new MessageEmbed().setColor("ff0000").setDescription(`**${member.displayName}** ${partition.leaveMessage ? partition.leaveMessage : " has left the server."}`))
+         }
       }   
    }
 });

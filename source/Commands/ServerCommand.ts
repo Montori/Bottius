@@ -16,12 +16,12 @@ export class ServerCommand extends AbstractCommand
         switch(messageArray[0])
         {
             case "suggestchannel": this.handleSuggestChannelCommand(bot, message, messageArray.slice(1)); break;
-            case "ignorexp": this.handleXPIgnore(bot, message, messageArray.slice(1)); break; // added break
-            case "nomic": this.handleNoMic(bot, message, messageArray.slice(1)); break; // added break
-            case "prefix": this.customPrefix(bot, message, messageArray.slice(1)); break; // prefix case
+            case "ignorexp": this.handleXPIgnore(bot, message, messageArray.slice(1)); break;
+            case "nomic": this.handleNoMic(bot, message, messageArray.slice(1)); break;
+            case "prefix": this.customPrefix(bot, message, messageArray.slice(1)); break;
             case "enable": this.enableCommand(bot, message, messageArray.slice(1)); break;
             case "disable": this.disableCommand(bot, message, messageArray.slice(1)); break; 
-            case "setleave": this.handleSetLeaveCommand(bot, message, messageArray.slice(1)); break; 
+            case "leavemessage": this.handleSetLeaveCommand(bot, message, messageArray.slice(1)); break; 
             default: super.sendHelp(message);
         }
     }
@@ -158,23 +158,14 @@ export class ServerCommand extends AbstractCommand
     {
         let partition: Partition = await this.partitionService.getPartition(message.guild)
 
-        //Toggle the leave message on and off
         if(messageArray[0] == "toggle")
         {
-            if(partition.leaveMessageActive === false)
-            {
-                partition.leaveMessageActive = true;
-                message.channel.send(super.getSuccessEmbed().setDescription(`Member leave message has been turned on`));
-            }  
-            else
-            {
-                partition.leaveMessageActive = false;
-                message.channel.send(super.getSuccessEmbed().setDescription(`Member leave message has been turned off`));
-            }
-        } //End of "toggle"
+            partition.leaveMessageActive = !partition.leaveMessageActive;
+            
+            message.channel.send(super.getSuccessEmbed().setDescription(`Leave messages have been turned ${partition.leaveMessageActive ? "on" : "off"}`));
+        }
 
-        //Add channel to add channel to send leave message
-        if(messageArray[0] == "channel")
+        else if(messageArray[0] == "channel")
         {
             if(messageArray[1] == "remove")
             {
@@ -195,39 +186,33 @@ export class ServerCommand extends AbstractCommand
                 else
                 {
                     partition.leaveChannel = channel.id;
-                    partition.save();    
-                    
                     message.channel.send(super.getSuccessEmbed().setDescription(`Leave channel has been set to ${channel}`));
                 }
             }
-        }//End of "channel"
+        }
 
-        //Add custom leave message
-        if(messageArray[0] == "message")
+        else if(messageArray[0] == "reset")
         {
-            if(messageArray[1] == "reset")
+            if(!partition.leaveMessage) return message.channel.send(super.getFailedEmbed().setDescription(`Leave message has not been set`));
+            else
             {
-                if(!partition.leaveMessage) return message.channel.send(super.getFailedEmbed().setDescription(`Leave message has not been set`));
-                else
-                {
-                    partition.leaveMessage = " has left the server.";
-                    message.channel.send(super.getSuccessEmbed().setDescription(`Leave message has been reset to **"{user} has left the server"**`));
-                }
+                    partition.leaveMessage = null;
+                    message.channel.send(super.getSuccessEmbed().setDescription(`Leave message has been reset`));
             }
-            if(messageArray[1] == "set")
+        }
+        else if(messageArray[0] == "set")
+        {
+            let leaveMessage: string = messageArray.slice(1).join(' ');
+            if(!leaveMessage.length)
             {
-                let descMessage: string = messageArray.slice(2).join(' ');
-                if(descMessage.length === 0)
-                {
-                    message.channel.send(super.getFailedEmbed().setDescription(`You can't choose a empty message`))
-                }      
-                else
-                {
-                    partition.leaveMessage = descMessage;
-                    message.channel.send(super.getSuccessEmbed().setDescription(`Leave message has been set to: "**${descMessage}**"`));                
-                }          
-            }
-        } //End of "message"
+                message.channel.send(super.getFailedEmbed().setDescription(`You can't choose a empty message`))
+            }      
+            else
+            {
+                partition.leaveMessage = leaveMessage;
+                message.channel.send(super.getSuccessEmbed().setDescription(`Leave message has been set to: "**${leaveMessage}**"`));                
+            }          
+        }
 
         partition.save()
     }
@@ -244,7 +229,7 @@ class ServerCommandOptions extends AbstractCommandOptions
         this.usage = `${prefix}${this.commandName} suggestchannel {set|remove} {#channel}\n${prefix}${this.commandName} ignorexp {add|remove} {#channel}\n` + 
                      `${prefix}${this.commandName} prefix {set|reset} {prefix}\n${prefix}${this.commandName} {enable|disable} {command}\n`+
                      `${prefix}${this.commandName} nomic {add|remove} {#channel}\n`+
-                     `${prefix}${this.commandName} setleave channel {set|remove} {#channel} \n${prefix}${this.commandName} setleave message {set|reset} {message} \n${prefix}${this.commandName} setleave toggle`;
+                     `${prefix}${this.commandName} leavemessage channel {set|remove} {#channel} \n${prefix}${this.commandName} leavemessage {set|reset} {message} \n${prefix}${this.commandName} leavemessage toggle`;
         this.reqPermission = PermissionLevel.admin;
     }
 }
