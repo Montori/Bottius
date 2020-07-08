@@ -13,14 +13,14 @@ export class HelpCommand extends AbstractCommand
         
         if(!messageArray[0])
         {
-            let helpEmbed: MessageEmbed = super.getSuccessEmbed("Bottius Command Help");
-            commandMap.forEach(command => helpEmbed.addField(`${command.commandOptions.commandName}`, `${command.commandOptions.description}`));
-            return message.channel.send(helpEmbed);
+            // let helpEmbed: MessageEmbed = super.getSuccessEmbed("Bottius Command Help");
+            // commandMap.forEach(command => helpEmbed.addField(`${command.commandOptions.commandName}`, `${command.commandOptions.description}`));
+            return message.channel.send(super.getFailedEmbed().setDescription("Command overview is currently not available"));
         }else
         {
             let command: AbstractCommand = commandMap.get(messageArray[0].toLowerCase());
             if(!command) return message.channel.send(super.getFailedEmbed().setDescription(`${messageArray[0]} is not a command`));
-            else return message.channel.send(command.sendHelp(message));
+            else return command.sendHelp(message);
         }
         
     }
