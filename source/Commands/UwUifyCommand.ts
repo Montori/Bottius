@@ -44,7 +44,7 @@ class UwUifyCommandOptions extends AbstractCommandOptions
     {
         super();
         this.commandName = "UwUify";
-        this.description = "translates your messages to furry langauge";
+        this.description = "translates your messages to uwu langauge";
         this.usage = `${AbstractCommandOptions.prefix}UwUify {message...}`;
     }
 }
