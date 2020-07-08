@@ -1,4 +1,5 @@
 import * as Discord from 'discord.js';
+import {Client, Message, MessageEmbed, TextChannel, GuildChannel} from 'discord.js';
 import { CommandService } from './Service/CommandService';
 import botConfig from "./botconfig.json";
 import { MessageService } from './Service/MessageService';
@@ -67,6 +68,19 @@ bot.on("guildDelete", async guild =>
 
 bot.on("voiceStateUpdate", (oldState, newState) => {
    voiceChatService.handleVoiceStateEvent(oldState, newState);
+});
+
+bot.on("guildMemberRemove", async member => 
+{
+   let partition = await partitionService.getPartition(member.guild);
+   if(partition.leaveMessageActive === true) 
+   {
+      if(partition.leaveChannel) 
+      {
+         let channel: TextChannel = member.guild.channels.resolve(partition.leaveChannel) as TextChannel;
+         channel.send(new MessageEmbed().setColor("ff0000").setDescription(`**${member.displayName}** ${partition.leaveMessage}`))
+      }   
+   }
 });
 
 

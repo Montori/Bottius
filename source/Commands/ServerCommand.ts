@@ -21,6 +21,7 @@ export class ServerCommand extends AbstractCommand
             case "prefix": this.customPrefix(bot, message, messageArray.slice(1)); break; // prefix case
             case "enable": this.enableCommand(bot, message, messageArray.slice(1)); break;
             case "disable": this.disableCommand(bot, message, messageArray.slice(1)); break; 
+            case "setleave": this.handleSetLeaveCommand(bot, message, messageArray.slice(1)); break; 
             default: super.sendHelp(message);
         }
     }
@@ -149,6 +150,86 @@ export class ServerCommand extends AbstractCommand
             partition.save();
             message.channel.send(super.getSuccessEmbed().setDescription("Suggest channel has been removed"));
         }
+
+
+    }     
+
+    private async handleSetLeaveCommand(bot: Client, message: Message, messageArray: string[])
+    {
+        let partition: Partition = await this.partitionService.getPartition(message.guild)
+
+        //Toggle the leave message on and off
+        if(messageArray[0] == "toggle")
+        {
+            if(partition.leaveMessageActive === false)
+            {
+                partition.leaveMessageActive = true;
+                message.channel.send(super.getSuccessEmbed().setDescription(`Member leave message has been turned on`));
+            }  
+            else
+            {
+                partition.leaveMessageActive = false;
+                message.channel.send(super.getSuccessEmbed().setDescription(`Member leave message has been turned off`));
+            }
+        } //End of "toggle"
+
+        //Add channel to add channel to send leave message
+        if(messageArray[0] == "channel")
+        {
+            if(messageArray[1] == "remove")
+            {
+                if(!partition.leaveChannel) 
+                {
+                    message.channel.send(super.getFailedEmbed().setDescription(`Leave channel has not been set`));
+                }
+                else
+                {
+                    partition.leaveChannel = null;
+                    message.channel.send(super.getSuccessEmbed().setDescription(`Leave channel has been removed`));
+                }
+            }
+            else if(messageArray[1] == "set")
+            {
+                let channel: TextChannel = message.mentions.channels.first();
+                if(!channel) return message.channel.send(super.getFailedEmbed().setDescription("Please provide a valid channel"));
+                else
+                {
+                    partition.leaveChannel = channel.id;
+                    partition.save();    
+                    
+                    message.channel.send(super.getSuccessEmbed().setDescription(`Leave channel has been set to ${channel}`));
+                }
+            }
+        }//End of "channel"
+
+        //Add custom leave message
+        if(messageArray[0] == "message")
+        {
+            if(messageArray[1] == "reset")
+            {
+                if(!partition.leaveMessage) return message.channel.send(super.getFailedEmbed().setDescription(`Leave message has not been set`));
+                else
+                {
+                    partition.leaveMessage = " has left the server.";
+                    message.channel.send(super.getSuccessEmbed().setDescription(`Leave message has been reset to **"{user} has left the server"**`));
+                }
+            }
+            if(messageArray[1] == "set")
+            {
+                let descMessage: string = messageArray.slice(2).join(' ');
+                if(descMessage.length === 0)
+                {
+                    message.channel.send(super.getFailedEmbed().setDescription(`You can't choose a empty message`))
+                }      
+                else
+                {
+                    partition.leaveMessage = descMessage;
+                    message.channel.send(super.getSuccessEmbed().setDescription(`Leave message has been set to: "**${descMessage}**"`));                
+                }          
+            }
+        } //End of "message"
+
+        partition.save()
     }
 }
 
@@ -162,7 +243,8 @@ class ServerCommandOptions extends AbstractCommandOptions
         this.description = "command for editing the settings of the current server"
         this.usage = `${prefix}${this.commandName} suggestchannel {set|remove} {#channel}\n${prefix}${this.commandName} ignorexp {add|remove} {#channel}\n` + 
                      `${prefix}${this.commandName} prefix {set|reset} {prefix}\n${prefix}${this.commandName} {enable|disable} {command}\n`+
-                     `${prefix}${this.commandName} nomic {add|remove} {#channel}`;
+                     `${prefix}${this.commandName} nomic {add|remove} {#channel}\n`+
+                     `${prefix}${this.commandName} setleave channel {set|remove} {#channel} \n${prefix}${this.commandName} setleave message {set|reset} {message} \n${prefix}${this.commandName} setleave toggle`;
         this.reqPermission = PermissionLevel.admin;
     }
 }

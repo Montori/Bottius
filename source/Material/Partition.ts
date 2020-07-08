@@ -30,6 +30,15 @@ export class Partition extends BaseEntity
     @Column("simple-array", {nullable: true})
     private noMicList: Array<string>;
 
+    @Column({nullable: true})
+    public leaveChannel: string;
+
+    @Column({nullable: true})
+    public leaveMessage: string;
+
+    @Column({nullable: true})
+    public leaveMessageActive: boolean;
+
     public getXPIgnoreList(): Array<string>
     {
         if(this.xpIgnoreList == null) this.xpIgnoreList = new Array<string>();
