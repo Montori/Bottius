@@ -20,6 +20,7 @@ import { SpinnerCommand } from "../Commands/SpinnerCommand";
 import { UwUifyCommand } from "../Commands/UwUifyCommand";
 import { MessageService } from "./MessageService";
 import { PartitionService } from "./PartitionService";
+import { SignCommand } from "../Commands/SignCommand";
 
 export class CommandService
 {
@@ -68,6 +69,7 @@ export class CommandService
         this.commandMap.set("birthday", new BirthdayCommand());
         this.commandMap.set("spin", new SpinnerCommand());
         this.commandMap.set("uwuify", new UwUifyCommand());
+        this.commandMap.set("sign", new SignCommand());
     }
 
     runCommand(name: string, bot: Client, message: Message, args: Array<string>)
