@@ -9,6 +9,7 @@ export class SignCommand extends AbstractCommand
 
     public runInternal(bot: Client, message: Message, messageArray: string[]) 
     {
+        if(!messageArray[0]) return message.channel.send(super.getFailedEmbed().setDescription("Protest bunny can't protest without text on its sign"));
         let rawMessage: String = messageArray.join(" ").replace(/\s/g, '');
         let signMessage: Array<string> = this.groupWords(messageArray);
         let signLength: number = signMessage.reduce(function (a, b) { return a.length > b.length ? a : b; }).length;
@@ -29,7 +30,7 @@ export class SignCommand extends AbstractCommand
         
         let sign = `${padding}┌${"─".repeat(maxLength)}┐\n`;
         
-        signMessage.forEach(message => sign += `${padding}|${message}${" ".repeat(maxLength - message.length)}|\n`);
+        signMessage.forEach(message => sign += `${padding}│${message}${" ".repeat(maxLength - message.length)}│\n`);
 
         sign += `${padding}└${"─".repeat(maxLength)}┘\n`;
 
