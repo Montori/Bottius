@@ -5,7 +5,7 @@ import { AbstractCommandOptions } from "../Material/AbstractCommandOptions";
 export class SignCommand extends AbstractCommand
 {
     public commandOptions: AbstractCommandOptions = new SignCommandOptions();
-    private BUNNY: string = "(\\__/) ||\n(•ㅅ•) ||\n/ 　 づ"; //<-- this bunny looks folded lol
+    private BUNNY: string = "(\\__/) ││\n(•ㅅ•) ││\n/ 　 づ"; //<-- this bunny looks folded lol
 
     public runInternal(bot: Client, message: Message, messageArray: string[]) 
     {
