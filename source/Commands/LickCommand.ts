@@ -12,15 +12,15 @@ export class LickCommand extends AbstractCommand
         
         if(taggedMember) 
         {
-            if(this.cooldownService.isCooldown(message.member, this.commandOptions.commandName + "<functional")) return message.channel.send(super.getFailedEmbed().setDescription("Woah there, you can't give out licks like that, as if you're some sort of charity."));
+            if(this.cooldownService.isCooldown(message.member, this.commandOptions.commandName + "<functional")) return message.channel.send(super.getFailedEmbed().setDescription("Slow your roll buddy, your tongue is too dry to properly lick someone"));
             
             if(message.member == taggedMember) 
             {
-                message.channel.send(new MessageEmbed().setColor("#00FF00").setDescription('You licked yourself, it doesn\'t feel the same as someone else licking you ;-;'));
+                message.channel.send(new MessageEmbed().setColor("#00FF00").setDescription('You attempt to lick yourself, but find that your tongue is too short'));
             }
             else 
             {
-                message.channel.send(new MessageEmbed().setColor("#00FF00").setDescription(`${message.member} gave a lick to ${taggedMember}`));
+                message.channel.send(new MessageEmbed().setColor("#00FF00").setDescription(`${message.member} licked ${taggedMember}`));
             }
 
             this.cooldownService.addCooldown(message.member, this.commandOptions.commandName + "<functional", 600);
