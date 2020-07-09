@@ -78,7 +78,7 @@ class BugCommandOptions extends AbstractCommandOptions
         super();
         this.commandName = "Bug";
         this.description = "reports a bug to the developers!";
-        this.usage = `${AbstractCommandOptions.prefix}bug report {description...}, \n ${AbstractCommandOptions.prefix}bug remove {ID}, \n ${AbstractCommandOptions.prefix}bug list`;
+        this.usage = `${AbstractCommandOptions.prefix}bug report {description...},\n${AbstractCommandOptions.prefix}bug remove {ID},\n${AbstractCommandOptions.prefix}bug list`;
     }
 
 }
