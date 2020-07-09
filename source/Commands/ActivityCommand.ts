@@ -54,28 +54,6 @@ export class ActivityCommand extends AbstractCommand
                     bot.user.setActivity(botConfig.activity)
             }
         }
-
-
-        bot.on("ready", async () =>
-        {
-            switch(botConfig.activityStatus)
-            {
-            case "streaming":
-                bot.user.setActivity(botConfig.activity, { type: "STREAMING", url: "https://www.twitch.tv/smexy-briccs" })
-                break;
-            case "playing":
-                bot.user.setActivity(botConfig.activity, { type: "PLAYING" })
-                break;
-            case "watching":
-                bot.user.setActivity(botConfig.activity, { type: "WATCHING" })
-                break;
-            case "listening":
-                bot.user.setActivity(botConfig.activity, { type: "LISTENING" })
-                break;
-            case "none":
-                bot.user.setActivity(botConfig.activity)
-            }        
-        });
     }
 }
 
