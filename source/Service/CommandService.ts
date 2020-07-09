@@ -17,8 +17,10 @@ import { BugCommand } from "../Commands/BugCommand";
 import { ServerCommand } from "../Commands/ServerCommand";
 import { BirthdayCommand } from "../Commands/BirthdayCommand";
 import { SpinnerCommand } from "../Commands/SpinnerCommand";
+import { UwUifyCommand } from "../Commands/UwUifyCommand";
 import { MessageService } from "./MessageService";
 import { PartitionService } from "./PartitionService";
+import { SignCommand } from "../Commands/SignCommand";
 import { LickCommand } from "../Commands/LickCommand";
 
 export class CommandService
@@ -67,6 +69,8 @@ export class CommandService
         this.commandMap.set("server", new ServerCommand());
         this.commandMap.set("birthday", new BirthdayCommand());
         this.commandMap.set("spin", new SpinnerCommand());
+        this.commandMap.set("uwuify", new UwUifyCommand());
+        this.commandMap.set("sign", new SignCommand());
         this.commandMap.set("lick", new LickCommand());
     }
 
