@@ -38,8 +38,6 @@ connection.then(async connection =>
 
 bot.on("ready", async () =>
 {
-   await bot.user.setActivity("Running in testing mode");
-
    await delayedTaskService.handleDueDelayedTasks()
    setInterval(() => delayedTaskService.handleDueDelayedTasks(), 600000);
    setInterval(() => voiceChatService.distributeVoiceExperience(), 60000);
