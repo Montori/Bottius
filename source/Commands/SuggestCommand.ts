@@ -41,6 +41,9 @@ export class SuggestCommand extends AbstractCommand
             {
                 this.sendEmbed(message.channel as TextChannel, suggestEmbed);
             }
+            
+            message.react('✅');
+            setTimeout(() => message.delete(), 5000);
         }
     }
 
