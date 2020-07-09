@@ -12,7 +12,9 @@ Follow these easy steps to get your Bottius instance working <sub><sup>obviously
     {
       "token": "yourTotallySafeBotToken",
       "prefix": "!!",
-      "masters": ["275355515003863040", "182896862477549577"]
+      "masters": ["275355515003863040", "182896862477549577"],
+      "activity": "",
+      "activityStatus": ""
     }
 4. compile Bottius with TypeScript `tsc`
 
