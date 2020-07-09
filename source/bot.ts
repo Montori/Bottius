@@ -38,12 +38,28 @@ connection.then(async connection =>
 
 bot.on("ready", async () =>
 {
-   await bot.user.setActivity("Running in testing mode");
-
    await delayedTaskService.handleDueDelayedTasks()
    setInterval(() => delayedTaskService.handleDueDelayedTasks(), 600000);
    setInterval(() => voiceChatService.distributeVoiceExperience(), 60000);
    console.log("INFO: All services loaded. Bot is ready.")
+   
+   switch(botConfig.activityStatus)
+   {
+      case "streaming":
+         bot.user.setActivity(botConfig.activity, { type: "STREAMING", url: "https://www.twitch.tv/smexy-briccs" })
+         break;
+      case "playing":
+         bot.user.setActivity(botConfig.activity, { type: "PLAYING" })
+         break;
+      case "watching":
+         bot.user.setActivity(botConfig.activity, { type: "WATCHING" })
+         break;
+      case "listening":
+         bot.user.setActivity(botConfig.activity, { type: "LISTENING" })
+         break;
+      case "none":
+         bot.user.setActivity(botConfig.activity)
+   }  
 });
 
 bot.on("message", async message =>
