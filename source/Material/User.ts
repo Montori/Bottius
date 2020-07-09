@@ -39,6 +39,9 @@ export class User extends AbstractPartionable
     @Column({nullable: true})
     public birthdate: Date;
 
+    @Column({default: 1000})
+    public botcoin!: number;
+
     constructor(discordID: string, partition: Partition)
     {
         super(partition);
@@ -52,6 +55,7 @@ export class User extends AbstractPartionable
         this.xp = 0;
         this.vcxp = 0;
         this.permissionLevel = PermissionLevel.member;
+        this.botcoin = 1000;
     }
 
     public getLevel(): number
