@@ -1,5 +1,5 @@
 import { AbstractCommand } from "./AbstractCommand";
-import { Client, Message } from "discord.js";
+import { Client, Message, MessageEmbed } from "discord.js";
 import { AbstractCommandOptions } from "../Material/AbstractCommandOptions";
 
 export class SignCommand extends AbstractCommand
@@ -9,19 +9,23 @@ export class SignCommand extends AbstractCommand
 
     public runInternal(bot: Client, message: Message, messageArray: string[]) 
     {
+        if(this.cooldownService.isCooldown(message.member, this.commandOptions.commandName + "<functional")) return message.channel.send(new MessageEmbed().setColor("#ff0000").setDescription('You can only use this command every 60 seconds'));
         if(!messageArray[0]) return message.channel.send(super.getFailedEmbed().setDescription("Protest bunny can't protest without text on its sign"));
         let rawMessage: String = messageArray.join(" ").replace(/\s/g, '');
         let signMessage: Array<string> = this.groupWords(messageArray);
         let signLength: number = signMessage.reduce(function (a, b) { return a.length > b.length ? a : b; }).length;
 
-        if(rawMessage.length > 50) return message.channel.send(super.getFailedEmbed().setDescription("Your message is too long for a protest sign, keep it short."));
-        if(signLength > 10) return message.channel.send(super.getFailedEmbed().setDescription("One of the words is too long for a protest sign, keep it short."));
+        if(rawMessage.length > 60) return message.channel.send(super.getFailedEmbed().setDescription("Your message is too long for a protest sign, keep it short."));
+        if(signLength > 14) return message.channel.send(super.getFailedEmbed().setDescription("One of the words is too long for a protest sign, keep it short."));
 
         let signBunny = this.generateSign(signMessage, signLength);
 
         signBunny += this.BUNNY;
 
         message.channel.send(`\`\`\`${signBunny}\`\`\``)
+
+        this.cooldownService.addCooldown(message.member, this.commandOptions.commandName + "<functional", 60);  
+        setTimeout(() => message.delete(), 3000);
     }
 
     private generateSign(signMessage: Array<string>, maxLength: number): string
@@ -68,6 +72,5 @@ class SignCommandOptions extends AbstractCommandOptions
         this.commandName = "sign";
         this.description = "will send a very vocal bunny with a protest sign into the chat";
         this.usage = `${AbstractCommandOptions.prefix}sign {message...}`
-        this.cooldown = 60;
     }
 }
