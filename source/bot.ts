@@ -1,5 +1,5 @@
 import * as Discord from 'discord.js';
-import {Client, Message, MessageEmbed, TextChannel, GuildChannel} from 'discord.js';
+import {Client, Message, MessageEmbed, TextChannel, GuildChannel, Role} from 'discord.js';
 import { CommandService } from './Service/CommandService';
 import botConfig from "./botconfig.json";
 import { MessageService } from './Service/MessageService';
@@ -11,6 +11,8 @@ import { DelayedTaskService } from './Service/DelayedTaskService';
 import { DelayedTask } from './Material/DelayedTask';
 import { DelayedTaskType } from './Material/DelayedTaskType';
 import { VoiceChatExperienceService } from './Service/VoiceChatExperienceService';
+import { AutoRole } from './Material/AutoRole';
+import { AutoRoleService } from './Service/AutoRoleService';
 
 const bot: Discord.Client = new Discord.Client({disableMentions: "everyone"});
 
@@ -26,6 +28,7 @@ const perkService: PerkService = PerkService.getInstance();
 const partitionService: PartitionService = PartitionService.getInstance();
 const delayedTaskService: DelayedTaskService = DelayedTaskService.getInstance();
 const voiceChatService: VoiceChatExperienceService = VoiceChatExperienceService.getInstance()
+const autoRoleService: AutoRoleService = AutoRoleService.getInstance()
 
 const connection = createConnection();
 
@@ -84,6 +87,20 @@ bot.on("guildDelete", async guild =>
 
 bot.on("voiceStateUpdate", (oldState, newState) => {
    voiceChatService.handleVoiceStateEvent(oldState, newState);
+});
+
+bot.on("guildMemberAdd", async member => 
+{
+   let autoRoleArray: Array<AutoRole> = await autoRoleService.getAllAutoRoles(member.guild);
+
+   for(let something of autoRoleArray)
+   {
+      let role: Role = await member.guild.roles.fetch(something.role);
+      if(role)
+      if(!member.roles.cache.has(role.id)) 
+      member.roles.add(role);
+   }
+
 });
 
 bot.on("guildMemberRemove", async member => 

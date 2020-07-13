@@ -1,9 +1,11 @@
 import { AbstractCommand } from "./AbstractCommand";
-import { Client, Message, TextChannel } from "discord.js";
+import { Client, Message, TextChannel, MessageEmbed, Role } from "discord.js";
 import { AbstractCommandOptions } from "../Material/AbstractCommandOptions";
 import { PermissionLevel } from "../Material/PermissionLevel";
 import { PartitionService } from "../Service/PartitionService";
 import { Partition } from "../Material/Partition";
+import { AutoRole } from "../Material/AutoRole";
+import { AutoRoleService } from "../Service/AutoRoleService";
 import { CommandService } from "../Service/CommandService";
 
 export class ServerCommand extends AbstractCommand
@@ -22,6 +24,7 @@ export class ServerCommand extends AbstractCommand
             case "enable": this.enableCommand(bot, message, messageArray.slice(1)); break;
             case "disable": this.disableCommand(bot, message, messageArray.slice(1)); break; 
             case "leavemessage": this.handleSetLeaveCommand(bot, message, messageArray.slice(1)); break; 
+            case "autorole": this.handleAutoRoleCommand(bot, message, messageArray.slice(1)); break; 
             default: super.sendHelp(message);
         }
     }
@@ -215,6 +218,65 @@ export class ServerCommand extends AbstractCommand
         }
 
         partition.save()
+    }
+
+    private AutoRoleService: AutoRoleService = AutoRoleService.getInstance();
+
+    private async handleAutoRoleCommand(bot: Client, message: Message, messageArray: string[])
+    {
+        if(messageArray[0] == "add")
+        {
+            messageArray = messageArray.slice(1);
+            if(!messageArray[0]) return super.sendHelp(message);
+
+            let level: number = Number.parseInt(messageArray[0]);
+            let role: Role = message.mentions.roles.first();
+
+            if(!role) return super.sendHelp(message);
+            if(await this.AutoRoleService.doesAutoRoleExist(role.id)) return message.channel.send(new MessageEmbed().setAuthor("Role duplicate").setColor("ff0000").setDescription("This role has already been added"));
+                
+            this.AutoRoleService.addAutoRole(role.id, message.guild);
+
+            let embed: MessageEmbed = new MessageEmbed()
+                                        .setAuthor("Role added")
+                                        .setTimestamp(new Date())
+                                        .setDescription(`A role has been added`)
+                                        .addField("Role", `${role}`, true)
+                                        .setColor(role.color);
+            message.channel.send(embed);
+        }
+        else if(messageArray[0] == "remove")
+        {
+            let role: Role = message.mentions.roles.first();
+            if(!role) return super.sendHelp(message);
+            if(! await this.AutoRoleService.doesAutoRoleExist(role.id)) return message.channel.send(new MessageEmbed().setAuthor("Role not existent").setColor("ff0000").setDescription("This role doesn't exist"));
+                
+            this.AutoRoleService.removeAutoRole(role.id, message.guild);
+
+            let embed: MessageEmbed = super.getSuccessEmbed("Role removed")
+                                        .setDescription(`A role has been removed`)
+                                        .addField("Role", `${role}`, true);
+
+            message.channel.send(embed);
+        }
+        else if(messageArray[0] == "list")
+        {
+            const autoRoleService: AutoRoleService = AutoRoleService.getInstance()
+            let autoRoleArray: Array<AutoRole> = await autoRoleService.getAllAutoRoles(message.guild);        
+            let embed: MessageEmbed = super.getSuccessEmbed("All autoroles in " + message.guild.name).setDescription('test');
+            let tempArray = new Array()
+            
+            for(let autoRoles of autoRoleArray)
+            {
+              tempArray.push(await message.guild.roles.fetch(autoRoles.role))
+            }
+            embed.setDescription(tempArray.join('\n'));
+            message.channel.send(embed);
+        }
+        else
+        {
+            super.sendHelp(message);
+        }
     }
 }
 
