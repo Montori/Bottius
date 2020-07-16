@@ -25,7 +25,7 @@ export class SignCommand extends AbstractCommand
         message.channel.send(`\`\`\`${signBunny}\`\`\``)
 
         this.cooldownService.addCooldown(message.member, this.commandOptions.commandName + "<functional", 60);  
-        setTimeout(() => message.delete(), 3000);
+        message.delete();
     }
 
     private generateSign(signMessage: Array<string>, maxLength: number): string
