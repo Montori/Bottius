@@ -10,7 +10,8 @@ export class UwUifyCommand extends AbstractCommand
 
     public async runInternal(bot: Client, message: Message, messageArray: Array<string>)
     {
-        if (!messageArray.length) {
+        if (!messageArray.length) 
+        {
             message.channel.send(super.sendHelp(message));
         }
         else 
@@ -34,6 +35,7 @@ export class UwUifyCommand extends AbstractCommand
             botmessage = botmessage.replace(/can/g, 'cwan');
 
             message.channel.send(`${botmessage}`);
+            message.delete();
         }
     }
 }

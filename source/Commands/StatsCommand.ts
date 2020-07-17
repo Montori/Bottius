@@ -39,8 +39,6 @@ export class StatsCommand extends AbstractCommand
                                     .addField("Level", `${user.getLevel()}`, true)
                                     .addField("XP", `${user.xp}`, true)
                                     .addField("Leaderboard rank", `${rank}`)
-                                    .addField("Voice level", `${user.getVCLevel()}`, true)
-                                    .addField("Voice XP", `${user.vcxp}`, true)
                                     .addField("Headpats", `${user.headPats}`)
                                     .addField("Total messages", `${user.totalMessages}`)
                                     .setTimestamp(new Date())

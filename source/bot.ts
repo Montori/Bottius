@@ -8,11 +8,9 @@ import { createConnection } from "typeorm";
 import { PerkService } from './Service/PerkService';
 import { PartitionService } from './Service/PartitionService';
 import { DelayedTaskService } from './Service/DelayedTaskService';
-import { DelayedTask } from './Material/DelayedTask';
-import { DelayedTaskType } from './Material/DelayedTaskType';
 import { VoiceChatExperienceService } from './Service/VoiceChatExperienceService';
 
-const bot: Discord.Client = new Discord.Client({disableMentions: "everyone"});
+const bot: Client = new Client({disableMentions: "everyone"});
 
 //init all Services needing the bot here
 CommandService.init(bot);
@@ -26,6 +24,7 @@ const perkService: PerkService = PerkService.getInstance();
 const partitionService: PartitionService = PartitionService.getInstance();
 const delayedTaskService: DelayedTaskService = DelayedTaskService.getInstance();
 const voiceChatService: VoiceChatExperienceService = VoiceChatExperienceService.getInstance()
+const ACTIVITY_TYPE: Array<string> = ["PLAYING", "STREAMING", "LISTENING TO", "WATCHING"];
 
 const connection = createConnection();
 
@@ -40,26 +39,9 @@ bot.on("ready", async () =>
 {
    await delayedTaskService.handleDueDelayedTasks()
    setInterval(() => delayedTaskService.handleDueDelayedTasks(), 600000);
-   setInterval(() => voiceChatService.distributeVoiceExperience(), 60000);
    console.log("INFO: All services loaded. Bot is ready.")
    
-   switch(botConfig.activityStatus)
-   {
-      case "streaming":
-         bot.user.setActivity(botConfig.activity, { type: "STREAMING", url: "https://www.twitch.tv/smexy-briccs" })
-         break;
-      case "playing":
-         bot.user.setActivity(botConfig.activity, { type: "PLAYING" })
-         break;
-      case "watching":
-         bot.user.setActivity(botConfig.activity, { type: "WATCHING" })
-         break;
-      case "listening":
-         bot.user.setActivity(botConfig.activity, { type: "LISTENING" })
-         break;
-      case "none":
-         bot.user.setActivity(botConfig.activity)
-   }  
+   //Reimplement activity set. It isnt working rn anyways so I just kicked it out.
 });
 
 bot.on("message", async message =>
@@ -82,23 +64,16 @@ bot.on("guildDelete", async guild =>
    partitionService.deletePartition(guild);
 });
 
-bot.on("voiceStateUpdate", (oldState, newState) => {
-   voiceChatService.handleVoiceStateEvent(oldState, newState);
-});
-
 bot.on("guildMemberRemove", async member => 
 {
    let partition = await partitionService.getPartition(member.guild);
-   if(partition.leaveMessageActive) 
+   if(partition.leaveMessageActive && partition.leaveChannel) 
    {
-      if(partition.leaveChannel) 
+      let channel: TextChannel = member.guild.channels.resolve(partition.leaveChannel) as TextChannel;
+      if(channel)
       {
-         let channel: TextChannel = member.guild.channels.resolve(partition.leaveChannel) as TextChannel;
-         if(channel)
-         {
-            channel.send(new MessageEmbed().setColor("ff0000").setDescription(`**${member.displayName}** ${partition.leaveMessage ? partition.leaveMessage : " has left the server."}`))
-         }
-      }   
+         channel.send(new MessageEmbed().setColor("ff0000").setDescription(`**${member.displayName}** ${partition.leaveMessage ? partition.leaveMessage : " has left the server."}`))
+      }
    }
 });
 
