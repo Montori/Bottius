@@ -3,7 +3,7 @@ import { Client, Message, MessageEmbed, DiscordAPIError } from "discord.js";
 import { UserService } from "../Service/UserService";
 import { Bug } from "../Material/Bug";
 import { AbstractCommandOptions } from "../Material/AbstractCommandOptions";
-import { bugService } from "../Service/BugService";
+import { BugService } from "../Service/BugService";
 import { User } from "../Material/User";
 import { PermissionLevel } from "../Material/PermissionLevel";
 import { Partition } from "../Material/Partition";
@@ -12,7 +12,7 @@ import { PartitionService } from "../Service/PartitionService";
 export class BugCommand extends AbstractCommand
 {
     public commandOptions: BugCommandOptions = new BugCommandOptions();
-    private bugService: bugService = bugService.getInstance();
+    private bugService: BugService = BugService.getInstance();
 
     public async runInternal(bot: Client, message: Message, messageArray: Array<string>)
     {
