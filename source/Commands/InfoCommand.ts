@@ -11,8 +11,8 @@ export class InfoCommand extends AbstractCommand
         let infoEmbed: MessageEmbed = new MessageEmbed()
                 .setAuthor("Information on Bottius (thats me)")
                 .setThumbnail(bot.user.displayAvatarURL())
-                .setDescription("Hey! I'm Bottius, a bot like everybot else.\nMy master Montori initially created me for the Bricc Cult Discord Server and I am now used on servers around the cluster"
-                +"\n\nIf you want to be up to date about me, you can check out my [GitHub page](https://github.com/Montori/Bottius)")
+                .setDescription("Hey! I'm Bottius, a bot like everybot else.\nMy master Montori initially created me for the Bricc Cult Discord Server and I am now used on servers around the cluster."
+                +"\n\nIf you want to be up to date about me, you can check out my [GitHub page](https://github.com/Montori/Bottius).")
                 .addField("All contributors", "Montori#4707 (Creator)\nArgos#4406 (Creative input)\nrene#6605 (Developer)\nREAL_FD3 (Developer)")
                 .setColor("#ff8c00");
 

@@ -10,7 +10,7 @@ export class AvatarCommand extends AbstractCommand
     {
         let member: GuildMember = message.mentions.members.first();
 
-        if(!member) return message.channel.send(super.getFailedEmbed().setDescription("Please specify a member"));
+        if(!member) return message.channel.send(super.getSuccessEmbed(`Avatar of ${message.member.user.tag}`).setImage(message.member.user.displayAvatarURL()));
         message.channel.send(super.getSuccessEmbed(`Avatar of ${member.user.tag}`).setImage(member.user.displayAvatarURL()));
     }
 }
