@@ -1,7 +1,7 @@
 {
     "type": "sqlite",
     "database": "db.db",
-    "entities": ["out/Material/*.js"],
+    "entities": ["out/Entities/Persistent/*.js"],
     "migrations": ["out/Migration/*.js"],
     "cli": {
         "migrationsDir": "source/Migration"

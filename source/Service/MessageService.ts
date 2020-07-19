@@ -3,12 +3,12 @@ import { CommandService } from "./CommandService";
 import randomInt from "random-int";
 import botConfig from "../botconfig.json";
 import { UserService } from "./UserService";
-import { User } from "../Material/User";
+import { User } from "../Entities/Persistent/User";
 import { CooldownService } from "./CooldownService";
 import { PerkService } from "./PerkService";
-import { Perk } from "../Material/Perk";
+import { Perk } from "../Entities/Persistent/Perk";
 import { PartitionService } from "./PartitionService";
-import { Partition } from "../Material/Partition";
+import { Partition } from "../Entities/Persistent/Partition";
 import { TumbleWeedService } from "./TumbleWeedService";
 
 export class MessageService
@@ -60,19 +60,19 @@ export class MessageService
 
         user.totalMessages ++;
 
-        let customPrefix: string = (await (await this.partitionService).getPartition(message.guild)).customPrefix; // get custom prefix from db
-        let prefixInvalid: boolean = customPrefix == null; // check if prefix exists | true = invalid
+        let customPrefix: string = (await (await this.partitionService).getPartition(message.guild)).customPrefix; 
+        let prefixInvalid: boolean = customPrefix == null;
 
-        if(message.content.substring(0, prefixInvalid ? this.prefix.length : customPrefix.length) != (prefixInvalid ? this.prefix : customPrefix)) // use custom prefix or set prefix checks
+        if(message.content.substring(0, prefixInvalid ? this.prefix.length : customPrefix.length) != (prefixInvalid ? this.prefix : customPrefix))
         {
             this.gainExperience(user, message);
-            this.gainVCExperience(user, message);
+            //this.gainVCExperience(user, message); disabled till vcxp has its comeback
         }
         else
         {
             let messageArgs: Array<string> = message.content.split(" ");
             messageArgs = messageArgs.filter(message => /\S/.test(message));
-            let command: string = messageArgs[0].slice(prefixInvalid ? this.prefix.length : customPrefix.length); // use custom prefix or set prefix check
+            let command: string = messageArgs[0].slice(prefixInvalid ? this.prefix.length : customPrefix.length);
             let commandArgs: Array<string> = messageArgs.slice(1);
             
             this.commandService.runCommand(command, this.bot, message, commandArgs);

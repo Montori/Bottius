@@ -1,9 +1,9 @@
-import { User } from '../Material/User';
+import { User } from '../Entities/Persistent/User';
 import { GuildMember, Guild } from 'discord.js';
 import { PartitionService } from './PartitionService';
-import { Partition } from '../Material/Partition';
+import { Partition } from '../Entities/Persistent/Partition';
 import botConfig from "../botconfig.json";
-import { PermissionLevel } from '../Material/PermissionLevel';
+import { PermissionLevel } from '../Entities/Transient/PermissionLevel';
 import { Between, Equal, MoreThanOrEqual, LessThanOrEqual } from 'typeorm';
 
 export class UserService
@@ -27,14 +27,10 @@ export class UserService
         let partition: Partition = await this.partitionService.getPartition(guild);
         let foundUser: User = await User.findOne({where: {discordID: guildMember.id, partition: partition}});
 
-        if(!foundUser)
-        {
-            foundUser = new User(guildMember.id, partition);
+        if(!foundUser) foundUser = new User(guildMember.id, partition);
 
-            this.givePermission(foundUser, guild);
-
-            (await foundUser.save()).reload();
-        }
+        await this.givePermission(foundUser, guildMember);
+        await (await foundUser.save()).reload();
 
         return foundUser;
     }
@@ -56,15 +52,9 @@ export class UserService
         return await User.find({where: {partition: partition}, order : {xp: "DESC"}, take: 10});
     }
 
-    private givePermission(user: User, guild: Guild)
+    private async givePermission(user: User, member: GuildMember)
     {
-        if(botConfig.masters.some(master => user.discordID == master))
-            {
-                user.permissionLevel = PermissionLevel.master;
-            }
-            else if(guild.owner.id == user.discordID)
-            {
-                user.permissionLevel = PermissionLevel.owner;
-            }
+        if(botConfig.masters.some(master => user.discordID == master)) user.permissionLevel = PermissionLevel.master;
+        else if(member.guild.owner.id == user.discordID) user.permissionLevel = PermissionLevel.owner;
     }
 }

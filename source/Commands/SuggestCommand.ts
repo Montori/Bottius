@@ -1,9 +1,8 @@
 import {AbstractCommand} from "./AbstractCommand";
 import {Client, Message, MessageEmbed, TextChannel, GuildChannel} from 'discord.js';
-import { AbstractCommandOptions } from "../Material/AbstractCommandOptions";
-import { PermissionLevel } from "../Material/PermissionLevel";
+import { AbstractCommandOptions } from "../Entities/Transient/AbstractCommandOptions";
 import { PartitionService } from "../Service/PartitionService";
-import { Partition } from "../Material/Partition";
+import { Partition } from "../Entities/Persistent/Partition";
 
 export class SuggestCommand extends AbstractCommand
 {
@@ -37,10 +36,7 @@ export class SuggestCommand extends AbstractCommand
                 if(!channel) return this.sendEmbed(message.channel as TextChannel, suggestEmbed);
                 this.sendEmbed(channel, suggestEmbed);
             }
-            else
-            {
-                this.sendEmbed(message.channel as TextChannel, suggestEmbed);
-            }
+            else this.sendEmbed(message.channel as TextChannel, suggestEmbed);
             
             message.react('✅');
             setTimeout(() => message.delete(), 5000);

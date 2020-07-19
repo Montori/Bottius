@@ -1,8 +1,8 @@
 import { AbstractCommand } from "./AbstractCommand";
-import { AbstractCommandOptions } from "../Material/AbstractCommandOptions";
+import { AbstractCommandOptions } from "../Entities/Transient/AbstractCommandOptions";
 import { Client, Message, GuildMember } from "discord.js";
-import { PermissionLevel } from "../Material/PermissionLevel";
-import { User } from "../Material/User";
+import { PermissionLevel } from "../Entities/Transient/PermissionLevel";
+import { User } from "../Entities/Persistent/User";
 
 export class PermissionCommand extends AbstractCommand
 {

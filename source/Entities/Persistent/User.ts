@@ -1,7 +1,7 @@
 import {Entity, PrimaryGeneratedColumn, Column} from 'typeorm';
-import { PermissionLevel } from './PermissionLevel';
 import { AbstractPartionable } from './AbstractPartionable';
 import { Partition } from './Partition';
+import { PermissionLevel } from '../Transient/PermissionLevel';
 
 @Entity()
 export class User extends AbstractPartionable

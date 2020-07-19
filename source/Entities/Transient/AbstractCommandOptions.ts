@@ -1,4 +1,4 @@
-import botConfig from '../botconfig.json';
+import botConfig from '../../botconfig.json';
 import { PermissionLevel } from './PermissionLevel';
 
 export abstract class AbstractCommandOptions

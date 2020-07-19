@@ -1,5 +1,5 @@
 import { BaseEntity, Entity, Column, PrimaryGeneratedColumn } from "typeorm";
-import { DelayedTaskType } from "./DelayedTaskType";
+import { DelayedTaskType } from "../Transient/DelayedTaskType";
 
 @Entity()
 export class DelayedTask extends BaseEntity

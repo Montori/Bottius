@@ -1,9 +1,9 @@
 import {Client, Message, MessageEmbed} from 'discord.js';
-import { AbstractCommandOptions } from '../Material/AbstractCommandOptions';
+import { AbstractCommandOptions } from '../Entities/Transient/AbstractCommandOptions';
 import { CooldownService } from '../Service/CooldownService';
 import { UserService } from '../Service/UserService';
-import { User } from '../Material/User';
-import { PermissionLevel } from '../Material/PermissionLevel';
+import { User } from '../Entities/Persistent/User';
+import { PermissionLevel } from '../Entities/Transient/PermissionLevel';
 
 export abstract class AbstractCommand 
 {
@@ -33,7 +33,8 @@ export abstract class AbstractCommand
             .setColor("#ff8000")
             .setAuthor(`Usage of Command: ${this.commandOptions.commandName}`)
             .setDescription(this.commandOptions.description)
-            .addField("Permission level", `${PermissionLevel[this.commandOptions.reqPermission]}`)
+            .addField("Permission level", `${PermissionLevel[this.commandOptions.reqPermission]}`, true)
+            .addField("Cooldown", `${this.commandOptions.cooldown}s`, true)
             .addField("Usage", this.commandOptions.usage);
 
             message.channel.send(helpEmbed);

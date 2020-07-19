@@ -1,11 +1,10 @@
 import { AbstractCommand } from "./AbstractCommand";
 import { Client, Message, TextChannel, MessageEmbed } from "discord.js";
-import { AbstractCommandOptions } from "../Material/AbstractCommandOptions";
-import { PermissionLevel } from "../Material/PermissionLevel";
+import { AbstractCommandOptions } from "../Entities/Transient/AbstractCommandOptions";
+import { PermissionLevel } from "../Entities/Transient/PermissionLevel";
 import { PartitionService } from "../Service/PartitionService";
-import { Partition } from "../Material/Partition";
+import { Partition } from "../Entities/Persistent/Partition";
 import { CommandService } from "../Service/CommandService";
-import { AdvancedConsoleLogger } from "typeorm";
 
 export class ServerCommand extends AbstractCommand
 {

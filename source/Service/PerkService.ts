@@ -1,7 +1,7 @@
-import { Perk } from "../Material/Perk";
+import { Perk } from "../Entities/Persistent/Perk";
 import { PartitionService } from "./PartitionService";
 import { Guild } from "discord.js";
-import { Partition } from "../Material/Partition";
+import { Partition } from "../Entities/Persistent/Partition";
 
 export class PerkService
 {

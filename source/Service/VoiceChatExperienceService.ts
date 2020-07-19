@@ -1,6 +1,6 @@
 import { Client, GuildMember, VoiceState, Guild, VoiceChannel } from "discord.js";
 import { UserService } from "./UserService";
-import { User } from "../Material/User";
+import { User } from "../Entities/Persistent/User";
 
 export class VoiceChatExperienceService
 {

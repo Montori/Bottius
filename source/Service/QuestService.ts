@@ -1,8 +1,8 @@
-import { Quest } from "../Material/Quest";
+import { Quest } from "../Entities/Persistent/Quest";
 import { GuildMember, Guild } from "discord.js";
-import { User } from "../Material/User";
+import { User } from "../Entities/Persistent/User";
 import { UserService } from "./UserService";
-import { Partition } from "../Material/Partition";
+import { Partition } from "../Entities/Persistent/Partition";
 import { PartitionService } from "./PartitionService";
 
 export class QuestService

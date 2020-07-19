@@ -1,10 +1,10 @@
 import { AbstractCommand } from "./AbstractCommand";
-import { Client, Message, MessageFlags, TextChannel, MessageEmbed, Role } from "discord.js";
-import { AbstractCommandOptions } from "../Material/AbstractCommandOptions";
-import { User } from "../Material/User";
-import { PermissionLevel } from "../Material/PermissionLevel";
+import { Client, Message, TextChannel, MessageEmbed, Role } from "discord.js";
+import { AbstractCommandOptions } from "../Entities/Transient/AbstractCommandOptions";
 import { PartitionService } from "../Service/PartitionService";
-import { Months, getDateSuffix } from "../Material/DateFormatting";
+import { PermissionLevel } from "../Entities/Transient/PermissionLevel";
+import { Months, getDateSuffix } from "../Entities/Transient/DateFormatting";
+import { User } from "../Entities/Persistent/User";
 
 export class BirthdayCommand extends AbstractCommand
 {
@@ -26,15 +26,6 @@ export class BirthdayCommand extends AbstractCommand
         }
     }
 
-    private async handleTest(bot: Client, message: Message, messageArray: Array<String>)
-    {
-        let date1 = new Date(2000, 5,2,0,0,0,0);
-        console.log(date1)
-        date1.setDate(date1.getDate()-1);
-        console.log(date1);
-    }
-    
-    
     private async handleSetBirthday(bot: Client, message: Message, messageArray: string[])
     {
         let birthdayMember = message.mentions.members.first() && messageArray[1].match(this.memberRegex) ? message.mentions.members.first() : message.member;

@@ -1,8 +1,6 @@
 import {AbstractCommand} from "./AbstractCommand";
 import { Client, Message, MessageEmbed } from 'discord.js';
-import { AbstractCommandOptions } from "../Material/AbstractCommandOptions";
-import { PermissionLevel } from "../Material/PermissionLevel";
-import { UserService } from "../Service/UserService";
+import { AbstractCommandOptions } from "../Entities/Transient/AbstractCommandOptions";
 
 export class PingCommand extends AbstractCommand
 {

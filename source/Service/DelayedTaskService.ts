@@ -1,10 +1,10 @@
-import { DelayedTask } from "../Material/DelayedTask";
+import { DelayedTask } from "../Entities/Persistent/DelayedTask";
 import { LessThanOrEqual } from "typeorm";
-import { DelayedTaskType } from "../Material/DelayedTaskType";
+import { DelayedTaskType } from "../Entities/Transient/DelayedTaskType";
 import { UserService } from "./UserService";
 import { PartitionService } from "./PartitionService";
-import { Partition } from "../Material/Partition";
-import { User } from "../Material/User";
+import { Partition } from "../Entities/Persistent/Partition";
+import { User } from "../Entities/Persistent/User";
 import { Client, Guild, GuildMember, TextChannel, Role, MessageEmbed } from "discord.js";
 
 export class DelayedTaskService

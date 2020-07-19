@@ -1,6 +1,6 @@
 import { AbstractCommand } from "./AbstractCommand";
 import { Client, Message, MessageEmbed } from 'discord.js';
-import { AbstractCommandOptions } from "../Material/AbstractCommandOptions";
+import { AbstractCommandOptions } from "../Entities/Transient/AbstractCommandOptions";
 
 export class LickCommand extends AbstractCommand
 {

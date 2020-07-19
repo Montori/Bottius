@@ -1,13 +1,9 @@
 import { AbstractCommand } from "./AbstractCommand";
-import { Client, Message, MessageEmbed, DiscordAPIError } from "discord.js";
-import { UserService } from "../Service/UserService";
-import { Bug } from "../Material/Bug";
-import { AbstractCommandOptions } from "../Material/AbstractCommandOptions";
+import { Client, Message, MessageEmbed } from "discord.js";
+import { AbstractCommandOptions } from "../Entities/Transient/AbstractCommandOptions";
 import { BugService } from "../Service/BugService";
-import { User } from "../Material/User";
-import { PermissionLevel } from "../Material/PermissionLevel";
-import { Partition } from "../Material/Partition";
-import { PartitionService } from "../Service/PartitionService";
+import { Bug } from "../Entities/Persistent/Bug";
+import { PermissionLevel } from "../Entities/Transient/PermissionLevel";
 
 export class BugCommand extends AbstractCommand
 {
@@ -33,7 +29,7 @@ export class BugCommand extends AbstractCommand
                 .addField("User", message.member)
     
             message.channel.send(BugEmbed);
-        }//End of "report"
+        }
         else if((await this.userService.getUser(message.member, message.guild)).permissionLevel < PermissionLevel.master) return super.sendPermissionDenied(message, PermissionLevel.master)
         else
         {
@@ -48,7 +44,7 @@ export class BugCommand extends AbstractCommand
                     removeBug.remove();
                     message.channel.send(super.getSuccessEmbed().setDescription(`Bug with ID: ${removeBug.id} has been removed.`));
                 }
-            }//End of "remove"  
+            } 
             else if(messageArray[0] == "list")
             {
                 let allBugs: Array<Bug> = await this.bugService.getAllBugs(message.guild);
@@ -65,7 +61,7 @@ export class BugCommand extends AbstractCommand
                 }
     
                 message.channel.send(BugEmbed);
-            }//End of "list"
+            }
         }
 
     }

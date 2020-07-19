@@ -1,13 +1,13 @@
 import { AbstractCommand } from "./AbstractCommand";
-import { AbstractCommandOptions } from "../Material/AbstractCommandOptions";
+import { AbstractCommandOptions } from "../Entities/Transient/AbstractCommandOptions";
 import { Client, Message, MessageEmbed, GuildMember } from "discord.js";
 import { UserService } from "../Service/UserService";
-import { User } from "../Material/User";
-import { PermissionLevel } from "../Material/PermissionLevel";
-import { MoreThan, MoreThanOrEqual, LessThan, Equal } from "typeorm";
+import { User } from "../Entities/Persistent/User";
+import { PermissionLevel } from "../Entities/Transient/PermissionLevel";
+import { MoreThan, MoreThanOrEqual, Equal } from "typeorm";
 import { PartitionService } from "../Service/PartitionService";
-import { Partition } from "../Material/Partition";
-import { Months, getDateSuffix } from "../Material/DateFormatting";
+import { Partition } from "../Entities/Persistent/Partition";
+import { Months, getDateSuffix } from "../Entities/Transient/DateFormatting";
 
 export class StatsCommand extends AbstractCommand
 {

@@ -1,7 +1,6 @@
-import { Partition } from "../Material/Partition";
+import { Partition } from "../Entities/Persistent/Partition";
 import { Guild } from "discord.js";
 import { Not, IsNull } from "typeorm";
-import { isNull } from "util";
 
 export class PartitionService
 {

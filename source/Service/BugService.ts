@@ -1,8 +1,7 @@
-import { Bug } from "../Material/Bug";
+import { Bug } from "../Entities/Persistent/Bug";
 import { GuildMember, Guild } from "discord.js";
-import { User } from "../Material/User";
+import { User } from "../Entities/Persistent/User";
 import { UserService } from "./UserService";
-import { Partition } from "../Material/Partition";
 import { PartitionService } from "./PartitionService";
 
 export class BugService

@@ -1,12 +1,9 @@
 import { AbstractCommand } from "./AbstractCommand";
 import { Client, Message, MessageEmbed, DiscordAPIError } from "discord.js";
-import { UserService } from "../Service/UserService";
-import { Quest } from "../Material/Quest";
-import { AbstractCommandOptions } from "../Material/AbstractCommandOptions";
+import { Quest } from "../Entities/Persistent/Quest";
+import { AbstractCommandOptions } from "../Entities/Transient/AbstractCommandOptions";
 import { QuestService } from "../Service/QuestService";
-import { User } from "../Material/User";
-import { PermissionLevel } from "../Material/PermissionLevel";
-import { Partition } from "../Material/Partition";
+import { PermissionLevel } from "../Entities/Transient/PermissionLevel";
 import { PartitionService } from "../Service/PartitionService";
 
 

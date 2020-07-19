@@ -1,6 +1,6 @@
 import {MigrationInterface, QueryRunner} from "typeorm";
-import { DelayedTask } from "../Material/DelayedTask";
-import { DelayedTaskType } from "../Material/DelayedTaskType";
+import { DelayedTask } from "../Entities/Persistent/DelayedTask";
+import { DelayedTaskType } from "../Entities/Transient/DelayedTaskType";
 
 export class DelayedTaskMigration1592336279436 implements MigrationInterface {
     name = 'DelayedTaskMigration1592336279436'

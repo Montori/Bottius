@@ -1,6 +1,6 @@
 import { Guild } from "discord.js";
 import { PartitionService } from "./PartitionService";
-import { Lyrics } from "../Material/Lyrics";
+import { Lyrics } from "../Entities/Persistent/Lyrics";
 
 export class LyricService
 {

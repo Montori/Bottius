@@ -1,9 +1,9 @@
 import { AbstractCommand } from "./AbstractCommand";
 import { Client, Message, MessageEmbed } from "discord.js";
-import { AbstractCommandOptions } from "../Material/AbstractCommandOptions";
+import { AbstractCommandOptions } from "../Entities/Transient/AbstractCommandOptions";
 import { LyricService } from "../Service/LyricService";
-import { Lyrics } from "../Material/Lyrics";
-import { PermissionLevel } from "../Material/PermissionLevel";
+import { Lyrics } from "../Entities/Persistent/Lyrics";
+import { PermissionLevel } from "../Entities/Transient/PermissionLevel";
 
 export class LyricCommand extends AbstractCommand
 {

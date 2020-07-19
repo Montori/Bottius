@@ -1,6 +1,6 @@
 import { PartitionService } from "./PartitionService";
 import { TextChannel, Client } from "discord.js";
-import { Partition } from "../Material/Partition";
+import { Partition } from "../Entities/Persistent/Partition";
 
 export class TumbleWeedService
 {
@@ -8,6 +8,8 @@ export class TumbleWeedService
     private partitionService: PartitionService = PartitionService.getInstance();
     private tumbleweedChannelMap: Map<string, Date> = new Map();
     
+    private readonly TUMBLEWEED_MESSAGE = "A lot of nothing in here... <:tumbleweed:734388519572603002>";
+
     public static getInstance(): TumbleWeedService
     {
         if(!TumbleWeedService.instance)
@@ -26,7 +28,7 @@ export class TumbleWeedService
             {
                 let channel: TextChannel = bot.channels.resolve(channelID) as TextChannel;
                 this.tumbleweedChannelMap.delete(channelID);
-                if(channel) channel.send("A lot of nothing in here... <:tumbleweed:734388519572603002>");
+                if(channel) channel.send(this.TUMBLEWEED_MESSAGE);
             }
         });
     }

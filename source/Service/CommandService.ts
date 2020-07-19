@@ -18,7 +18,6 @@ import { ServerCommand } from "../Commands/ServerCommand";
 import { BirthdayCommand } from "../Commands/BirthdayCommand";
 import { SpinnerCommand } from "../Commands/SpinnerCommand";
 import { UwUifyCommand } from "../Commands/UwUifyCommand";
-import { MessageService } from "./MessageService";
 import { PartitionService } from "./PartitionService";
 import { SignCommand } from "../Commands/SignCommand";
 import { LickCommand } from "../Commands/LickCommand";
@@ -27,29 +26,24 @@ export class CommandService
 {
     private static instance: CommandService;
     private partitionService: PartitionService;
-    private bot: Client;
     private commandMap: Map<string, AbstractCommand> = new Map();
 
     public static getInstance() : CommandService
     {
+        if(!CommandService.instance)
+        {
+            this.instance = new CommandService();
+        }
+
         return this.instance;
     }
 
-    public static init(bot: Client)
-    {
-        if(!CommandService.instance)
-        {
-            this.instance = new CommandService(bot);
-        }
-    }
-
     public disabledCommandError(message: Message, command: string) { // returns error for disabled commands
-        message.channel.send(new MessageEmbed().setColor("ff0000").setAuthor("Command disabled").setDescription(`${command} has been disabled!`));
+        message.channel.send(new MessageEmbed().setColor("ff0000").setAuthor("Command disabled").setDescription(`${command} command has been disabled!`));
     }
 
-    private constructor(bot: Client)
+    private constructor()
     {
-        this.bot = bot;
         this.partitionService = PartitionService.getInstance();
 
         this.commandMap.set("ping", new PingCommand());

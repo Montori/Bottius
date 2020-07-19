@@ -13,7 +13,6 @@ import { TumbleWeedService } from './Service/TumbleWeedService';
 const bot: Client = new Client({disableMentions: "everyone"});
 
 //init all Services needing the bot here
-CommandService.init(bot);
 MessageService.init(bot);
 DelayedTaskService.init(bot);
 VoiceChatExperienceService.init(bot);

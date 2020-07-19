@@ -1,9 +1,9 @@
 import { AbstractCommand } from "./AbstractCommand";
-import { AbstractCommandOptions } from "../Material/AbstractCommandOptions";
+import { AbstractCommandOptions } from "../Entities/Transient/AbstractCommandOptions";
 import { Client, Message, Role, MessageEmbed } from "discord.js";
-import { Perk } from "../Material/Perk";
+import { Perk } from "../Entities/Persistent/Perk";
 import { PerkService } from "../Service/PerkService";
-import { PermissionLevel } from "../Material/PermissionLevel";
+import { PermissionLevel } from "../Entities/Transient/PermissionLevel";
 
 export class PerkCommand extends AbstractCommand
 {

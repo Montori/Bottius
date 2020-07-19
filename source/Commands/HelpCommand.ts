@@ -1,7 +1,7 @@
 import { AbstractCommand } from "./AbstractCommand";
-import { AbstractCommandOptions } from "../Material/AbstractCommandOptions";
+import { AbstractCommandOptions } from "../Entities/Transient/AbstractCommandOptions";
 import { CommandService } from "../Service/CommandService"
-import { Message, Client, MessageEmbed } from "discord.js";
+import { Message, Client } from "discord.js";
 
 export class HelpCommand extends AbstractCommand
 {

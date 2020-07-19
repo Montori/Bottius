@@ -1,10 +1,8 @@
 import { AbstractCommand } from "./AbstractCommand";
 import {Client, Message, GuildMember, MessageEmbed} from 'discord.js';
-import * as Discord from 'discord.js';
-import { UserService } from "../Service/UserService";
-import {User} from "../Material/User";
-import { AbstractCommandOptions } from "../Material/AbstractCommandOptions";
-import { PermissionLevel } from "../Material/PermissionLevel";
+import {User} from "../Entities/Persistent/User";
+import { AbstractCommandOptions } from "../Entities/Transient/AbstractCommandOptions";
+import { PermissionLevel } from "../Entities/Transient/PermissionLevel";
 
 export class SlapCommand extends AbstractCommand
 {
