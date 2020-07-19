@@ -22,6 +22,7 @@ import { PartitionService } from "./PartitionService";
 import { SignCommand } from "../Commands/SignCommand";
 import { LickCommand } from "../Commands/LickCommand";
 import { InfoCommand } from "../Commands/InfoCommand";
+import { AvatarCommand } from "../Commands/AvatarCommand";
 
 export class CommandService
 {
@@ -68,6 +69,7 @@ export class CommandService
         this.commandMap.set("sign", new SignCommand());
         this.commandMap.set("lick", new LickCommand());
         this.commandMap.set("info", new InfoCommand());
+        this.commandMap.set("avatar", new AvatarCommand());
     }
 
     runCommand(name: string, bot: Client, message: Message, args: Array<string>)
