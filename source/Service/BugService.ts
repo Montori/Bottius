@@ -5,17 +5,17 @@ import { UserService } from "./UserService";
 import { Partition } from "../Material/Partition";
 import { PartitionService } from "./PartitionService";
 
-export class bugService
+export class BugService
 {
-    private static instance: bugService;
+    private static instance: BugService;
     private userService: UserService = UserService.getInstance();
     private partitionService: PartitionService = PartitionService.getInstance();
     
-    public static getInstance(): bugService
+    public static getInstance(): BugService
     {
-        if(!bugService.instance)
+        if(!BugService.instance)
         {
-            this.instance = new bugService();
+            this.instance = new BugService();
         }
 
         return this.instance;

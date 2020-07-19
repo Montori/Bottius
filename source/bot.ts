@@ -9,6 +9,7 @@ import { PerkService } from './Service/PerkService';
 import { PartitionService } from './Service/PartitionService';
 import { DelayedTaskService } from './Service/DelayedTaskService';
 import { VoiceChatExperienceService } from './Service/VoiceChatExperienceService';
+import { TumbleWeedService } from './Service/TumbleWeedService';
 
 const bot: Client = new Client({disableMentions: "everyone"});
 
@@ -23,8 +24,7 @@ const userService: UserService = UserService.getInstance();
 const perkService: PerkService = PerkService.getInstance();
 const partitionService: PartitionService = PartitionService.getInstance();
 const delayedTaskService: DelayedTaskService = DelayedTaskService.getInstance();
-const voiceChatService: VoiceChatExperienceService = VoiceChatExperienceService.getInstance()
-const ACTIVITY_TYPE: Array<string> = ["PLAYING", "STREAMING", "LISTENING TO", "WATCHING"];
+const tumbleWeedService: TumbleWeedService = TumbleWeedService.getInstance();
 
 const connection = createConnection();
 
@@ -39,6 +39,7 @@ bot.on("ready", async () =>
 {
    await delayedTaskService.handleDueDelayedTasks()
    setInterval(() => delayedTaskService.handleDueDelayedTasks(), 600000);
+   setInterval(() => tumbleWeedService.handleTumbleWeed(bot), 10000);
    console.log("INFO: All services loaded. Bot is ready.")
    
    //Reimplement activity set. It isnt working rn anyways so I just kicked it out.

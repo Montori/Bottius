@@ -1,4 +1,4 @@
-import { Client, Message, Role, MessageEmbed } from "discord.js";
+import { Client, Message, Role, MessageEmbed, TextChannel } from "discord.js";
 import { CommandService } from "./CommandService";
 import randomInt from "random-int";
 import botConfig from "../botconfig.json";
@@ -9,6 +9,7 @@ import { PerkService } from "./PerkService";
 import { Perk } from "../Material/Perk";
 import { PartitionService } from "./PartitionService";
 import { Partition } from "../Material/Partition";
+import { TumbleWeedService } from "./TumbleWeedService";
 
 export class MessageService
 {
@@ -18,6 +19,7 @@ export class MessageService
     private cooldownService: CooldownService;
     private perkService: PerkService;
     private partitionService: PartitionService;
+    private tumbleWeedService: TumbleWeedService;
     private bot: Client;
     private prefix: string = botConfig.prefix;
     private readonly uwuRegex = "^(?<a>(?![wWMmNn])[A-z])[wWMmNn]\\k<a>$";
@@ -43,6 +45,7 @@ export class MessageService
         this.cooldownService = CooldownService.getInstance();
         this.perkService = PerkService.getInstance();
         this.partitionService = PartitionService.getInstance();
+        this.tumbleWeedService = TumbleWeedService.getInstance();
     }
 
     public async handleMessage(message: Message)
@@ -51,6 +54,7 @@ export class MessageService
         if(message.author.bot) return;
 
         this.reactToUWU(message);
+        this.tumbleWeedService.updateChannel(message.channel as TextChannel);
         
         let user: User = await this.userService.getUser(message.member, message.guild);
 

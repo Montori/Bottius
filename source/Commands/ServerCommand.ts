@@ -1,10 +1,11 @@
 import { AbstractCommand } from "./AbstractCommand";
-import { Client, Message, TextChannel } from "discord.js";
+import { Client, Message, TextChannel, MessageEmbed } from "discord.js";
 import { AbstractCommandOptions } from "../Material/AbstractCommandOptions";
 import { PermissionLevel } from "../Material/PermissionLevel";
 import { PartitionService } from "../Service/PartitionService";
 import { Partition } from "../Material/Partition";
 import { CommandService } from "../Service/CommandService";
+import { AdvancedConsoleLogger } from "typeorm";
 
 export class ServerCommand extends AbstractCommand
 {
@@ -22,8 +23,39 @@ export class ServerCommand extends AbstractCommand
             case "enable": this.enableCommand(bot, message, messageArray.slice(1)); break;
             case "disable": this.disableCommand(bot, message, messageArray.slice(1)); break; 
             case "leavemessage": this.handleSetLeaveCommand(bot, message, messageArray.slice(1)); break; 
+            case "tumbleweed": this.handleTumbleweedCommand(bot, message, messageArray.slice(1)); break; 
             default: super.sendHelp(message);
         }
+    }
+
+    private async handleTumbleweedCommand(bot: Client, message: Message, messageArray: string[])
+    {
+        let partition: Partition = await this.partitionService.getPartition(message.guild);
+
+        if(messageArray.join(" ").startsWith("channel add"))
+        {
+            let tumbleweedChannel: TextChannel = message.mentions.channels.first() as TextChannel;
+            if(!tumbleweedChannel) return message.channel.send(super.getFailedEmbed().setDescription("Please provide a valid description"));
+            partition.addToTumbleWeedChannels(tumbleweedChannel.id);
+            message.channel.send(super.getSuccessEmbed().setDescription(`${tumbleweedChannel} will now receive tumbleweeds.\nTake cover!`));
+        }
+        else if(messageArray.join(" ").startsWith("channel remove"))
+        {
+            let tumbleweedChannel: TextChannel = message.mentions.channels.first() as TextChannel;
+            if(!tumbleweedChannel) return message.channel.send(super.getFailedEmbed().setDescription("Please provide a valid description"));
+            partition.removeFromTumbleWeedChannels(tumbleweedChannel.id);
+            message.channel.send(super.getSuccessEmbed().setDescription(`${tumbleweedChannel} will no longer receive tumbleweeds.`));
+        }
+        else if(messageArray.join(" ").startsWith("channel list"))
+        {
+            let tumbleweedChannelIDList: Array<string> = partition.getTumbleWeedChannels();
+            let tumbleweedChannels: Array<TextChannel> = tumbleweedChannelIDList.map(channelID => message.guild.channels.resolve(channelID) as TextChannel);
+            if(!tumbleweedChannels.length) return message.channel.send(super.getSuccessEmbed("There are currently no channels under attack from tumbleweed"));
+            let embed: MessageEmbed = super.getSuccessEmbed("Channels under attack from tumbleweeds").setDescription(tumbleweedChannels.join("\n"));
+            message.channel.send(embed);
+        }
+
+        partition.save();
     }
 
     private async enableCommand(bot: Client, message: Message, messageArray: string[])

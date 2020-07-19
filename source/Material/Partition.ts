@@ -30,6 +30,9 @@ export class Partition extends BaseEntity
     @Column("simple-array", {nullable: true})
     private noMicList: Array<string>;
 
+    @Column("simple-array", {nullable: true})
+    private tumbleWeedChannels: Array<string>;
+
     @Column({nullable: true})
     public leaveChannel: string;
 
@@ -57,22 +60,22 @@ export class Partition extends BaseEntity
         this.xpIgnoreList = this.xpIgnoreList.filter(string => string != channelID);
     }
 
-    public getDisabledCommandsList(): Array<string> // self explanatory
+    public getTumbleWeedChannels(): Array<string> // self explanatory
     {
-        if(this.disabledCommandsList == null) this.disabledCommandsList = new Array<string>();
-        return this.disabledCommandsList;
+        if(this.tumbleWeedChannels == null) this.tumbleWeedChannels = new Array<string>();
+        return this.tumbleWeedChannels;
     }
 
-    public addToDisabledCommandList(command: string)
+    public addToTumbleWeedChannels(command: string)
     {
-        if(this.disabledCommandsList == null) this.disabledCommandsList = new Array<string>();
-        this.disabledCommandsList.push(command);
+        if(this.tumbleWeedChannels == null) this.tumbleWeedChannels = new Array<string>();
+        this.tumbleWeedChannels.push(command);
     }
 
-    public removeFromDisabledCommandList(command: string)
+    public removeFromTumbleWeedChannels(command: string)
     {
-        if(this.disabledCommandsList == null) this.disabledCommandsList = new Array<string>();
-        this.disabledCommandsList = this.disabledCommandsList.filter(string => string != command);
+        if(this.tumbleWeedChannels == null) this.tumbleWeedChannels = new Array<string>();
+        this.tumbleWeedChannels = this.tumbleWeedChannels.filter(string => string != command);
     }
 
     public getNoMicList(): Array<string>
@@ -91,6 +94,24 @@ export class Partition extends BaseEntity
     {
         if(this.noMicList == null) this.noMicList = new Array<string>();
         this.noMicList = this.noMicList.filter(string => string != channelID);
+    }
+
+    public getDisabledCommandsList(): Array<string> // self explanatory
+    {
+        if(this.disabledCommandsList == null) this.disabledCommandsList = new Array<string>();
+        return this.disabledCommandsList;
+    }
+
+    public addToDisabledCommandList(command: string)
+    {
+        if(this.disabledCommandsList == null) this.disabledCommandsList = new Array<string>();
+        this.disabledCommandsList.push(command);
+    }
+
+    public removeFromDisabledCommandList(command: string)
+    {
+        if(this.disabledCommandsList == null) this.disabledCommandsList = new Array<string>();
+        this.disabledCommandsList = this.disabledCommandsList.filter(string => string != command);
     }
 
     constructor(guildID: string)
