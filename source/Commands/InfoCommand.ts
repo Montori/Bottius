@@ -9,7 +9,7 @@ export class InfoCommand extends AbstractCommand
     public runInternal(bot: Client, message: Message, messageArray: string[]) 
     {
         let infoEmbed: MessageEmbed = new MessageEmbed()
-                .setAuthor("Information on Bottius (thats me)")
+                .setAuthor("Information on Bottius (that's me)")
                 .setThumbnail(bot.user.displayAvatarURL())
                 .setDescription("Hey! I'm Bottius, a bot like everybot else.\nMy master Montori initially created me for the Bricc Cult Discord Server and I am now used on servers around the cluster."
                 +"\n\nIf you want to be up to date about me, you can check out my [GitHub page](https://github.com/Montori/Bottius).")
