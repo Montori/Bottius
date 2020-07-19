@@ -1,5 +1,4 @@
-import * as Discord from 'discord.js';
-import {Client, Message, MessageEmbed, TextChannel, GuildChannel} from 'discord.js';
+import {Client, MessageEmbed, TextChannel} from 'discord.js';
 import { CommandService } from './Service/CommandService';
 import botConfig from "./botconfig.json";
 import { MessageService } from './Service/MessageService';
@@ -39,7 +38,7 @@ bot.on("ready", async () =>
 {
    await delayedTaskService.handleDueDelayedTasks()
    setInterval(() => delayedTaskService.handleDueDelayedTasks(), 600000);
-   setInterval(() => tumbleWeedService.handleTumbleWeed(bot), 10000);
+   setInterval(() => tumbleWeedService.handleTumbleWeed(bot), 600000);
    console.log("INFO: All services loaded. Bot is ready.")
    
    //Reimplement activity set. It isnt working rn anyways so I just kicked it out.
@@ -71,10 +70,7 @@ bot.on("guildMemberRemove", async member =>
    if(partition.leaveMessageActive && partition.leaveChannel) 
    {
       let channel: TextChannel = member.guild.channels.resolve(partition.leaveChannel) as TextChannel;
-      if(channel)
-      {
-         channel.send(new MessageEmbed().setColor("ff0000").setDescription(`**${member.displayName}** ${partition.leaveMessage ? partition.leaveMessage : " has left the server."}`))
-      }
+      if(channel) channel.send(new MessageEmbed().setColor("ff0000").setDescription(`**${member.displayName}** ${partition.leaveMessage ? partition.leaveMessage : " has left the server."}`))
    }
 });
 
