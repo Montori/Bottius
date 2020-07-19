@@ -21,6 +21,7 @@ import { UwUifyCommand } from "../Commands/UwUifyCommand";
 import { PartitionService } from "./PartitionService";
 import { SignCommand } from "../Commands/SignCommand";
 import { LickCommand } from "../Commands/LickCommand";
+import { InfoCommand } from "../Commands/InfoCommand";
 
 export class CommandService
 {
@@ -66,6 +67,7 @@ export class CommandService
         this.commandMap.set("uwuify", new UwUifyCommand());
         this.commandMap.set("sign", new SignCommand());
         this.commandMap.set("lick", new LickCommand());
+        this.commandMap.set("info", new InfoCommand());
     }
 
     runCommand(name: string, bot: Client, message: Message, args: Array<string>)
