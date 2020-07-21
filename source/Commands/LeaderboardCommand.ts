@@ -11,6 +11,7 @@ export class LeaderboardCommand extends AbstractCommand
     {
         let userService: UserService = UserService.getInstance();
         let topUsers: Array<User> = await userService.getLeaderbaord(message.guild);
+        let rank = 0;
 
         let leaderboardEmbed: MessageEmbed = super.getSuccessEmbed(`Leaderboard of ${message.guild.name}`)
                                                     .setDescription("Here are the most honorable members of this server");
@@ -19,7 +20,8 @@ export class LeaderboardCommand extends AbstractCommand
             {
                 let discordUser = bot.users.resolve(user.discordID);
                 let firstField = discordUser ? discordUser.tag : `<@${user.discordID}>`;
-                leaderboardEmbed.addField(firstField, `Level: ${user.getLevel()} \nXP: ${user.xp}`)
+                rank++
+                leaderboardEmbed.addField(`${rank == 1 ? "🥇" : rank == 2 ? "🥈" : rank == 3 ? "🥉" : `#${rank}`}  ${firstField}`, `Level: ${user.getLevel()} \nXP: ${user.xp}`)
             });
 
         message.channel.send(leaderboardEmbed);
@@ -36,3 +38,4 @@ class LeaderboardCommandOptions extends AbstractCommandOptions
         this.usage=`${AbstractCommandOptions.prefix}leaderboard`
     }
 }
+
