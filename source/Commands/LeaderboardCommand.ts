@@ -21,7 +21,7 @@ export class LeaderboardCommand extends AbstractCommand
                 let discordUser = bot.users.resolve(user.discordID);
                 let firstField = discordUser ? discordUser.tag : `<@${user.discordID}>`;
                 rank++
-                leaderboardEmbed.addField(`${rank == 1 ? "🥇" : rank == 2 ? "🥈" : rank == 3 ? "🥉" : `#${rank}`}  ${firstField}`, `Level: ${user.getLevel()} \nXP: ${user.xp}`)
+                leaderboardEmbed.addField(`${rank == 1 ? "🥇" : rank == 2 ? "🥈" : rank == 3 ? "🥉" : `#${rank}`}  ${firstField}`, `Level: ${user.getLevel()} \nXP: ${user.xp}${rank == topUsers.length ? " " : "\n឵"}`)
             });
 
         message.channel.send(leaderboardEmbed);
