@@ -1,10 +1,12 @@
 import { AbstractCommand } from "./AbstractCommand";
-import { Client, Message, TextChannel, MessageEmbed } from "discord.js";
+import { Client, Message, TextChannel, MessageEmbed, Role } from "discord.js";
 import { AbstractCommandOptions } from "../Entities/Transient/AbstractCommandOptions";
 import { PermissionLevel } from "../Entities/Transient/PermissionLevel";
 import { PartitionService } from "../Service/PartitionService";
 import { Partition } from "../Entities/Persistent/Partition";
 import { CommandService } from "../Service/CommandService";
+import { AutoRole } from '../Entities/Persistent/AutoRole';
+import { AutoRoleService } from '../Service/AutoRoleService';
 
 export class ServerCommand extends AbstractCommand
 {
@@ -23,7 +25,66 @@ export class ServerCommand extends AbstractCommand
             case "disable": this.disableCommand(bot, message, messageArray.slice(1)); break; 
             case "leavemessage": this.handleSetLeaveCommand(bot, message, messageArray.slice(1)); break; 
             case "tumbleweed": this.handleTumbleweedCommand(bot, message, messageArray.slice(1)); break; 
+            case "autorole": this.handleAutoRoleCommand(bot, message, messageArray.slice(1)); break; 
             default: super.sendHelp(message);
+        }
+    }
+
+    private autoRoleService: AutoRoleService = AutoRoleService.getInstance();
+
+    private async handleAutoRoleCommand(bot: Client, message: Message, messageArray: string[])
+    {
+        if(messageArray[0] == "add")
+        {
+            messageArray = messageArray.slice(1);
+            if(!messageArray[0]) return message.channel.send(new MessageEmbed().setAuthor("Role not specified").setColor("ff0000").setDescription("Please specify a role. \n``!!server autorole add @example``"));
+
+            let role: Role = message.mentions.roles.first();
+
+            if(!role) return message.channel.send(new MessageEmbed().setAuthor("Role not existent").setColor("ff0000").setDescription("This role doesn't exist, please specify an actually role. \n``!!server autorole add @example``"));
+            if(await this.autoRoleService.doesAutoRoleExist(role.id)) return message.channel.send(new MessageEmbed().setAuthor("Role duplicate").setColor("ff0000").setDescription("This role has already been added"));
+                
+            if(role) this.autoRoleService.addAutoRole(role.id, message.guild);
+
+            let embed: MessageEmbed = new MessageEmbed()
+                                        .setAuthor("Role added")
+                                        .setTimestamp(new Date())
+                                        .setDescription(`A role has been added`)
+                                        .addField("Role", `${role}`, true)
+                                        .setColor(role.color);
+            message.channel.send(embed);
+        }
+        else if(messageArray[0] == "remove")
+        {
+            let role: Role = message.mentions.roles.first();
+            if(!role) return message.channel.send(new MessageEmbed().setAuthor("Role not existent").setColor("ff0000").setDescription("This role doesn't exist, please specify an actually role. \n``!!server autorole remove @example``"));
+            if(!await this.autoRoleService.doesAutoRoleExist(role.id)) return message.channel.send(new MessageEmbed().setAuthor("Role not existent").setColor("ff0000").setDescription("This role doesn't exist"));
+                
+            if(role) this.autoRoleService.removeAutoRole(role.id, message.guild);
+
+            let embed: MessageEmbed = super.getSuccessEmbed("Role removed")
+                                        .setDescription(`A role has been removed`)
+                                        .addField("Role", `${role}`, true);
+
+            message.channel.send(embed);
+        }
+        else if(messageArray[0] == "list")
+        {
+            let autoRoleArray: Array<AutoRole> = await this.autoRoleService.getAllAutoRoles(message.guild);        
+            let embed: MessageEmbed = super.getSuccessEmbed("All autoroles in " + message.guild.name)
+            let tempArray: Array<Role> = new Array()
+            
+            for(let autoRole of autoRoleArray)
+            {
+                if(!autoRole.role) continue;
+                tempArray.push(await message.guild.roles.fetch(autoRole.role))
+            }
+            embed.setDescription(tempArray.join('\n'));
+            message.channel.send(embed);
+        }
+        else
+        {
+            super.sendHelp(message);
         }
     }
 
@@ -260,7 +321,8 @@ class ServerCommandOptions extends AbstractCommandOptions
         this.usage = `${prefix}${this.commandName} suggestchannel {set|remove} {#channel}\n${prefix}${this.commandName} ignorexp {add|remove} {#channel}\n` + 
                      `${prefix}${this.commandName} prefix {set|reset} {prefix}\n${prefix}${this.commandName} {enable|disable} {command}\n`+
                      `${prefix}${this.commandName} nomic {add|remove} {#channel}\n`+
-                     `${prefix}${this.commandName} leavemessage channel {set|remove} {#channel} \n${prefix}${this.commandName} leavemessage {set|reset} {message} \n${prefix}${this.commandName} leavemessage toggle`;
+                     `${prefix}${this.commandName} leavemessage channel {set|remove} {#channel} \n${prefix}${this.commandName} leavemessage {set|reset} {message} \n${prefix}${this.commandName} leavemessage toggle\n`+
+                     `${prefix}${this.commandName} autorole {add|remove} {@role} \n${prefix}${this.commandName} autorole list`;
         this.reqPermission = PermissionLevel.admin;
     }
 }

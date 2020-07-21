@@ -1,4 +1,4 @@
-import {Client, MessageEmbed, TextChannel} from 'discord.js';
+import {Client, MessageEmbed, TextChannel, Role} from 'discord.js';
 import { CommandService } from './Service/CommandService';
 import botConfig from "./botconfig.json";
 import { MessageService } from './Service/MessageService';
@@ -9,6 +9,8 @@ import { PartitionService } from './Service/PartitionService';
 import { DelayedTaskService } from './Service/DelayedTaskService';
 import { VoiceChatExperienceService } from './Service/VoiceChatExperienceService';
 import { TumbleWeedService } from './Service/TumbleWeedService';
+import { AutoRole } from './Entities/Persistent/AutoRole';
+import { AutoRoleService } from './Service/AutoRoleService';
 
 const bot: Client = new Client({disableMentions: "everyone"});
 
@@ -23,6 +25,7 @@ const perkService: PerkService = PerkService.getInstance();
 const partitionService: PartitionService = PartitionService.getInstance();
 const delayedTaskService: DelayedTaskService = DelayedTaskService.getInstance();
 const tumbleWeedService: TumbleWeedService = TumbleWeedService.getInstance();
+const autoRoleService: AutoRoleService = AutoRoleService.getInstance()
 
 const connection = createConnection();
 
@@ -61,6 +64,18 @@ bot.on("guildCreate", async guild =>
 bot.on("guildDelete", async guild => 
 {
    partitionService.deletePartition(guild);
+});
+
+bot.on("guildMemberAdd", async member => 
+{
+   let autoRoleArray: Array<AutoRole> = await autoRoleService.getAllAutoRoles(member.guild);
+
+   for(let autoRole of autoRoleArray)
+   {
+      let role: Role = await member.guild.roles.fetch(autoRole.role);
+      if(role)
+      member.roles.add(role);
+   }
 });
 
 bot.on("guildMemberRemove", async member => 
