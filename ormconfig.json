@@ -1,6 +1,9 @@
 {
-    "type": "sqlite",
-    "database": "db.db",
+    "type": "postgres",
+    "host": "!YOUR_HOST!",
+    "username": "postgres",
+    "password": "!POSTGRES_ROOT_PASS!",
+    "database": "bottius_db",
     "entities": ["out/Entities/Persistent/*.js"],
     "migrations": ["out/Migration/*.js"],
     "cli": {

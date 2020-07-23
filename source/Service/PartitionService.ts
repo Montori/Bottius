@@ -22,7 +22,7 @@ export class PartitionService
         if(!foundPartition)
         {
             foundPartition = new Partition(guild.id);
-            (await foundPartition.save()).reload();
+            await (await foundPartition.save()).reload();
         }
         
         return foundPartition;

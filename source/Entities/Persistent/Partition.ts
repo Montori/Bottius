@@ -18,19 +18,19 @@ export class Partition extends BaseEntity
     @Column({nullable: true})
     public birthdayRole: string;
 
-    @Column("simple-array", {nullable: true})
+    @Column({type: "text", array: true, nullable: true})
     private xpIgnoreList: Array<string>;
 
     @Column({nullable: true})
-    public customPrefix: string; // prefix in db
+    public customPrefix: string;
 
-    @Column("simple-array", {nullable: true})
-    private disabledCommandsList: Array<string>; // stores disabled commands
+    @Column({type: "text", array: true, nullable: true})
+    private disabledCommandsList: Array<string>;
 
-    @Column("simple-array", {nullable: true})
+    @Column({type: "text", array: true, nullable: true})
     private noMicList: Array<string>;
 
-    @Column("simple-array", {nullable: true})
+    @Column({type: "text", array: true, nullable: true})
     private tumbleWeedChannels: Array<string>;
 
     @Column({nullable: true})

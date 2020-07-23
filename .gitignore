@@ -3,3 +3,4 @@ out/
 .vscode/
 *.db
 botconfig.json
+ormconfig.json
