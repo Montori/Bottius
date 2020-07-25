@@ -6,16 +6,6 @@ export class HelperFunctions {
 	private static readonly roleRegex =   /^<@&(\d+)>$/;
 	private static readonly idRegex =        /^(\d+)$/;
 
-	private static teensSuffix = "th";
-	private static numberSuffix = ["th", "st", "nd", "rd", "th", "th", "th", "th", "th", "th"]; // 1st, 2nd, 3rd etc.
-
-	public static getSuffix(num: number) {
-		// 11th, 12th, 13th etc.
-		if (num > 10 && num < 20) return this.teensSuffix;
-
-		return this.numberSuffix[num % 10];
-	}
-
 	// Gets an ID from a tag / ID
 	public static getID(input: string): string {
 		if (this.userRegex.test(input)) {
