@@ -54,11 +54,8 @@ export class User extends BaseEntity
         return Math.floor((Math.log((this.xp*Math.log(1.1))/(700)+1))/(Math.log(1.1)))+1;
     }
 
-    public static getXP(level: number): number {
-        return Math.ceil((Math.pow(1.1, level - 1) - 1) * 700 / Math.log(1.1));
-    }
-
-    public getXPToNextLevel(): number {
-        return User.getXP(this.getLevel() + 1) - this.xp;
+    public getXPToNextLevel(): number
+    {
+        return Math.ceil(((0.1 * 700)/Math.pow(Math.log(1.1), 2)) * (Math.pow(1.1, this.getLevel())-1) - this.xp);
     }
 }
