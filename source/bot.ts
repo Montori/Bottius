@@ -1,4 +1,4 @@
-import {Client, MessageEmbed, TextChannel, Role} from 'discord.js';
+import {Client, MessageEmbed, TextChannel} from 'discord.js';
 import { CommandService } from './Service/CommandService';
 import botConfig from "./botconfig.json";
 import { MessageService } from './Service/MessageService';
@@ -37,10 +37,8 @@ bot.on("ready", async () =>
    setInterval(() => delayedTaskService.handleDueDelayedTasks(), 600000);
    setInterval(() => tumbleWeedService.handleTumbleWeed(bot), 600000);
    console.log("INFO: All services loaded. Bot is ready.")
-
-   const fs = require('fs');
-   let config = JSON.parse(fs.readFileSync('botconfig.json', 'utf8'))
-   bot.user.setActivity(config.activity, {type : config.activityStatus, url : "https://twitch.tv/smexy-briccs"});
+   
+   //Reimplement activity set. It isnt working rn anyways so I just kicked it out.
 });
 
 bot.on("message", async message =>
