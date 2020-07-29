@@ -32,6 +32,7 @@ Follow these easy steps to get your Bottius instance working <sub><sup>obviously
         "migrationsDir": "source/Migration"
         }
     } 
+    
     if you have a custom port or want Bottius work on another DB you need to change it.
    
 8. now just start the bot from Bottius root directory `node out/bot.js`
