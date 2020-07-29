@@ -20,9 +20,9 @@ Follow these easy steps to get your Bottius instance working <sub><sup>obviously
     }
 6. compile Bottius with TypeScript `tsc`
 
-   if you dont have TypeScript installed do `npm install -g TypeScript`
+   if you dont have TypeScript installed do `npm install -g typescript`
 7. create a `ormconfig.json` in Bottius root directory. It should look like this
-     ````json
+     ```json
     {
         "type": "postgres",
         "url": "postgres://postgres:!DB_PASS!@localhost:5432/Bottius_DB",
@@ -31,7 +31,7 @@ Follow these easy steps to get your Bottius instance working <sub><sup>obviously
         "cli": {
         "migrationsDir": "source/Migration"
         }
-    } 
+    }
     
     if you have a custom port or want Bottius work on another DB you need to change it.
    
@@ -54,7 +54,7 @@ And voilà your migration is done! You can find it in `source/Migration`
 If something went wrong after a migration you can use `typeorm migration:revert`
 If something went really wrong follow these steps:
 
-1. delete `db.db`
+1. drop your database (restart the postgres server if a connection is still active)
 2. delete your migration in `source/Migration`
 3. delete `out/` directory
 4. compile `tsc`
