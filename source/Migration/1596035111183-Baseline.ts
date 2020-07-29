@@ -2,12 +2,12 @@ import {MigrationInterface, QueryRunner} from "typeorm";
 import { DelayedTask } from "../Entities/Persistent/DelayedTask";
 import { DelayedTaskType } from "../Entities/Transient/DelayedTaskType";
 
-export class Baseline1595524133622 implements MigrationInterface {
-    name = 'Baseline1595524133622'
+export class Baseline1596035111183 implements MigrationInterface {
+    name = 'Baseline1596035111183'
 
     public async up(queryRunner: QueryRunner): Promise<void> {
-        await queryRunner.query(`CREATE TABLE "partition" ("id" SERIAL NOT NULL, "guildID" character varying NOT NULL, "suggestChannel" character varying, "birthdayChannel" character varying, "birthdayRole" character varying, "xpIgnoreList" text array, "customPrefix" character varying, "disabledCommandsList" text array, "noMicList" text array, "tumbleWeedChannels" text array, "leaveChannel" character varying, "leaveMessage" character varying, "leaveMessageActive" boolean, CONSTRAINT "PK_3fa6dcf0fc76a1b6709aa9d1623" PRIMARY KEY ("id"))`, undefined);
-        await queryRunner.query(`CREATE TABLE "user" ("id" SERIAL NOT NULL, "discordID" character varying NOT NULL DEFAULT '', "addedDate" TIMESTAMP NOT NULL, "lastMessage" TIMESTAMP NOT NULL, "totalMessages" integer NOT NULL DEFAULT 0, "totalPings" integer NOT NULL DEFAULT 0, "headPats" integer NOT NULL DEFAULT 0, "xp" integer NOT NULL DEFAULT 0, "vcxp" integer NOT NULL DEFAULT 0, "permissionLevel" integer NOT NULL DEFAULT 0, "birthdate" TIMESTAMP, "partitionId" integer, CONSTRAINT "PK_cace4a159ff9f2512dd42373760" PRIMARY KEY ("id"))`, undefined);
+        await queryRunner.query(`CREATE TABLE "partition" ("id" SERIAL NOT NULL, "guildID" character varying NOT NULL, "suggestChannel" character varying, "birthdayChannel" character varying, "birthdayRole" character varying, "xpIgnoreList" text array, "customPrefix" character varying, "disabledCommandsList" text array, "noMicList" text array, "tumbleWeedChannels" text array, "leaveChannel" character varying, "leaveMessage" character varying, "leaveMessageActive" boolean, CONSTRAINT "UQ_138774ca6598807628f933648a8" UNIQUE ("guildID"), CONSTRAINT "PK_3fa6dcf0fc76a1b6709aa9d1623" PRIMARY KEY ("id"))`, undefined);
+        await queryRunner.query(`CREATE TABLE "user" ("id" SERIAL NOT NULL, "discordID" character varying NOT NULL DEFAULT '', "addedDate" TIMESTAMP NOT NULL, "lastMessage" TIMESTAMP NOT NULL, "totalMessages" integer NOT NULL DEFAULT 0, "totalPings" integer NOT NULL DEFAULT 0, "headPats" integer NOT NULL DEFAULT 0, "xp" integer NOT NULL DEFAULT 0, "vcxp" integer NOT NULL DEFAULT 0, "permissionLevel" integer NOT NULL DEFAULT 0, "birthdate" TIMESTAMP, "partitionId" integer, CONSTRAINT "UQ_bcd5fe92812069edbaf0e23096a" UNIQUE ("discordID", "partitionId"), CONSTRAINT "PK_cace4a159ff9f2512dd42373760" PRIMARY KEY ("id"))`, undefined);
         await queryRunner.query(`CREATE TABLE "bug" ("id" SERIAL NOT NULL, "createdAt" TIMESTAMP NOT NULL, "description" character varying NOT NULL, "assignorId" integer, CONSTRAINT "PK_9e7f67c6911b62a81ac3e336d4b" PRIMARY KEY ("id"))`, undefined);
         await queryRunner.query(`CREATE TABLE "delayed_task" ("id" SERIAL NOT NULL, "type" integer NOT NULL, "dueDate" TIMESTAMP NOT NULL, "description" character varying, CONSTRAINT "PK_e00d2d9b3958f5f4dcc572539ab" PRIMARY KEY ("id"))`, undefined);
         await queryRunner.query(`CREATE TABLE "lyrics" ("id" SERIAL NOT NULL, "songtext" character varying NOT NULL, "artist" character varying NOT NULL, "partitionId" integer, CONSTRAINT "PK_f7c5de22ef94f309591c5554f0f" PRIMARY KEY ("id"))`, undefined);
@@ -24,7 +24,7 @@ export class Baseline1595524133622 implements MigrationInterface {
         await queryRunner.query(`ALTER TABLE "quest" ADD CONSTRAINT "FK_93ec7d003a00d4f1feb4eb8e892" FOREIGN KEY ("assignorId") REFERENCES "user"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`, undefined);
         await queryRunner.query(`ALTER TABLE "quest_assignees_user" ADD CONSTRAINT "FK_85601f92ea45dff00a6d9681247" FOREIGN KEY ("questId") REFERENCES "quest"("id") ON DELETE CASCADE ON UPDATE NO ACTION`, undefined);
         await queryRunner.query(`ALTER TABLE "quest_assignees_user" ADD CONSTRAINT "FK_605c8a0aed6d0e8ea6f4d52eb26" FOREIGN KEY ("userId") REFERENCES "user"("id") ON DELETE CASCADE ON UPDATE NO ACTION`, undefined);
-   
+    
         let date = new Date();
         date.setUTCHours(0,0,0,0);
         new DelayedTask(date, DelayedTaskType.birthday).save();

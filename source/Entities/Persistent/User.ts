@@ -1,9 +1,10 @@
-import {Entity, PrimaryGeneratedColumn, Column} from 'typeorm';
+import {Entity, PrimaryGeneratedColumn, Column, Unique} from 'typeorm';
 import { AbstractPartionable } from './AbstractPartionable';
 import { Partition } from './Partition';
 import { PermissionLevel } from '../Transient/PermissionLevel';
 
 @Entity()
+@Unique(["discordID", "partition"])
 export class User extends AbstractPartionable
 {
     @PrimaryGeneratedColumn()

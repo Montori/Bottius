@@ -6,7 +6,7 @@ export class Partition extends BaseEntity
     @PrimaryGeneratedColumn()
     public readonly id!: number;
 
-    @Column()
+    @Column({unique: true})
     public readonly guildID: string;
 
     @Column({nullable: true})
