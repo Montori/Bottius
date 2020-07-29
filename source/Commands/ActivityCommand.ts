@@ -10,16 +10,13 @@ export class ActivityCommand extends AbstractCommand
 
     public async runInternal(bot: Client, message: Message, messageArray: string[]) 
     {
-        const fs = require('fs');
-        let config = JSON.parse(fs.readFileSync('botconfig.json', 'utf8'))
+        let embed: MessageEmbed = new MessageEmbed().setColor("00ff00").setAuthor("Activity changed").setDescription(`${messageArray.join(" ")}`).setTimestamp(new Date());
         
         if(messageArray.join(" ").length > 100) return message.channel.send(new MessageEmbed().setAuthor("Too many characters").setColor("ff0000"))
         let activityStatus: number = this.ACTIVITY_TYPE.findIndex(activity => messageArray.slice(0,2).join(" ").toUpperCase().includes(activity));
         let activity: string = messageArray.join(" ").substring(activityStatus >= 0 ? this.ACTIVITY_TYPE[activityStatus].length : 0);
         activityStatus = activityStatus >= 0 ? activityStatus : 0;
-        config.activityStatus = activityStatus;
-        config.activity = activity;
-        fs.writeFileSync('botconfig.json', JSON.stringify(config));
+
         bot.user.setActivity(activity, {type : activityStatus, url : "https://twitch.tv/smexy-briccs"});
         message.channel.send(super.getSuccessEmbed("Activity changed").setDescription(`${messageArray.join(" ")}`));
     }
