@@ -46,9 +46,9 @@ export class DelayedTaskService
             {
                 this.handleBirthdayTask();
 
-                let nextDueDate: Date = task.dueDate;
-                nextDueDate.setDate(nextDueDate.getDate() +1);
-
+                let nextDueDate = new Date();
+                nextDueDate.setUTCHours(0,0,0,0);
+                
                 new DelayedTask(nextDueDate, DelayedTaskType.birthday).save();
                 task.remove();
             }

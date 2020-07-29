@@ -24,10 +24,7 @@ export class Baseline1596035111183 implements MigrationInterface {
         await queryRunner.query(`ALTER TABLE "quest" ADD CONSTRAINT "FK_93ec7d003a00d4f1feb4eb8e892" FOREIGN KEY ("assignorId") REFERENCES "user"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`, undefined);
         await queryRunner.query(`ALTER TABLE "quest_assignees_user" ADD CONSTRAINT "FK_85601f92ea45dff00a6d9681247" FOREIGN KEY ("questId") REFERENCES "quest"("id") ON DELETE CASCADE ON UPDATE NO ACTION`, undefined);
         await queryRunner.query(`ALTER TABLE "quest_assignees_user" ADD CONSTRAINT "FK_605c8a0aed6d0e8ea6f4d52eb26" FOREIGN KEY ("userId") REFERENCES "user"("id") ON DELETE CASCADE ON UPDATE NO ACTION`, undefined);
-    
-        let date = new Date();
-        date.setUTCHours(0,0,0,0);
-        new DelayedTask(date, DelayedTaskType.birthday).save();
+        await queryRunner.query(`INSERT INTO public.delayed_task("type", "dueDate") VALUES (0, '2020-07-10 22:00:00')`, undefined);
     }
 
     public async down(queryRunner: QueryRunner): Promise<void> {
