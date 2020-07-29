@@ -15,7 +15,7 @@ export class UwUifyCommand extends AbstractCommand
         else 
         {
             if(this.cooldownService.isCooldown(message.member, this.commandOptions.commandName + "<functional")) return message.channel.send(new MessageEmbed().setColor("#ff0000").setDescription('You can only use this command every 30 seconds'));
-            let rawMessage: String = messageArray.join(" ").replace(/\s/g);
+            let rawMessage: String = messageArray.join(" ").replace(/\s/g, '');
             if(rawMessage.length > 150) return message.channel.send(super.getFailedEmbed().setDescription("Your message is too long! Shorten it down."));
             let botmessage = messageArray.join(' ');
 
