@@ -28,9 +28,7 @@ const connection = createConnection();
 
 connection.then(async connection => 
    {
-      await connection.query('PRAGMA foreign_keys=OFF');
       await connection.runMigrations();
-      await connection.query('PRAGMA foreign_keys=ON');
    });
 
 bot.on("ready", async () =>
