@@ -40,7 +40,7 @@
     fi
 
     # Used in combination with the sub-master installers to apply changes to
-    # the installers after downloading the latest updates to Bottius, without
+    # the installers after downloading the latest updates for Bottius, without
     # requiring the user to exit then re-execute the master installer
     master_installer="/home/bottius/linux-master-installer.sh"
     export master_installer
@@ -284,26 +284,27 @@
                 supported=false
                 ;;
         esac
-    elif [[ $distro = "rhel" || $distro = "centos" ]]; then
-        case "$sver" in
-            7)
-                if [[ $bits = 64 ]]; then
-                    execute_centos_rhel_installer
-                else
-                    supported=false
-                fi
-                ;;
-            8)
-                if [[ $bits = 64 ]]; then
-                    execute_centos_rhel_installer
-                else
-                    supported=false
-                fi
-                ;;
-            *)
-                supported=false
-                ;;
-        esac
+    # TEMPORARILY DISABLED/REMOVED
+    #elif [[ $distro = "rhel" || $distro = "centos" ]]; then
+    #    case "$sver" in
+    #        7)
+    #            if [[ $bits = 64 ]]; then
+    #                execute_centos_rhel_installer
+    #            else
+    #                supported=false
+    #            fi
+    #            ;;
+    #        8)
+    #            if [[ $bits = 64 ]]; then
+    #                execute_centos_rhel_installer
+    #            else
+    #                supported=false
+    #            fi
+    #            ;;
+    #        *)
+    #            supported=false
+    #            ;;
+    #    esac
     else
         supported=false
     fi

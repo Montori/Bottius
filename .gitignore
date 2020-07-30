@@ -4,4 +4,5 @@ out/
 *.db
 botconfig.json
 ormconfig.json
-old_bottius
+Old_Bottius/
+source/botconfig.json.old
