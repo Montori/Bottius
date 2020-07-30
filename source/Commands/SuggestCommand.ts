@@ -4,7 +4,6 @@ import { AbstractCommandOptions } from "../Entities/Transient/AbstractCommandOpt
 import { PermissionLevel } from "../Entities/Transient/PermissionLevel";
 import { PartitionService } from "../Service/PartitionService";
 import { Partition } from "../Entities/Persistent/Partition";
-import { isRegExp } from "util";
 
 export class SuggestCommand extends AbstractCommand
 {
@@ -73,13 +72,7 @@ export class SuggestCommand extends AbstractCommand
             message.react('✅');
             setTimeout(() => message.delete(), 5000);
             this.cooldownService.addCooldown(message.member, this.commandOptions.commandName + "<functional", 1800);
-        }            
-        
-         
-        
-
-
-
+        }
     }
 
     private sendEmbed(channel: TextChannel, embed: MessageEmbed)
