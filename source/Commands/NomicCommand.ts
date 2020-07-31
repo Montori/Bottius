@@ -14,36 +14,33 @@ export class NomicCommand extends AbstractCommand
     {
         message.channel.send(super.getFailedEmbed().setDescription("This command is disabled for now until vc xp is implemented again"));
 
-//        let partition: Partition = await this.partitionService.getPartition(message.guild);
-//        let channel: TextChannel = message.mentions.channels.first();
-//
-//        // Removes a nomic channel
-//        if(messageArray[0] == "remove")
-//        {
-//            if(!channel) return message.channel.send(super.getFailedEmbed().setDescription("Please provide a valid channel"));
-//            if(!partition.getNoMicList().some(string => string == channel.id)) return message.channel.send(super.getFailedEmbed().setDescription("VC XP gain is not enabled in this channel"));
-//            partition.removeFromNoMicList(channel.id);
-//            partition.save();
-//            message.channel.send(super.getSuccessEmbed().setDescription(`Regular XP gain is now enabled in ${channel}`));
-//        }
-//        // List all of the nomic channels
-//        else if(messageArray[0] == "list")
-//        {
-//            let nomicChannelIDList: Array<string> = partition.getNoMicList();
-//            let nomicChannels: Array<TextChannel> = nomicChannelIDList.map(channelID => message.guild.channels.resolve(channelID) as TextChannel);
-//            if(!nomicChannels.length) return message.channel.send(super.getSuccessEmbed("There are currently no nomic channels"));
-//            let embed: MessageEmbed = super.getSuccessEmbed("List of nomic channels").setDescription(nomicChannels.join("\n"));
-//            message.channel.send(embed);
-//        }
-//        // Adds a nomic channel
-//        else
-//        {
-//            if(!channel) return message.channel.send(super.getFailedEmbed().setDescription("Please provide a valid channel"));
-//            if(partition.getNoMicList().some(string => string == channel.id)) return message.channel.send(super.getFailedEmbed().setDescription("VC XP gain has already been enabled in this channel"));
-//            partition.addToNoMicList(channel.id);
-//            partition.save();
-//            message.channel.send(super.getSuccessEmbed().setDescription(`VC XP will now be gained in ${channel}`));
-//        }
+       let partition: Partition = await this.partitionService.getPartition(message.guild);
+       let channel: TextChannel = message.mentions.channels.first();
+
+       if(messageArray[0] == "remove")
+       {
+           if(!channel) return message.channel.send(super.getFailedEmbed().setDescription("Please provide a valid channel"));
+           if(!partition.getNoMicList().some(string => string == channel.id)) return message.channel.send(super.getFailedEmbed().setDescription("VC XP gain is not enabled in this channel"));
+           partition.removeFromNoMicList(channel.id);
+           partition.save();
+           message.channel.send(super.getSuccessEmbed().setDescription(`Regular XP gain is now enabled in ${channel}`));
+       }
+       else if(messageArray[0] == "list")
+       {
+           let nomicChannelIDList: Array<string> = partition.getNoMicList();
+           let nomicChannels: Array<TextChannel> = nomicChannelIDList.map(channelID => message.guild.channels.resolve(channelID) as TextChannel);
+           if(!nomicChannels.length) return message.channel.send(super.getSuccessEmbed("There are currently no nomic channels"));
+           let embed: MessageEmbed = super.getSuccessEmbed("List of nomic channels").setDescription(nomicChannels.join("\n"));
+           message.channel.send(embed);
+       }
+       else
+       {
+           if(!channel) return message.channel.send(super.getFailedEmbed().setDescription("Please provide a valid channel"));
+           if(partition.getNoMicList().some(string => string == channel.id)) return message.channel.send(super.getFailedEmbed().setDescription("VC XP gain has already been enabled in this channel"));
+           partition.addToNoMicList(channel.id);
+           partition.save();
+           message.channel.send(super.getSuccessEmbed().setDescription(`VC XP will now be gained in ${channel}`));
+       }
     }
 }
 

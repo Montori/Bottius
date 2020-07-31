@@ -4,6 +4,7 @@ import { AbstractCommandOptions } from "../Entities/Transient/AbstractCommandOpt
 import { PermissionLevel } from "../Entities/Transient/PermissionLevel";
 import { PartitionService } from "../Service/PartitionService";
 import { Partition } from "../Entities/Persistent/Partition";
+import { CommandService } from "../Service/CommandService";
 
 export class EnableCommand extends AbstractCommand
 {
@@ -13,8 +14,14 @@ export class EnableCommand extends AbstractCommand
     public async runInternal(bot: Client, message: Message, messageArray: Array<string>)
     {
         let partition: Partition = await this.partitionService.getPartition(message.guild);
-        if (partition.getDisabledCommandsList().indexOf(messageArray[0]) == -1) return message.channel.send(super.getFailedEmbed().setDescription("This command is not disabled!"));
-        partition.removeFromDisabledCommandList(messageArray[0]);
+        let commandToEnable: string = messageArray[0];
+
+        if(!messageArray.length) return super.sendHelp(message);
+        if (!(CommandService.getInstance().getCommandMap().has(messageArray[0]))) 
+            return message.channel.send(super.getFailedEmbed().setDescription("Please specify a valid command!"));
+        if (!partition.getDisabledCommandsList().some(disabledCommand => disabledCommand == commandToEnable)) return message.channel.send(super.getFailedEmbed().setDescription("This command is not disabled!"));
+        
+        partition.removeFromDisabledCommandList(commandToEnable);
         partition.save();
         message.channel.send(super.getSuccessEmbed().setDescription(`The command \`${messageArray[0]}\` has been enabled!`)); 
     }

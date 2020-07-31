@@ -14,7 +14,6 @@ export class SuggestCommand extends AbstractCommand
     public async runInternal(bot: Client, message: Message, messageArray: Array<string>)
     {  
         let partition: Partition = await this.partitionService.getPartition(message.guild);
-        let lock = false;
 
         if((await this.userService.getUser(message.member, message.guild)).permissionLevel > PermissionLevel.admin)
         {
@@ -22,28 +21,24 @@ export class SuggestCommand extends AbstractCommand
             {
                 if(messageArray[1] == "set")
                 {
-                    lock = true;
                     let channel: TextChannel = message.mentions.channels.first();
                     if(!channel) return message.channel.send(super.getFailedEmbed().setDescription("Please provide a valid channel"));
 
                     partition.suggestChannel = channel.id;
                     partition.save();
-                    message.channel.send(super.getSuccessEmbed().setDescription(`Suggest channel has been set to ${channel}`));
+                    return message.channel.send(super.getSuccessEmbed().setDescription(`Suggest channel has been set to ${channel}`));
                 }
-                else if(messageArray[1] == "remove")
+                else if(messageArray[1] == "reset")
                 {
-                    lock = true;
                     if(!partition.suggestChannel) return message.channel.send(super.getFailedEmbed().setDescription("Suggest channel has not been set"));
                 
                     partition.suggestChannel = null;
                     partition.save();
-                    message.channel.send(super.getSuccessEmbed().setDescription("Suggest channel has been removed"));
+                    return message.channel.send(super.getSuccessEmbed().setDescription("Suggest channel has been removed"));
                 }
             }   
         }
 
-        // I added lock coz this code runs when the channel is being set or removed, this checks if a channel is being set or not
-        if(!lock)
         if(!messageArray[0])
         {
             message.channel.send(super.getFailedEmbed().setDescription("You cannot make a suggestion without any content")).then(message => setTimeout(() => message.delete(), 5000));

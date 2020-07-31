@@ -13,25 +13,24 @@ export class PrefixCommand extends AbstractCommand
     public async runInternal(bot: Client, message: Message, messageArray: Array<string>)
     {
         let partition: Partition = await this.partitionService.getPartition(message.guild);
+        
         if (messageArray[0] == "set")
         {
-            // only valid input
             if (messageArray.length != 2) return message.channel.send(super.getFailedEmbed().setDescription("Please provide a valid prefix, the prefix may not have spaces or be empty"));
-            let prefix = messageArray[1]; // parse prefix
-            partition.customPrefix = prefix; // set prefix in db and save
+            let prefix = messageArray[1];
+            partition.customPrefix = prefix;
             partition.save();
-            message.channel.send(super.getSuccessEmbed().setDescription(`The prefix now is \`${prefix}\``)); // feedback
+            
+            return message.channel.send(super.getSuccessEmbed().setDescription(`The prefix now is \`${prefix}\``));
         }
-        else if (messageArray[0] == "reset")
+        if (messageArray[0] == "reset")
         {
-            partition.customPrefix = null; // reset, save and feedback
+            partition.customPrefix = null;
             partition.save();
-            message.channel.send(super.getSuccessEmbed().setDescription(`The prefix has been successfully reset to \`${AbstractCommandOptions.prefix}\``));
+            return message.channel.send(super.getSuccessEmbed().setDescription(`The prefix has been successfully reset to \`${AbstractCommandOptions.prefix}\``));
         }
-        else
-        {
-            super.sendHelp(message);
-        }
+
+        return super.sendHelp(message);
     }
 }
 

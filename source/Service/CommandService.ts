@@ -60,7 +60,7 @@ export class CommandService
         this.commandMap.set("stats", new StatsCommand());
         this.commandMap.set("perk", new PerkCommand());
         this.commandMap.set("leaderboard", new LeaderboardCommand());
-        this.commandMap.set("setactivity", new ActivityCommand());
+        this.commandMap.set("activity", new ActivityCommand());
         this.commandMap.set("help", new HelpCommand());
         this.commandMap.set("permission", new PermissionCommand());
         this.commandMap.set("suggest", new SuggestCommand());

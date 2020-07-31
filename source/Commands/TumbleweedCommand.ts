@@ -14,7 +14,7 @@ export class TumbleweedCommand extends AbstractCommand
     {
         let partition: Partition = await this.partitionService.getPartition(message.guild);
 
-        if(messageArray.join(" ").startsWith("remove"))
+        if(messageArray[0] == "remove")
         {
             let tumbleweedChannel: TextChannel = message.mentions.channels.first() as TextChannel;
             if(!tumbleweedChannel) return message.channel.send(super.getFailedEmbed().setDescription("Please provide a valid description"));
@@ -22,7 +22,7 @@ export class TumbleweedCommand extends AbstractCommand
             partition.removeFromTumbleWeedChannels(tumbleweedChannel.id);
             message.channel.send(super.getSuccessEmbed().setDescription(`${tumbleweedChannel} will no longer receive tumbleweeds.`));
         }
-        else if(messageArray.join(" ").startsWith("list"))
+        else if(messageArray[0] == "list")
         {
             let tumbleweedChannelIDList: Array<string> = partition.getTumbleWeedChannels();
             let tumbleweedChannels: Array<TextChannel> = tumbleweedChannelIDList.map(channelID => message.guild.channels.resolve(channelID) as TextChannel);
@@ -30,7 +30,7 @@ export class TumbleweedCommand extends AbstractCommand
             let embed: MessageEmbed = super.getSuccessEmbed("Channels under attack from tumbleweeds").setDescription(tumbleweedChannels.join("\n"));
             message.channel.send(embed);
         }      
-        else
+        else if (messageArray[0] == "add")
         {
             let tumbleweedChannel: TextChannel = message.mentions.channels.first() as TextChannel;
             if(!tumbleweedChannel) return message.channel.send(super.getFailedEmbed().setDescription("Please provide a valid channel"));
@@ -38,6 +38,7 @@ export class TumbleweedCommand extends AbstractCommand
             partition.addToTumbleWeedChannels(tumbleweedChannel.id);
             message.channel.send(super.getSuccessEmbed().setDescription(`${tumbleweedChannel} will now receive tumbleweeds.\nTake cover!`));            
         }
+        else return super.sendHelp(message);
 
         partition.save();
     }
@@ -51,7 +52,7 @@ class TumbleweedCommandOptions extends AbstractCommandOptions
         this.commandName = "tumbleweed";
         this.description = "sends a tumbleweed when the chat is inactive";
         this.reqPermission = PermissionLevel.admin;
-        this.usage = `${AbstractCommandOptions.prefix}tumbleweed {#channel}` +
+        this.usage = `${AbstractCommandOptions.prefix}tumbleweed add {#channel}` +
                      `\n${AbstractCommandOptions.prefix}tumbleweed remove {#channel}` +
                      `\n${AbstractCommandOptions.prefix}tumbleweed list`;
     }
