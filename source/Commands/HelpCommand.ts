@@ -14,7 +14,9 @@ export class HelpCommand extends AbstractCommand
         if(!messageArray[0])
         {
             let helpEmbed: MessageEmbed = super.getSuccessEmbed("Bottius Command Help").setFooter("Don't worry this embed will get fancified soon.");
-            commandMap.forEach(command => helpEmbed.addField(`${command.commandOptions.commandName}`, `${command.commandOptions.description}`));
+            let commandList: Array<AbstractCommand> = Array.from(commandMap.values());
+            commandList.sort((command1, command2) => command1.commandOptions.commandName.localeCompare(command2.commandOptions.commandName));
+            commandList.forEach(command => helpEmbed.addField(`${command.commandOptions.commandName}`, `${command.commandOptions.description}`, true));
             return message.channel.send(helpEmbed);
         }else
         {

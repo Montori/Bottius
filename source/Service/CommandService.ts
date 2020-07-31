@@ -77,7 +77,7 @@ export class CommandService
         this.commandMap.set("avatar", new AvatarCommand());
         this.commandMap.set("tumbleweed", new TumbleweedCommand());
         this.commandMap.set("leavemessage", new LeavemessageCommand());
-        this.commandMap.set("nomic", new NomicCommand());
+        //this.commandMap.set("nomic", new NomicCommand()); disabled until vcxp is reimplemented
         this.commandMap.set("xpignore", new XPIgnoreCommand());
         this.commandMap.set("prefix", new PrefixCommand());
         this.commandMap.set("enable", new EnableCommand());
