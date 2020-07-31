@@ -139,6 +139,30 @@
             }
         fi
 
+        # Installs git if it isn't already
+        if ! hash git &>/dev/null; then
+            echo "${yellow}git is not installed${nc}"
+            echo "Installing git..."
+            apt -y install git || {
+                echo "${red}Failed to install git" >&2
+                echo "${cyan}git must be installed in order to continue${nc}"
+                echo -e "\nExiting..."
+                exit 1
+            }
+        fi
+
+        # Installs gpg2 if it isn't already
+        if ! hash gpg2 &>/dev/null; then
+            echo "${yellow}gpg2 is not installed${nc}"
+            echo "Installing gpg2..."
+            apt -y install gnupg2 || {
+                echo "${red}Failed to install gpg2" >&2
+                echo "${cyan}gpg2 must be installed in order to continue${nc}"
+                echo -e "\nExiting..."
+                exit 1
+            }
+        fi
+
     #
     # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
     #
@@ -165,7 +189,7 @@
         echo "Moving files/directories associated with Bottius to 'Old_Bottius/${old_bottius}'..."
         for dir in "${files[@]}"; do
             if [[ -d $dir || -f $dir ]]; then
-                cp -rf "$dir" Old_Bottius/"$old_bottius" # TODO: Error catching
+                cp -rf "$dir" Old_Bottius/"$old_bottius" # TODO: Error catching???
             fi
         done
      
@@ -199,7 +223,14 @@
             echo "Skipping typescript compilation..."
         else
             echo "Compiling typescript..."
-            # TODO: make compile
+            tsc || {
+                echo "${red}Failed to compile code${nc}" >&2
+                echo -e "${red}Exiting...\n${nc}"
+                exit 1
+            }
+            echo -e "\n${cyan}If there are any errors, resolve whatever issue is" \
+                "causing them, then attempt to compile the code again\n${nc}"
+            read -p "Press [Enter] to return to the installer menu"
         fi
 
 
@@ -455,8 +486,9 @@
             else
                 echo "7. Compile code ${green}(Already compiled)${nc}"
             fi
-            #### TODO: STUFF BELOW
-            echo "8. Stop and exit script"
+
+            echo "8. Configure Postgres database"
+            echo "9. Stop and exit script"
             read option
             case "$option" in
                 1)
@@ -492,7 +524,7 @@
                     if [[ ! -f source/botconfig.json ]]; then
                         echo "${yellow}'botconfig.json' doesn't exist. Before" \
                             "compiling the code, create botconfig.json via" \
-                            "option 5 on the installer menu"
+                            "option 5 on the installer menu.${nc}"
                         continue
                     fi
                     printf "We will now compile the bottius code. "
@@ -503,11 +535,36 @@
                         continue
                     }
                     echo -e "\n${cyan}If there are any errors, resolve whatever issue is" \
-                        "causing them, then attempt to compile the code again\n"
+                        "causing them, then attempt to compile the code again\n${nc}"
                     read -p "Press [Enter] to return to the installer menu"
                     clear
                     ;;
                 8)
+                    clear
+                    if ! hash psql &>/dev/null; then
+                        echo "${yellow}Postgres is not installed. Postgres" \
+                            "must be installed before it can be configured.${nc}"
+                        continue
+                    fi
+                    printf "We will now configure the Postgres database. "
+                    read -p "Press [Enter] to continue."
+                    echo "Creating 'Bottius' database user..."
+                    sudo -u postgres -H sh -c "createuser -P Bottius" || {
+                        echo "${red}Failed to create 'Bottius' database user${nc}"
+                        read -p "Press [Enter] to return to the installer menu" >&2
+                        continue
+                    }
+                    echo "Creating database for Bottius..."
+                    sudo -u postgres -H sh -c "createdb -O Bottius Bottius_DB" || {
+                        echo "${red}Failed to create a database for Bottius${nc}" >&2
+                        read -p "Press [Enter] to return to the installer menu"
+                        continue
+                    }
+                    echo -e "\n${green}Postgres database has been configured${nc}"
+                    read -p "Press [Enter] to return to the installer menu"
+                    clear
+                    ;;
+                9)
                     echo -e "\nExiting..."
                     exit 0
                     ;;
