@@ -27,7 +27,7 @@ class ActivityCommandOptions extends AbstractCommandOptions
     constructor()
     {
         super();
-        this.commandName = "setActivity";
+        this.commandName = "activity";
         this.description = "sets the activity of the bot";
         this.usage = `${AbstractCommandOptions.prefix}setActivity {playing|streaming|watching|listening to} {text}`;
         this.reqPermission = PermissionLevel.master;

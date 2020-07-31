@@ -1,7 +1,7 @@
 import { AbstractCommand } from "./AbstractCommand";
 import { AbstractCommandOptions } from "../Entities/Transient/AbstractCommandOptions";
 import { CommandService } from "../Service/CommandService"
-import { Message, Client } from "discord.js";
+import { Message, Client, MessageEmbed } from "discord.js";
 
 export class HelpCommand extends AbstractCommand
 {
@@ -13,9 +13,9 @@ export class HelpCommand extends AbstractCommand
         
         if(!messageArray[0])
         {
-            // let helpEmbed: MessageEmbed = super.getSuccessEmbed("Bottius Command Help");
-            // commandMap.forEach(command => helpEmbed.addField(`${command.commandOptions.commandName}`, `${command.commandOptions.description}`));
-            return message.channel.send(super.getFailedEmbed().setDescription("Command overview is currently not available"));
+            let helpEmbed: MessageEmbed = super.getSuccessEmbed("Bottius Command Help").setFooter("Don't worry this embed will get fancified soon.");
+            commandMap.forEach(command => helpEmbed.addField(`${command.commandOptions.commandName}`, `${command.commandOptions.description}`));
+            return message.channel.send(helpEmbed);
         }else
         {
             let command: AbstractCommand = commandMap.get(messageArray[0].toLowerCase());

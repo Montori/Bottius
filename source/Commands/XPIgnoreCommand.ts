@@ -47,7 +47,7 @@ class XPIgnoreCommandOptions extends AbstractCommandOptions
     constructor()
     {
         super();
-        this.commandName = "XPIgnore";
+        this.commandName = "xpignore";
         this.description = "configures the channels where users wont gain xp";
         this.reqPermission = PermissionLevel.admin;
         this.cooldown = 0;
