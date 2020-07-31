@@ -25,10 +25,10 @@ import { AvatarCommand } from "../Commands/AvatarCommand";
 import { TumbleweedCommand } from "../Commands/TumbleweedCommand";
 import { LeavemessageCommand } from "../Commands/LeaveMessageCommand";
 import { NomicCommand } from "../Commands/NomicCommand";
-import { XPIgnoreCommand } from "../Commands/XpIgnoreCommand";
 import { PrefixCommand } from "../Commands/PrefixCommand";
 import { EnableCommand } from "../Commands/EnableCommand";
 import { DisableCommand } from "../Commands/DisableCommand";
+import { XPIgnoreCommand } from "../Commands/XPIgnoreCommand";
 
 export class CommandService
 {
