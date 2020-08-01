@@ -23,28 +23,10 @@
 #
 ################################################################################
 #
-    echo "Importing public key..."
-    wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add - || {
-        echo "${red}Failed to import public key" >&2
-        echo "${cyan}The public key is required to download and install" \
-            "Postgres${nc}"
-        read -p "Press [Enter] to return to the installer menu"
-        exit 1
-    }
-
-    echo "Creating Postgres source file..."
-    sh -c 'echo "deb http://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" > /etc/apt/sources.list.d/pgdg.list' || {
-        echo "${red}Failed to create Postgres source file" >&2
-        echo "${cyan}The source file is required to download and install" \
-            "Postgres${nc}"
-        read -p "Press [Enter] to return to the installer menu"
-        exit 1
-    }
-
     echo "Updating packages..."
-    apt update
+    yum -y update
     echo "Installing Postgres..."
-    apt -y install postgresql-12 || {
+    yum install postgresql-server  || {
         echo "${red}Failed to install Postgres${nc}" >&2
         read -p "Press [Enter] to return to the installer menu"
         exit 1
@@ -53,10 +35,14 @@
 #
 ################################################################################
 #
-# Starts and enables 'postgresql.service'
+# Starts and enables 'postgresql.service', and initializes Postgres database
 #
 ################################################################################
 #
+    echo "Initializing Postgres database..."
+    postgresql-setup --initdb || {
+        echo "${red}Failed to initialize the Postgres database${nc}" >&2
+    }
     echo "Enabling 'postgresql.service'..."
     systemctl enable postgresql.service || {
         echo "${red}Failed to enable 'postgresql.service'" >&2

@@ -8,7 +8,7 @@
 # https://github.com/nodesource/distributions/blob/master/README.md
 #
 # Note: All variables are exported from 'linux-master-installer.sh' and
-# 'debian-ubuntu-installer.sh'.
+# 'centos-rhel-installer.sh'.
 #
 ################################################################################
 #
@@ -17,14 +17,14 @@
 ################################################################################
 #
     install_nodejs() {
-        echo "Downloading Node.js repo installer..." 
-        curl -sL https://deb.nodesource.com/setup_14.x | sudo -E bash - || {
+        echo "Downloading Node.js repo installer..."
+        curl -sL https://rpm.nodesource.com/setup_14.x | bash - || {
             echo "${red}Failed to download the Node.js installer${nc}" >&2
             read -p "Press [Enter] to return to the installer menu"
             exit 1
         }
         echo "Installing nodejs..."
-        apt -y install nodejs || {
+        yum -y install nodejs || {
             echo "${red}Failed to install nodejs${nc}" >&2
             read -p "Press [Enter] to return to the installer menu"
             exit 1
@@ -51,7 +51,7 @@
                 echo "${yellow}npm is not installed${nc}"
                 
                 # Npm might not be installed due to Node.js not being installed
-                if (! hash node || ! hash nodejs) &>/dev/null; then
+                if ! hash node &>/dev/null; then
                     echo "${yellow}nodejs is not installed${nc}"
                     install_nodejs
                 fi
@@ -61,7 +61,7 @@
                     # Sometimes npm isn't installed for some reason, and it is
                     # necessary to reinstall Node.js
                     echo -e "${cyan}Try reinstalling nodejs, then try again" \
-                        "\nTo reinstall nodejs: sudo apt reinstall" \
+                        "\nTo reinstall nodejs: sudo yum reinstall" \
                         "nodejs${nc}"
                     read -p "Press [Enter] to return to the installer menu"
                     exit 1

@@ -26,7 +26,7 @@
         # CentOS and RHEL use the yum/dnf package manager while Debian and
         # Ubuntu use apt
         if [[ $distro = "centos" || $distro = "rhel" ]]; then
-            # EPEL must be installed in order to install jq and during
+            # EPEL is required to install jq
             if [[ $sver = "7" ]]; then
                 if [[ $epel_installed = false ]]; then
                     yum -y install https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm && epel_installed=true || {
@@ -49,6 +49,7 @@
             pkg_manager="apt"
         fi
     }
+
 #
 ################################################################################
 #
@@ -62,7 +63,7 @@
         echo "Installing jq..."
         "$pkg_manager" -y install jq || {
             echo "${red}Failed to install jq" >&2
-            echo "${cyan}jq is required to create nicely formated json files${nc}"
+            echo "${cyan}jq is required to create human readable json files${nc}"
         }
     fi
 
@@ -90,8 +91,7 @@
 #
 ################################################################################
 #
-# Creates the Postgres config file or provides the user with a few options,
-# if the config file already exists
+# Creates or overwrites the Postgres config file 
 #
 ################################################################################
 #

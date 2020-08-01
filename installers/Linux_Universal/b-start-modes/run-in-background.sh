@@ -2,7 +2,7 @@
 
 ################################################################################
 #
-# Runs Bottius in the background, as a service on your system.
+# Runs Bottius in the background, as a service on the system.
 # If Bottius is already running in this mode, he'll be restarted instead
 #
 # Note: All variables (excluding $timer and $start_time) are exported from
@@ -23,12 +23,12 @@
 #
 ################################################################################
 #
-# Dealing with the disabling of 'bottius.service'
+# Disables 'bottius.service'
 #
 ################################################################################
 #
     # If 'bottius.service' is enabled
-    if [[ $start_service_status = 0 ]]; then
+    if [[ $bottius_service_startup = 0 ]]; then
         echo "Disabling 'bottius.service'..."
         systemctl disable bottius.service || {
             echo "${red}Failed to disable 'bottius.service'" >&2
@@ -46,7 +46,7 @@
 #
 ################################################################################
 #
-    if [[ $bullet_service_status = "active" ]]; then
+    if [[ $bottius_service_status = "active" ]]; then
         echo "Restarting 'bottius.service'..."
         systemctl restart bottius.service || {
             echo "${red}Failed to restart 'bottius.service'${nc}" >&2

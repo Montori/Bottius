@@ -284,27 +284,26 @@
                 supported=false
                 ;;
         esac
-    # TEMPORARILY DISABLED/REMOVED
-    #elif [[ $distro = "rhel" || $distro = "centos" ]]; then
-    #    case "$sver" in
-    #        7)
-    #            if [[ $bits = 64 ]]; then
-    #                execute_centos_rhel_installer
-    #            else
-    #                supported=false
-    #            fi
-    #            ;;
-    #        8)
-    #            if [[ $bits = 64 ]]; then
-    #                execute_centos_rhel_installer
-    #            else
-    #                supported=false
-    #            fi
-    #            ;;
-    #        *)
-    #            supported=false
-    #            ;;
-    #    esac
+    elif [[ $distro = "rhel" || $distro = "centos" ]]; then
+        case "$sver" in
+            7)
+                if [[ $bits = 64 ]]; then
+                    execute_centos_rhel_installer
+                else
+                    supported=false
+                fi
+                ;;
+            8)
+                if [[ $bits = 64 ]]; then
+                    execute_centos_rhel_installer
+                else
+                    supported=false
+                fi
+                ;;
+            *)
+                supported=false
+                ;;
+        esac
     else
         supported=false
     fi

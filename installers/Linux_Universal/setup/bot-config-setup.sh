@@ -26,7 +26,7 @@
         # CentOS and RHEL use the yum/dnf package manager while Debian and
         # Ubuntu use apt
         if [[ $distro = "centos" || $distro = "rhel" ]]; then
-            # EPEL must be installed in order to install jq and during
+            # EPEL is required to install jq
             if [[ $sver = "7" ]]; then
                 if [[ $epel_installed = false ]]; then
                     yum -y install https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm && epel_installed=true || {
@@ -49,6 +49,7 @@
             pkg_manager="apt"
         fi
     }
+
 #
 ################################################################################
 #
@@ -62,7 +63,7 @@
         echo "Installing jq..."
         "$pkg_manager" -y install jq || {
             echo "${red}Failed to install jq" >&2
-            echo "${cyan}jq is required to create nicely formated json files${nc}"
+            echo "${cyan}jq is required to create human-readable json files${nc}"
         }
     fi
 
@@ -83,7 +84,7 @@
     echo -e "-------------\n"
 
     echo "-------------"
-    echo "${cyan}If left empty, default prefix will be used: !!${nc}"
+    echo "${cyan}If left empty, this prefix will be used: !!${nc}"
     read -p "Enter Bottius's default prefix: " bot_prefix
     if [[ -z $bot_prefix ]]; then bot_prefix="!!"; fi
     echo "Bot Prefix: ${bot_prefix}"
@@ -91,21 +92,22 @@
 
     # TODO: Figure out how to add multiple ID's/wrap quotes around userID's
     echo "-------------"
-    echo -e "${cyan}This field is required and cannot be left blank\nNote: You" \
-        "may only add one userID as a bot master via this method${nc}"
+    echo -e "${cyan}This field is required and cannot be left blank\nNote:" \
+        "You may only add one userID as a bot master, via this method${nc}"
     while true; do
-        read -p "Enter the bot master userID's: " masters
-        if [[ -n $masters ]]; then
+        read -p "Enter a bot master userID: " master
+        if [[ -n $master ]]; then
             break
         fi
     done
-    echo "Bot Masters: $masters"
+    echo "Bot Master: $master"
     echo -e "-------------\n"
 
     echo "-------------"
-    echo "${cyan}If left empty, default activity and activity status will be used: PLAYING ready!${nc}"
+    echo "${cyan}If left empty, this activity and activity status will be" \
+        "used: PLAYING ready!${nc}"
     read -p "Enter bot activity (PLAYING|STREAMING|WATCHING|LISTENING): " activity
-    read -p "Enter bot activity status (i.e. cat videos): " activity_status
+    read -p "Enter bot activity status (i.e. ready!): " activity_status
     if [[ -z $activity ]]; then activity="PLAYING"; fi
     if [[ -z $activity_status ]]; then activity_status="ready!"; fi
     echo "Bot Activity: $activity"
@@ -115,15 +117,14 @@
 #
 ################################################################################
 #
-# Creates the Bottius config file or provides the user with a few options,
-# if the config file already exists
+# Creates or overwrites the Bottius config file 
 #
 ################################################################################
 #
     json="{
         \"token\": \"$bot_token\",
         \"prefix\": \"$bot_prefix\",
-        \"masters\": [\"$masters\"],
+        \"masters\": [\"$master\"],
         \"activity\": \"$activity\",
         \"activityStatus\": \"$activity_status\"
     }"

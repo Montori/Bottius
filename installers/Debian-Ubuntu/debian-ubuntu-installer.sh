@@ -27,7 +27,9 @@
         \n  \
         \n[Service]  \
         \nUser=bottius  \
-        \nExecStart=/usr/bin/node ${home}/out/bot.js  \
+        \nWorkingDirectory=${home} \
+        \nExecStart=/usr/bin/node out/bot.js \
+        \n#ExecStart=/usr/bin/node ${home}/out/bot.js  \
         \nRestart=always  \
         \nRestartSec=3  \
         \nStandardOutput=syslog  \
@@ -94,10 +96,10 @@
     # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
     #
         if [[ $bottius_service_status = "active" ]]; then
-            # B.1. $exists = true when 'bottius.service' is active, and is
+            # B.1. $b_active = true when 'bottius.service' is active, and is
             # used to indicate to the user that the service was stopped and that
             # they will need to start it
-            exists="true"
+            b_active="true"
             echo "Stopping 'bottius.service'..."
             systemctl stop bottius.service || {
                 echo "${red}Failed to stop 'bottius.service'" >&2
@@ -230,9 +232,7 @@
             }
             echo -e "\n${cyan}If there are any errors, resolve whatever issue is" \
                 "causing them, then attempt to compile the code again\n${nc}"
-            read -p "Press [Enter] to return to the installer menu"
         fi
-
 
         if [[ -f $bottius_service ]]; then
             echo "Updating 'bottius.service'..."
@@ -263,7 +263,7 @@
         fi
 
         # B.1.
-        if [[ $bb_active ]]; then
+        if [[ $b_active ]]; then
             echo "${cyan}NOTE: 'bottius.service' was stopped to update" \
                 "Bottius and has to be started using the run modes in the" \
                 "installer menu${nc}"
@@ -284,8 +284,12 @@
     echo -e "Welcome to the Bottius Debian/Ubuntu installer\n"
 
     while true; do
-        # TODO: Numerics for $bottius_service_status like $start_service_status???
+        # TODO: Numerics for $bottius_service_status like $bottius_service_startup???
         bottius_service_status=$(systemctl is-active bottius.service)
+        bottius_service_startup=$(systemctl is-enabled --quiet bottius.service \
+            2>/dev/null; echo $?)
+        database_user_exist=$(sudo -u postgres -H sh -c "psql postgres -tAc \"SELECT 1 FROM pg_roles WHERE rolname='Bottius'\"" 2>/dev/null)
+        database_exist=$(sudo -u postgres -H sh -c "psql postgres -tAc \"SELECT 1 FROM pg_database WHERE datname='Bottius_DB'\"" 2>/dev/null)
 
     #
     # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
@@ -437,8 +441,9 @@
             esac
         # If any of the prerequisites are not installed or set up, the user will
         # be required to install them using the options below
-        elif (! hash psql || ! hash node || ! hash npm || [[ ! -f \
-                out/botconfig.json || ! -f ormconfig.json || ! -d node_modules \
+        elif (! hash psql || ! hash node || ! hash npm || [[ ! $database_exist ||
+                ! $database_user_exist || ! -f out/botconfig.json || ! -f \
+                ormconfig.json || ! -d node_modules \
                 ]]) &>/dev/null; then
             echo "${cyan}Some or all prerequisites are not installed. Due to" \
                 "this, all options to run Bottius have been hidden until all" \
@@ -486,8 +491,15 @@
             else
                 echo "7. Compile code ${green}(Already compiled)${nc}"
             fi
+            
+            if [[ $database_exist && $database_user_exist ]]; then 
+                echo "8. Configure Postgres database ${green}(Already setup)${nc}"
+            elif [[ $database_exist || $database_user_exist ]]; then
+                echo "8. Configure Postgres database ${yellow}(Partially setup)${nc}"
+            else
+                echo "8. Configure Postgres database ${red}(Not setup)${nc}"
+            fi
 
-            echo "8. Configure Postgres database"
             echo "9. Stop and exit script"
             read option
             case "$option" in
@@ -515,7 +527,7 @@
                     clear
                     ;;
                 6)
-                    #export 
+                    export bottius_service_status
                     ./installers/Linux_Universal/setup/orm-config-setup.sh
                     clear
                     ;;
@@ -548,19 +560,33 @@
                     fi
                     printf "We will now configure the Postgres database. "
                     read -p "Press [Enter] to continue."
+
                     echo "Creating 'Bottius' database user..."
-                    sudo -u postgres -H sh -c "createuser -P Bottius" || {
-                        echo "${red}Failed to create 'Bottius' database user${nc}"
-                        read -p "Press [Enter] to return to the installer menu" >&2
-                        continue
-                    }
+                    if [[ $database_exist ]]; then
+                        echo "${cyan}Role 'Bottius' already exists${nc}"
+                    else
+                        sudo -u postgres -H sh -c "createuser -P Bottius" || {
+                            echo "${red}Failed to create 'Bottius' database user${nc}"
+                            read -p "Press [Enter] to return to the installer menu"
+                            continue
+                        }
+                    fi
+
                     echo "Creating database for Bottius..."
-                    sudo -u postgres -H sh -c "createdb -O Bottius Bottius_DB" || {
-                        echo "${red}Failed to create a database for Bottius${nc}" >&2
-                        read -p "Press [Enter] to return to the installer menu"
-                        continue
-                    }
-                    echo -e "\n${green}Postgres database has been configured${nc}"
+                    if [[ $database_user_exist ]]; then
+                        echo "${cyan}Database 'Bottius_DB' already exist${nc}"
+                    else
+                        sudo -u postgres -H sh -c "createdb -O Bottius Bottius_DB" || {
+                            echo "${red}Failed to create a database for Bottius${nc}" >&2
+                            create_failed=true
+                        }
+                    fi
+
+                    if [[ ! $create_failed ]]; then
+                        echo -e "\n${green}Postgres database has been configured${nc}"
+                    else
+                        echo -e "\n"
+                    fi
                     read -p "Press [Enter] to return to the installer menu"
                     clear
                     ;;
@@ -577,32 +603,14 @@
             esac
         # Bottius run mode options
         else 
-            if [[ $start_service_status = 0 && -f $bottius_service && $bottius_service_status \
-                    = "active" ]]; then
-                # E.1.
-                if [[ ! -f $start_script ]]; then
-                    echo "${yellow}WARNING: 'bottius-mongo-start.sh' does not" \
-                        "exist and will prevent Bottius from auto-restarting" \
-                        "on system reboot/start"
-                    echo "${cyan}Either re-download Bottius via the installer" \
-                        "or run Bottius only in the background${nc}"
-                fi
-
+            if [[ $bottius_service_startup = 0 && -f $bottius_service &&
+                    $bottius_service_status = "active" ]]; then
                 echo "1. Download/update Bottius and auto-restart files/services"
                 echo "2. Run Bottius in the background"
                 echo "3. Run Bottius in the background with auto-restart${green}" \
                     "(Running in this mode)${nc}"
-            elif [[ $start_service_status = 0 && -f $bottius_service && $bottius_service_status \
-                    != "active" ]]; then
-                # E.1.
-                if [[ ! -f $start_script ]]; then
-                    echo "${yellow}WARNING: 'bottius-mongo-start.sh' does not" \
-                        "exist and will prevent Bottius from auto-restarting" \
-                        "on system reboot/start"
-                    echo "${cyan}Either re-download Bottius via the installer" \
-                        "or run Bottius only in the background${nc}"
-                fi
-
+            elif [[ $bottius_service_startup = 0 && -f $bottius_service &&
+                    $bottius_service_status != "active" ]]; then
                 echo "1. Download/update Bottius and auto-restart files/services"
                 echo "2. Run Bottius in the background"
                 echo "3. Run Bottius in the background with auto-restart${yellow}" \
@@ -626,8 +634,7 @@
             fi
 
             echo "4. Stop Bottius"
-            echo "5. Create new/update Bottius config file"
-            echo "6. Stop and exit script"
+            echo "5. Stop and exit script"
             read option
             case "$option" in
                 1)
@@ -637,18 +644,14 @@
                 2)
                     export home
                     export bottius_service_status
-                    export start_script
-                    export start_service_status
-                    export bottius_service
+                    export bottius_service_startup
                     ./installers/Linux_Universal/b-start-modes/run-in-background.sh
                     clear
                     ;;
                 3)
                     export home
                     export bottius_service_status
-                    export start_script
-                    export start_service_status
-                    export start_service
+                    export bottius_service_startup
                     ./installers/Linux_Universal/b-start-modes/run-in-background-auto-restart.sh
                     clear
                     ;;
@@ -658,11 +661,6 @@
                     clear
                     ;;
                 5)
-                    export bottius_service_status
-                    ./installers/Linux_Universal/setup/bot-config-setup.sh
-                    clear
-                    ;;
-                6)
                     echo -e "\nExiting..."
                     exit 0
                     ;;

@@ -30,7 +30,7 @@
 ################################################################################
 #
     # If 'bottius.service' exists and is not enabled
-    if [[ -f $start_service && $start_service_status != 0 ]]; then
+    if [[ $bottius_service_startup != 0 ]]; then
         echo "Enabling 'bottius.service'..."
         systemctl enable bottius.service || {
             echo "${red}Failed to enable 'bottius.service'" >&2
