@@ -23,10 +23,33 @@
 #
 ################################################################################
 #
-    echo "Updating packages..."
-    yum -y update
+    if [[ $sver = 7 ]]; then
+        echo "Installing repository RPM..."
+        yum install https://download.postgresql.org/pub/repos/yum/reporpms/EL-7-x86_64/pgdg-redhat-repo-latest.noarch.rpm || {
+            echo "${red}Failed to install the repo RPM" >&2
+            echo "${cyan}The repo RPM required to download and install" \
+                "Postgres${nc}"
+            read -p "Press [Enter] to return to the installer menu"
+            exit 1
+        }
+    else
+        echo "Installing repository RPM..."
+        dnf install https://download.postgresql.org/pub/repos/yum/reporpms/EL-8-x86_64/pgdg-redhat-repo-latest.noarch.rpm || {
+            echo "${red}Failed to install the repo RPM" >&2
+            echo "${cyan}The repo RPM required to download and install" \
+                "Postgres${nc}"
+            read -p "Press [Enter] to return to the installer menu"
+            exit 1
+        }
+
+        echo "Disabling built in PostgreSQL module..."
+        dnf -qy module disable postgresql || {
+            echo "${red}Failed to disable the built in PostgreSQL module${nc}" >&2
+        }
+    fi
+
     echo "Installing Postgres..."
-    yum install postgresql-server  || {
+    yum install postgresql12-server  || {
         echo "${red}Failed to install Postgres${nc}" >&2
         read -p "Press [Enter] to return to the installer menu"
         exit 1
@@ -40,17 +63,17 @@
 ################################################################################
 #
     echo "Initializing Postgres database..."
-    postgresql-setup --initdb || {
+    /usr/pgsql-12/bin/postgresql-12-setup initdb || {
         echo "${red}Failed to initialize the Postgres database${nc}" >&2
     }
     echo "Enabling 'postgresql.service'..."
-    systemctl enable postgresql.service || {
+    systemctl enable postgresql-12.service || {
         echo "${red}Failed to enable 'postgresql.service'" >&2
         echo "${cyan}'postgresql.service' must be enabled so that it is" \
             "automatically started on system reboot${nc}"
     }
     echo "Starting 'postgresql.service'..."
-    systemctl start postgresql.service || {
+    systemctl start postgresql-12.service || {
         echo "${red}Failed to start 'postgresql.service'" >&2
         echo "${yellow}'postgresql.service' must be running for Bottiius to" \
             "work${nc}"
