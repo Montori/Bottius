@@ -25,7 +25,7 @@
 #
     if [[ $sver = 7 ]]; then
         echo "Installing repository RPM..."
-        yum install https://download.postgresql.org/pub/repos/yum/reporpms/EL-7-x86_64/pgdg-redhat-repo-latest.noarch.rpm || {
+        yum install -y https://download.postgresql.org/pub/repos/yum/reporpms/EL-7-x86_64/pgdg-redhat-repo-latest.noarch.rpm || {
             echo "${red}Failed to install the repo RPM" >&2
             echo "${cyan}The repo RPM required to download and install" \
                 "Postgres${nc}"
@@ -34,7 +34,7 @@
         }
     else
         echo "Installing repository RPM..."
-        dnf install https://download.postgresql.org/pub/repos/yum/reporpms/EL-8-x86_64/pgdg-redhat-repo-latest.noarch.rpm || {
+        dnf install -y https://download.postgresql.org/pub/repos/yum/reporpms/EL-8-x86_64/pgdg-redhat-repo-latest.noarch.rpm || {
             echo "${red}Failed to install the repo RPM" >&2
             echo "${cyan}The repo RPM required to download and install" \
                 "Postgres${nc}"
@@ -49,7 +49,7 @@
     fi
 
     echo "Installing Postgres..."
-    yum install postgresql12-server  || {
+    yum install -y postgresql12-server  || {
         echo "${red}Failed to install Postgres${nc}" >&2
         read -p "Press [Enter] to return to the installer menu"
         exit 1
@@ -66,13 +66,13 @@
     /usr/pgsql-12/bin/postgresql-12-setup initdb || {
         echo "${red}Failed to initialize the Postgres database${nc}" >&2
     }
-    echo "Enabling 'postgresql.service'..."
+    echo "Enabling 'postgresql-12.service'..."
     systemctl enable postgresql-12.service || {
         echo "${red}Failed to enable 'postgresql.service'" >&2
         echo "${cyan}'postgresql.service' must be enabled so that it is" \
             "automatically started on system reboot${nc}"
     }
-    echo "Starting 'postgresql.service'..."
+    echo "Starting 'postgresql-12.service'..."
     systemctl start postgresql-12.service || {
         echo "${red}Failed to start 'postgresql.service'" >&2
         echo "${yellow}'postgresql.service' must be running for Bottiius to" \

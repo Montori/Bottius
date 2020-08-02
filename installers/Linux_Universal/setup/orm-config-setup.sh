@@ -74,7 +74,7 @@
 #
 ################################################################################
 #
-    echo "-------------"
+    echo -e "\n-------------"
     echo -e "${cyan}This field is required and cannot be left blank\nURL" \
         "Format: postgres://[DB_USER]:[DB_USER_PASSWORD]@[DB_HOST]:[DB_PORT]/[DB_NAME]" \
         "\nExample: postgres://Bottius:Pa\$\$w0rd@localhost:5432/Bottius_DB\nNote:" \

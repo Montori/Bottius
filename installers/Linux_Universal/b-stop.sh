@@ -2,7 +2,7 @@
 
 ################################################################################
 #
-# Is in charge of stopping 'bottius.service'
+# Stops 'bottius.service'
 #
 # Note: All variables are exported from 'linux-master-installer.sh', and
 # 'debian-ubuntu-installer.sh' or 'centos-rhel-installer.sh'.

@@ -17,13 +17,13 @@
     home="/home/bottius"
     bottius_service="/lib/systemd/system/bottius.service"
     # Contains all of the files/directories that are associated with Bottius
-    # (only files/directories located in the Bottius root directory)
+    # (only files/directories located in the root directory)
     files=("installers/" "linux-master-installer.sh" "package-lock.json" \
         "package.json" "tsconfig.json" "source/" "README.md" "LICENSE" \
         "out/" ".gitignore/" ".git/")
     bottius_service_content="[Unit] \
-        \nDescription=A service to start Bottius after a crash or system reboot \
-        \nAfter=network.target postgresql.service  \
+        \nDescription=Starts Bottius after a crash or system reboot \
+        \nAfter=network.target postgresql-12.service  \
         \n  \
         \n[Service]  \
         \nUser=bottius  \
@@ -46,8 +46,36 @@
 #
 ################################################################################
 #
-    # This function deals with downloading and updating Bottius
-    download_b() {
+    change_ownership() {
+        echo "Changing ownership of the file(s) added to '/home/bottius'..."
+        chown bottius:bottius -R "$home"
+        cd "$home" || {
+            echo "${red}Failed to change working directory to" \
+                "'/home/bottius'" >&2
+            echo "${cyan}Change your working directory to '/home/bottius'${nc}"
+            echo -e "\nExiting..."
+            exit 1
+        }
+    }
+
+    move_to_home() {
+        echo "Moving files/directories associated with Bottius to '$home'..."
+        for dir in "${files[@]}"; do
+            # C.1. If two separate directories with the same name exist in
+            # $home and the current dir...
+            if [[ -d "${home}/${dir}" && -d $dir ]]; then
+                # D.1. Removes the directory in $home because an error would
+                # occur when moving $dir to $home
+                rm -rf "${home:?}/${dir:?}"
+            fi
+            # C.1. and D.1. are done because a directory can't overwrite
+            # another directory that contains files
+            mv -f "$dir" "$home" 2>/dev/null
+        done
+    }
+
+    # Downloads and updates Bottius
+    download_bot() {
         clear
         printf "We will now download/update Bottius. "
         read -p "Press [Enter] to begin."
@@ -55,31 +83,25 @@
         old_bottius=$(date)
         repo="https://github.com/Montori/Bottius"
 
-    #
-    # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
-    #
+    ############################################################################
     # Error trapping
-    #
-    # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+    ############################################################################
     #
         trap "echo -e \"\n\nScript forcefully stopped\" && clean_up; echo \
             \"Exiting...\" && exit" SIGINT SIGTERM SIGTSTP
 
-    #
-    # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
-    #
-    # Functions of the function
-    #
-    # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+    ############################################################################
+    # Sub-functions
+    ############################################################################
     #   
-        # Cleans up any loose ends/left over files if the script exits
+        # Cleans up any loose ends/left over files
         clean_up() {
             echo "Cleaning up files and directories..."
             if [[ -d tmp ]]; then rm -r tmp/; fi
 
             if [[ ! -d source || ! -f package-lock.json || ! -f package.json ]]; then
                 echo "Restoring from 'Old_Bottius/${old_bottius}'"
-                cp -r Old_Bottius/"$old_bottius"/* . && cp -r Old_Bottius/"$old_bottius"/.* . || {
+                cp -rf Old_Bottius/"$old_bottius"/* . && cp -rf Old_Bottius/"$old_bottius"/.* . || {
                     echo "${red}Failed to restore from 'Old_Bottius'${nc}" >&2
                 }
             fi
@@ -88,90 +110,50 @@
             chown bottius:bottius -R "$home"
         }
 
-    #
-    # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
-    #
+        # Installs software/applications used by the installers
+        required_software() {
+            if ! hash "$1" &>/dev/null; then
+                echo "${yellow}${1} is not installed${nc}"
+                echo "Installing ${1}..."
+                apt -y install "$1" || {
+                    echo "${red}Failed to install $1" >&2
+                    echo "${cyan}${1} must be installed to continue${nc}"
+                    echo -e "\nExiting..."
+                    exit 1
+                }
+            fi
+        }
+
+    ############################################################################
     # Prepping
-    #
-    # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+    ############################################################################
     #
         if [[ $bottius_service_status = "active" ]]; then
-            # B.1. $b_active = true when 'bottius.service' is active, and is
-            # used to indicate to the user that the service was stopped and that
-            # they will need to start it
-            b_active="true"
+            # B.1. $bot_sysctl_active = true when 'bottius.service' is active,
+            # and is used to indicate to the user that the service was stopped
+            # and that they will need to start it
+            local bot_sysctl_active="true"
             echo "Stopping 'bottius.service'..."
             systemctl stop bottius.service || {
                 echo "${red}Failed to stop 'bottius.service'" >&2
-                echo "${cyan}Manually stop 'bottius.service' before" \
-                    "continuing${nc}"
-                echo -e "\nExiting..."
-                exit 1
+                echo "${cyan}You will need to restart 'bottius.service' to" \
+                    "apply any updates to Bottius${nc}"
             }
         fi
     
-    #
-    # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
-    #
+    ############################################################################
     # Checking for required software/applications
+    ############################################################################
     #
-    # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
-    #
-        # Installs curl if it isn't already
-        if ! hash curl &>/dev/null; then
-            echo "${yellow}curl is not installed${nc}"
-            echo "Installing curl..."
-            apt -y install curl || {
-                echo "${red}Failed to install curl" >&2
-                echo "${cyan}curl must be installed in order to continue${nc}"
-                echo -e "\nExiting..."
-                exit 1
-            }
-        fi
- 
-        # Installs wget if it isn't already
-        if ! hash wget &>/dev/null; then
-            echo "${yellow}wget is not installed${nc}"
-            echo "Installing wget..."
-            apt -y install wget || {
-                echo "${red}Failed to install wget" >&2
-                echo "${cyan}wget must be installed in order to continue${nc}"
-                echo -e "\nExiting..."
-                exit 1
-            }
-        fi
+        required_software "curl"
+        required_software "wget"
+        required_software "git"
+        required_software "gpg2"
 
-        # Installs git if it isn't already
-        if ! hash git &>/dev/null; then
-            echo "${yellow}git is not installed${nc}"
-            echo "Installing git..."
-            apt -y install git || {
-                echo "${red}Failed to install git" >&2
-                echo "${cyan}git must be installed in order to continue${nc}"
-                echo -e "\nExiting..."
-                exit 1
-            }
-        fi
-
-        # Installs gpg2 if it isn't already
-        if ! hash gpg2 &>/dev/null; then
-            echo "${yellow}gpg2 is not installed${nc}"
-            echo "Installing gpg2..."
-            apt -y install gnupg2 || {
-                echo "${red}Failed to install gpg2" >&2
-                echo "${cyan}gpg2 must be installed in order to continue${nc}"
-                echo -e "\nExiting..."
-                exit 1
-            }
-        fi
-
-    #
-    # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
-    #
-    # Saving 'botconfig.json' and downloading/updating Bottius and its
-    # services
-    #
-    # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+    ############################################################################
+    # Creating backups of current code in /home/Bottius before downloading/
+    # updating Bottius 
+    ############################################################################
     #
         if [[ ! -d Old_Bottius ]]; then
             echo "Creating 'Old_Bottius/'..."
@@ -180,18 +162,19 @@
 
         echo "Creating 'Old_Bottius/${old_bottius}'..."
         mkdir Old_Bottius/"$old_bottius"
-        # Makes sure that if the user made any changes to the botconfig.json
-        # file, those changes or placed in source/botconfig.json so that
-        # when the code is compiled, the changes will be passed to the new 
-        # out/botconfig.json
+        # Makes sure that any changes to 'out/botconfig.json' by the user, are
+        # made to 'source/botconfig.json' so when the code is compiled, the
+        # changes will be passed to the new 'out/botconfig.json'
         if [[ -f out/botconfig.json ]]; then
             cat out/botconfig.json > source/botconfig.json
         fi
 
-        echo "Moving files/directories associated with Bottius to 'Old_Bottius/${old_bottius}'..."
+        echo "Backing up code to 'Old_Bottius/${old_bottius}'..."
         for dir in "${files[@]}"; do
             if [[ -d $dir || -f $dir ]]; then
-                cp -rf "$dir" Old_Bottius/"$old_bottius" # TODO: Error catching???
+                cp -rf "$dir" Old_Bottius/"$old_bottius" || {
+                    echo "${red}Failed to backup the code to 'Old_Bottius/${old_bottius}'${nc}" >&2
+                }
             fi
         done
      
@@ -214,7 +197,9 @@
                 exit 1
             }
             mv -f tmp/* . && mv -f tmp/.git* . || {
-                echo "error"
+                echo "${red}Failed to move updated code from tmp/ to ." >&2
+                echo "${cyan}Manually move all the files from tmp to .${nc}"
+                echo -e "\nExiting..."
                 exit 1
             }
             rm -rf tmp
@@ -224,14 +209,14 @@
         if ! hash tsc &>/dev/null || [[ ! -f source/botconfig.json ]]; then
             echo "Skipping typescript compilation..."
         else
-            echo "Compiling typescript..."
+            echo "Compiling code..."
             tsc || {
                 echo "${red}Failed to compile code${nc}" >&2
-                echo -e "${red}Exiting...\n${nc}"
+                echo -e "\nExiting..."
                 exit 1
             }
-            echo -e "\n${cyan}If there are any errors, resolve whatever issue is" \
-                "causing them, then attempt to compile the code again\n${nc}"
+            echo -e "\n${cyan}If there are any errors, resolve whatever issue" \
+                "is causing them, then attempt to compile the code again\n${nc}"
         fi
 
         if [[ -f $bottius_service ]]; then
@@ -241,18 +226,18 @@
             echo "Creating 'bottius.service'..."
             local create_or_update="create"
         fi
+        # TODO: Have the services updated with any new code the first time
+        # around, instead of the second time around (you have to run the
+        # download option twice before it will actually update the services
+        # due to the placement of the code)
         echo -e "$bottius_service_content" > "$bottius_service" || {
-            echo "${red}Failed to $create_or_update 'bottius.service'${nc}" \
-                >&2
+            echo "${red}Failed to $create_or_update 'bottius.service'${nc}" >&2
             local b_s_update="Failed"
         }
 
-    #
-    # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
-    #
+    ############################################################################
     # Cleaning up and presenting results...
-    #
-    # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+    ############################################################################
     #
         echo "Changing ownership of the file(s) added to '/home/bottius'..."
         chown bottius:bottius -R "$home"
@@ -263,7 +248,7 @@
         fi
 
         # B.1.
-        if [[ $b_active ]]; then
+        if [[ $bot_sysctl_active ]]; then
             echo "${cyan}NOTE: 'bottius.service' was stopped to update" \
                 "Bottius and has to be started using the run modes in the" \
                 "installer menu${nc}"
@@ -288,23 +273,22 @@
         bottius_service_status=$(systemctl is-active bottius.service)
         bottius_service_startup=$(systemctl is-enabled --quiet bottius.service \
             2>/dev/null; echo $?)
-        database_user_exist=$(sudo -u postgres -H sh -c "psql postgres -tAc \"SELECT 1 FROM pg_roles WHERE rolname='Bottius'\"" 2>/dev/null)
-        database_exist=$(sudo -u postgres -H sh -c "psql postgres -tAc \"SELECT 1 FROM pg_database WHERE datname='Bottius_DB'\"" 2>/dev/null)
+        database_user_exist=$(sudo -u postgres -H sh -c "psql postgres -tAc \
+            \"SELECT 1 FROM pg_roles WHERE rolname='Bottius'\"" 2>/dev/null)
+        database_exist=$(sudo -u postgres -H sh -c "psql postgres -tAc \
+            \"SELECT 1 FROM pg_database WHERE datname='Bottius_DB'\"" 2>/dev/null)
 
-    #
-    # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
-    #
+    ############################################################################
     # Makes sure that the system user 'bottius' and the home directory
     # '/home/bottius' already exists, and that your working directory is
     # '/home/bottius'.
     # 
     # TL;DR: Makes sure that all necessary (important) services, files,
     # directories, and users exist and are in their proper locations.
-    #
-    # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+    ############################################################################
     #
         # Creates a system user named 'bottius', if it does not already exist,
-        # then creates a home directory for it
+        # along with a home directory for it
         if ! id -u bottius &>/dev/null; then
             echo "${yellow}System user 'bottius' does not exist${nc}" >&2
             echo "Creating system user 'bottius'..."
@@ -316,82 +300,21 @@
                 exit 1
             }
 
-            echo "Moving files/directories associated with Bottius to" \
-                "'$home'..."
-            for dir in "${files[@]}"; do
-                # C.1. If two separate directories with the same name exist in
-                # $home and the current dir...
-                if [[ -d "${home}/${dir}" && -d $dir ]]; then
-                    # D.1. Removes the directory in $home because an error would
-                    # occur otherwise when moving $dir to $home
-                    rm -rf "${home:?}/${dir:?}"
-                fi
-                # C.1. and D.1. are done because a directory can't overwrite
-                # another directory that contains files
-                mv -f "$dir" "$home" 2>/dev/null
-            done
-            
-            echo "Changing ownership of the file(s) added to '/home/bottius'..."
-            chown bottius:bottius -R "$home"
-            cd "$home" || {
-                echo "${red}Failed to change working directory to" \
-                    "'/home/bottius'" >&2
-                echo "${cyan}Change your working directory to '/home/bottius'" \
-                    "${nc}"
-                echo -e "\nExiting..."
-                exit 1
-            }
+            move_to_home
+            change_ownership
         # Creates bottius's home directory if it does not exist
         elif [[ ! -d $home ]]; then
             echo "${yellow}bottius's home directory does not exist${nc}" >&2
             echo "Creating '$home'..."
             mkdir "$home"
 
-            echo "Moving files/directories associated with Bottius to" \
-                "'$home'..."
-            for dir in "${files[@]}"; do
-                # C.1.
-                if [[ -d "${home}/${dir}" && -d $dir ]]; then
-                    # D.1.
-                    rm -rf "${home:?}/${dir:?}"
-                fi
-                mv -f "$dir" "$home" 2>/dev/null
-            done
-
-            echo "Changing ownership of the file(s) added to '/home/bottius'..."
-            chown bottius:bottius -R "$home"
-            cd "$home" || {
-                echo "${red}Failed to change working directory to" \
-                    "'/home/bottius'" >&2
-                echo "${cyan}Change your working directory to '/home/bottius'" \
-                    "${nc}"
-                echo -e "\nExiting..."
-                exit 1
-            }
+            move_to_home
+            change_ownership
         fi
 
         if [[ $PWD != "/home/bottius" ]]; then
-            echo "Moving files/directories associated with Bottius to" \
-                "'$home'..."
-            for dir in "${files[@]}"; do
-                # C.1.
-                if [[ -d "${home}/${dir}" && -d $dir ]]; then
-                    # D.1.
-                    rm -rf "${home:?}/${dir:?}"
-                fi
-                mv -f "$dir" "$home" 2>/dev/null
-            done
-
-            echo "Changing ownership of the file(s) added to '/home/bottius'..."
-            chown bottius:bottius -R "$home"
-            cd "$home" || {
-                echo "${red}Failed to change working directory to" \
-                    "'/home/bottius'" >&2
-                echo "${cyan}Change your working directory to '/home/bottius'" \
-                    "${nc}"
-                echo -e "\nExiting..."
-                exit 1
-            }
+            move_to_home
+            change_ownership
         fi   
 
         # E.1. Creates 'bottius.service', if it does not exist
@@ -407,13 +330,10 @@
             systemctl daemon-reload
         fi
 
-    #
-    # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
-    #
+    ############################################################################
     # User options for installing perquisites, downloading Bottius, and
     # starting Bottius in different run modes
-    #
-    # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+    ############################################################################
     #
         # Checks to see if it is necessary to download Bottius
         if [[ ! -d source && ! -d out ]]; then
@@ -425,7 +345,7 @@
             read option
             case "$option" in
                 1)
-                    download_b
+                    download_bot
                     clear
                     ;;
                 2)
@@ -443,11 +363,10 @@
         # be required to install them using the options below
         elif (! hash psql || ! hash node || ! hash npm || [[ ! $database_exist ||
                 ! $database_user_exist || ! -f out/botconfig.json || ! -f \
-                ormconfig.json || ! -d node_modules \
-                ]]) &>/dev/null; then
-            echo "${cyan}Some or all prerequisites are not installed. Due to" \
-                "this, all options to run Bottius have been hidden until all" \
-                "the prerequisites are installed and setup.${nc}"
+                ormconfig.json || ! -d node_modules ]]) &>/dev/null; then
+            echo "${cyan}Some or all of the prerequisites are not installed." \
+                "Until they are all installed and set up, all options to run" \
+                "Bottius have been disabled.${nc}"
             echo "1. Download/update Bottius"
 
             if ! hash psql &>/dev/null; then
@@ -475,15 +394,13 @@
             if [[ ! -f source/botconfig.json ]]; then
                 echo "5. Set up botconfig.json ${red}(Not setup)${nc}"
             else
-                echo "5. Set up botconfig.json ${green}(Already" \
-                    "setup)${nc}"
+                echo "5. Set up botconfig.json ${green}(Already setup)${nc}"
             fi
 
             if [[ ! -f ormconfig.json ]]; then
                 echo "6. Set up ormconfig.json ${red}(Not setup)${nc}"
             else
-                echo "6. Set up ormconfig.json ${green}(Already" \
-                    "setup)${nc}"
+                echo "6. Set up ormconfig.json ${green}(Already setup)${nc}"
             fi
 
             if [[ ! -d out/ ]]; then
@@ -504,7 +421,7 @@
             read option
             case "$option" in
                 1)
-                    download_b
+                    download_bot
                     clear
                     ;;
                 2)
@@ -535,19 +452,24 @@
                     clear
                     if [[ ! -f source/botconfig.json ]]; then
                         echo "${yellow}'botconfig.json' doesn't exist. Before" \
-                            "compiling the code, create botconfig.json via" \
+                            "compiling the code, create 'botconfig.json' via" \
                             "option 5 on the installer menu.${nc}"
                         continue
                     fi
+                    
                     printf "We will now compile the bottius code. "
                     read -p "Press [Enter] to continue."
                     echo "Compiling code..."
                     tsc || {
                         echo "${red}Failed to compile code${nc}" >&2
+                        read -p "Press [Enter] to return to the installer menu"
+                        clear
                         continue
                     }
+
                     echo -e "\n${cyan}If there are any errors, resolve whatever issue is" \
                         "causing them, then attempt to compile the code again\n${nc}"
+                    
                     read -p "Press [Enter] to return to the installer menu"
                     clear
                     ;;
@@ -561,13 +483,15 @@
                     printf "We will now configure the Postgres database. "
                     read -p "Press [Enter] to continue."
 
-                    echo "Creating 'Bottius' database user..."
+                    echo "Creating database user 'Bottius'..."
                     if [[ $database_exist ]]; then
                         echo "${cyan}Role 'Bottius' already exists${nc}"
                     else
                         sudo -u postgres -H sh -c "createuser -P Bottius" || {
-                            echo "${red}Failed to create 'Bottius' database user${nc}"
+                            echo "${red}Failed to create the database user" \
+                                "'Bottius'${nc}" >&2
                             read -p "Press [Enter] to return to the installer menu"
+                            clear
                             continue
                         }
                     fi
@@ -605,40 +529,41 @@
         else 
             if [[ $bottius_service_startup = 0 && -f $bottius_service &&
                     $bottius_service_status = "active" ]]; then
-                echo "1. Download/update Bottius and auto-restart files/services"
+                echo "1. Download/update Bottius"
                 echo "2. Run Bottius in the background"
                 echo "3. Run Bottius in the background with auto-restart${green}" \
                     "(Running in this mode)${nc}"
             elif [[ $bottius_service_startup = 0 && -f $bottius_service &&
                     $bottius_service_status != "active" ]]; then
-                echo "1. Download/update Bottius and auto-restart files/services"
+                echo "1. Download/update Bottius"
                 echo "2. Run Bottius in the background"
                 echo "3. Run Bottius in the background with auto-restart${yellow}" \
                     "(Setup to use this mode)${nc}"
             elif [[ -f $bottius_service && $bottius_service_status = "active" ]]; then
-                echo "1. Download/update Bottius and auto-restart files/services"
+                echo "1. Download/update Bottius"
                 echo "2. Run Bottius in the background ${green}(Running in" \
                     "this mode)${nc}"
                 echo "3. Run Bottius in the background with auto-restart"
             elif [[ -f $bottius_service && $bottius_service_status != "active" ]]; then
-                echo "1. Download/update Bottius and auto-restart files/services"
+                echo "1. Download/update Bottius"
                 echo "2. Run Bottius in the background ${yellow}(Setup to" \
                     "use this mode)${nc}"
                 echo "3. Run Bottius in the background with auto-restart"
-            # If this occurs, that means that 'bottius.service' has not been created
-            # for some reason
+            # If this occurs, that means that 'bottius.service' has not been
+            # created for some reason
             else
-                echo "1. Download/update Bottius and auto-restart files/services"
+                echo "1. Download/update Bottius"
                 echo "2. Run Bottius in the background"
                 echo "3. Run Bottius in the background with auto-restart"
             fi
 
             echo "4. Stop Bottius"
-            echo "5. Stop and exit script"
+            echo "5. Advanced options"
+            echo "6. Stop and exit script"
             read option
             case "$option" in
                 1)
-                    download_b
+                    download_bot
                     clear
                     ;;
                 2)
@@ -661,6 +586,10 @@
                     clear
                     ;;
                 5)
+                    ./installers/Linux_Universal/postgres-open-close.sh
+                    clear
+                    ;;
+                6)
                     echo -e "\nExiting..."
                     exit 0
                     ;;
