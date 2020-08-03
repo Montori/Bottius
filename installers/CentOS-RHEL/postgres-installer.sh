@@ -2,8 +2,7 @@
 
 ################################################################################
 #
-# Takes care of installing Postgres 12. Postgres is installed using the
-# instructions described here:
+# Installs Postgres 12. It is installed using the instructions described here:
 # https://www.postgresql.org/download/linux/
 #
 # Note: All variables are exported from 'linux-master-installer.sh' and
@@ -27,7 +26,7 @@
         echo "Installing repository RPM..."
         yum install -y https://download.postgresql.org/pub/repos/yum/reporpms/EL-7-x86_64/pgdg-redhat-repo-latest.noarch.rpm || {
             echo "${red}Failed to install the repo RPM" >&2
-            echo "${cyan}The repo RPM required to download and install" \
+            echo "${cyan}The repo RPM is required to download and install" \
                 "Postgres${nc}"
             read -p "Press [Enter] to return to the installer menu"
             exit 1
@@ -36,7 +35,7 @@
         echo "Installing repository RPM..."
         dnf install -y https://download.postgresql.org/pub/repos/yum/reporpms/EL-8-x86_64/pgdg-redhat-repo-latest.noarch.rpm || {
             echo "${red}Failed to install the repo RPM" >&2
-            echo "${cyan}The repo RPM required to download and install" \
+            echo "${cyan}The repo RPM is required to download and install" \
                 "Postgres${nc}"
             read -p "Press [Enter] to return to the installer menu"
             exit 1
@@ -58,7 +57,7 @@
 #
 ################################################################################
 #
-# Starts and enables 'postgresql.service', and initializes Postgres database
+# Starts and enables 'postgresql.service', and initializes the Postgres database
 #
 ################################################################################
 #
@@ -74,8 +73,8 @@
     }
     echo "Starting 'postgresql-12.service'..."
     systemctl start postgresql-12.service || {
-        echo "${red}Failed to start 'postgresql.service'" >&2
-        echo "${yellow}'postgresql.service' must be running for Bottiius to" \
+        echo "${red}Failed to start 'postgresql-12.service'" >&2
+        echo "${cyan}'postgresql-12.service' must be running for Bottiius to" \
             "work${nc}"
     }
 

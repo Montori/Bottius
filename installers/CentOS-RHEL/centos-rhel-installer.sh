@@ -74,6 +74,20 @@
         done
     }
 
+    # Installs software/applications used by the installers
+        required_software() {
+            if ! hash "$1" &>/dev/null; then
+                echo "${yellow}${1} is not installed${nc}"
+                echo "Installing ${1}..."
+                apt -y install "$1" || {
+                    echo "${red}Failed to install $1" >&2
+                    echo "${cyan}${1} must be installed to continue${nc}"
+                    echo -e "\nExiting..."
+                    exit 1
+                }
+            fi
+        }
+
     # Downloads and updates Bottius
     download_bot() {
         clear
@@ -108,20 +122,6 @@
 
             echo "Changing ownership of the file(s) in '/home/bottius'..."
             chown bottius:bottius -R "$home"
-        }
-
-        # Installs software/applications used by the installers
-        required_software() {
-            if ! hash "$1" &>/dev/null; then
-                echo "${yellow}${1} is not installed${nc}"
-                echo "Installing ${1}..."
-                yum -y install "$1" || {
-                    echo "${red}Failed to install $1" >&2
-                    echo "${cyan}${1} must be installed to continue${nc}"
-                    echo -e "\nExiting..."
-                    exit 1
-                }
-            fi
         }
 
     ############################################################################
@@ -205,8 +205,8 @@
             rm -rf tmp
         fi
         
-        # Checks if typescript is installed
-        if ! hash tsc &>/dev/null || [[ ! -f source/botconfig.json ]]; then
+        # Checks if it's possible to compile code
+        if (! hash tsc || ! hash node) &>/dev/null || [[ ! -f source/botconfig.json ]]; then
             echo "Skipping typescript compilation..."
         else
             echo "Compiling code..."

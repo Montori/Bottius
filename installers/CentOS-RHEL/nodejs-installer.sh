@@ -2,9 +2,9 @@
 
 ################################################################################
 #
-# Takes care of installing Node.js (version 14.x) and the required packages and
-# dependencies for Bottius to run.
-# Node.js is installed using the instructions described here:
+# Installs Node.js (version 14.x) and the required packages and
+# dependencies for Bottius to run. Node.js is installed using the instructions
+# described here:
 # https://github.com/nodesource/distributions/blob/master/README.md
 #
 # Note: All variables are exported from 'linux-master-installer.sh' and
@@ -42,7 +42,9 @@
                     exit 1
                 }
                 npm isntall -g typescript || {
-                    echo "${red}Failed to install typescript globally${nc}" >&2
+                    echo "${red}Failed to install typescript globally" >&2
+                    echo "${cyan}Typescript is required to compile the code to" \
+                        "JS${nc}"
                     read -p "Press [Enter] to return to the installer menu"
                     exit 1
                 }
@@ -50,7 +52,7 @@
             else
                 echo "${yellow}npm is not installed${nc}"
                 
-                # Npm might not be installed due to Node.js not being installed
+                # Npm might not exist due to Node.js not being installed
                 if ! hash node &>/dev/null; then
                     echo "${yellow}nodejs is not installed${nc}"
                     install_nodejs

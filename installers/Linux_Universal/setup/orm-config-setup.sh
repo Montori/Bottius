@@ -63,7 +63,7 @@
         echo "Installing jq..."
         "$pkg_manager" -y install jq || {
             echo "${red}Failed to install jq" >&2
-            echo "${cyan}jq is required to create human readable json files${nc}"
+            echo "${cyan}jq is required to create human-readable json files${nc}"
         }
     fi
 
@@ -77,7 +77,7 @@
     echo -e "\n-------------"
     echo -e "${cyan}This field is required and cannot be left blank\nURL" \
         "Format: postgres://[DB_USER]:[DB_USER_PASSWORD]@[DB_HOST]:[DB_PORT]/[DB_NAME]" \
-        "\nExample: postgres://Bottius:Pa\$\$w0rd@localhost:5432/Bottius_DB\nNote:" \
+        "\nExample: postgres://Bottius:Password@localhost:5432/Bottius_DB\nNote:" \
         "Default port number: 5432${nc}"
     while true; do
         read -p "Enter Postgres URL: " postgres_url
@@ -103,8 +103,7 @@
         \"cli\": {
             \"migrationsDir\": \"source/Migration\"
         }
-    } 
-"
+    }"
 
     if [[ ! -f ormconfig.json ]]; then
         echo "Creating 'ormconfig.json'..."
@@ -153,17 +152,15 @@
             ((timer-=1))
         done
         
-        # Lists the startup logs in order to better identify if and when
-        # an error occurred during the startup of 'bottius.service'
         # Note: $no_hostname is purposefully unquoted. Do not quote those
         # variables
         echo -e "\n\n-------- bottius.service startup logs ---------" \
             "\n$(journalctl -u bottius -b $no_hostname -S "$start_time")" \
             "\n--------- End of bottius.service startup logs --------\n"
 
-        echo -e "Please check the logs above to make sure that there aren't" \
-            "any errors, and if there are, to resolve whatever issue is" \
-            "causing them\n"
+        echo -e "${cyan}Please check the logs above to make sure that there" \
+            "aren't any errors, and if there are, to resolve whatever issue" \
+            "is causing them\n${nc}"
     fi
 
     read -p "Press [Enter] to return to the installer menu"

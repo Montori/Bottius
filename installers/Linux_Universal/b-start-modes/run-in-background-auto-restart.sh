@@ -2,10 +2,10 @@
 
 ################################################################################
 #
-# Runs Bottius in the background, as a service on your system, with
-# auto-restart on system reboot. This means that if the system is rebooted or
-# is turned back on, Bottius will automatically be started. If
-# Bottius is already running in this mode, he'll be restarted instead.
+# Runs Bottius in the background, as a service on your system, withauto-restart
+# on system reboot. This means that if the system is rebooted or is turned back
+# on, Bottius will automatically be started. If Bottius is already running in
+# this mode, he'll be restarted instead.
 #
 # Note: All variables (excluding $timer and $start_time) are exported from
 # 'linux-master-installer.sh', and 'debian-ubuntu-installer.sh' or
@@ -44,7 +44,7 @@
 #
 ################################################################################
 #
-# Starting and/or restarting 'bottius.service'
+# Starting or restarting 'bottius.service'
 #
 ################################################################################
 #
@@ -80,14 +80,12 @@
         ((timer-=1))
     done
 
-    # Lists the startup logs in order to better identify if and when
-    # an error occurred during the startup of 'bottius.service'
     # Note: $no_hostname is purposefully unquoted. Do not quote those variables.
     echo -e "\n\n-------- bottius.service startup logs ---------" \
         "\n$(journalctl -u bottius -b $no_hostname -S "$start_time")" \
         "\n--------- End of bottius.service startup logs --------\n"
 
-    echo -e "Please check the logs above to make sure that there aren't any" \
+    echo -e "${cyan}Please check the logs above to make sure that there aren't any" \
         "errors, and if there are, to resolve whatever issue is causing them\n"
 
     echo "${green}Bottius is now running in the background with auto-restart" \

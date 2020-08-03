@@ -2,8 +2,7 @@
 
 ################################################################################
 #
-# Takes care of installing Postgres 12. Postgres is installed using the
-# instructions described here:
+# Installs Postgres 12. It is installed using the instructions described here:
 # https://www.postgresql.org/download/linux/
 #
 # Note: All variables are exported from 'linux-master-installer.sh' and
@@ -66,7 +65,7 @@
     echo "Starting 'postgresql.service'..."
     systemctl start postgresql.service || {
         echo "${red}Failed to start 'postgresql.service'" >&2
-        echo "${yellow}'postgresql.service' must be running for Bottiius to" \
+        echo "${cyan}'postgresql.service' must be running for Bottiius to" \
             "work${nc}"
     }
 

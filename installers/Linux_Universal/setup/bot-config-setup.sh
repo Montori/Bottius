@@ -185,17 +185,15 @@
             ((timer-=1))
         done
         
-        # Lists the startup logs in order to better identify if and when
-        # an error occurred during the startup of 'bottius.service'
         # Note: $no_hostname is purposefully unquoted. Do not quote those
         # variables
         echo -e "\n\n-------- bottius.service startup logs ---------" \
             "\n$(journalctl -u bottius -b $no_hostname -S "$start_time")" \
             "\n--------- End of bottius.service startup logs --------\n"
 
-        echo -e "Please check the logs above to make sure that there aren't" \
-            "any errors, and if there are, to resolve whatever issue is" \
-            "causing them\n"
+        echo -e "${cyan}Please check the logs above to make sure that there" \
+            "aren't any errors, and if there are, to resolve whatever issue" \
+            "is causing them\n${nc}"
     fi
 
     read -p "Press [Enter] to return to the installer menu"
