@@ -83,7 +83,7 @@
         if ! hash "$1" &>/dev/null; then
             echo "${yellow}${1} is not installed${nc}"
             echo "Installing ${1}..."
-            apt -y install "$1" || {
+            apt -y install "$1" || apt -y install $2 || {
                 echo "${red}Failed to install $1" >&2
                 echo "${cyan}${1} must be installed to continue${nc}"
                 echo -e "\nExiting..."
@@ -99,19 +99,19 @@
         read -p "Press [Enter] to begin."
         
         old_bottius=$(date)
-        repo="https://github.com/Montori/Bottius"
+        repo="https://github.com/Montori/Bottius/"
 
-    ############################################################################
-    # Error trapping
-    ############################################################################
-    #
+
+        ########################################################################
+        # Error trapping
+        ########################################################################
         trap "echo -e \"\n\nScript forcefully stopped\" && clean_up; echo \
             \"Exiting...\" && exit" SIGINT SIGTERM SIGTSTP
 
-    ############################################################################
-    # Sub-function
-    ############################################################################
-    #   
+
+        ########################################################################
+        # Sub-function
+        ########################################################################
         # Cleans up any loose ends/left over files
         clean_up() {
             echo "Cleaning up files and directories..."
@@ -128,10 +128,10 @@
             chown bottius:bottius -R "$home"
         }
 
-    ############################################################################
-    # Prepping
-    ############################################################################
-    #
+
+        ########################################################################
+        # Prepping
+        ########################################################################
         if [[ $bottius_service_status = "active" ]]; then
             # B.1. $bot_sysctl_active = true when 'bottius.service' is active,
             # and is used to indicate to the user that the service was stopped
@@ -145,20 +145,20 @@
             }
         fi
     
-    ############################################################################
-    # Checking for required software/applications
-    ############################################################################
-    #
+
+        ########################################################################
+        # Checking for required software/applications
+        ########################################################################
         required_software "curl"
         required_software "wget"
         required_software "git"
-        required_software "gpg2"
+        required_software "gpg2" "gnupg2"
 
-    ############################################################################
-    # Creating backups of current code in /home/Bottius before downloading/
-    # updating Bottius 
-    ############################################################################
-    #
+
+        ########################################################################
+        # Creating backups of current code in /home/Bottius before downloading/
+        # updating Bottius 
+        ########################################################################
         if [[ ! -d Old_Bottius ]]; then
             echo "Creating 'Old_Bottius/'..."
             mkdir Old_Bottius
@@ -195,6 +195,7 @@
             }
         else
             echo "Downloading Bottius..."
+            #git clone --single-branch -b installers "$repo" tmp/ || {
             git clone "$repo" tmp/ || {
                 echo "${red}Failed to download Bottius${nc}" >&2
                 clean_up
@@ -240,10 +241,10 @@
             local b_s_update="Failed"
         }
 
-    ############################################################################
-    # Cleaning up and presenting results...
-    ############################################################################
-    #
+
+        ########################################################################
+        # Cleaning up and presenting results...
+        ########################################################################
         echo "Changing ownership of the file(s) added to '/home/bottius'..."
         chown bottius:bottius -R "$home"
         echo -e "\n${green}Finished downloading/updating Bottius${nc}"
@@ -283,15 +284,15 @@
         database_exist=$(sudo -u postgres -H sh -c "psql postgres -tAc \
             \"SELECT 1 FROM pg_database WHERE datname='Bottius_DB'\"" 2>/dev/null)
 
-    ############################################################################
-    # Makes sure that the system user 'bottius' and the home directory
-    # '/home/bottius' already exists, and that your working directory is
-    # '/home/bottius'.
-    # 
-    # TL;DR: Makes sure that all necessary (important) services, files,
-    # directories, and users exist and are in their proper locations.
-    ############################################################################
-    #
+
+        ########################################################################
+        # Makes sure that the system user 'bottius' and the home directory
+        # '/home/bottius' already exists, and that your working directory is
+        # '/home/bottius'.
+        # 
+        # TL;DR: Makes sure that all necessary (important) services, files,
+        # directories, and users exist and are in their proper locations.
+        ########################################################################
         # Creates a system user named 'bottius', if it does not already exist,
         # along with a home directory for it
         if ! id -u bottius &>/dev/null; then
@@ -335,11 +336,11 @@
             systemctl daemon-reload
         fi
 
-    ############################################################################
-    # User options for installing perquisites, downloading Bottius, and
-    # starting Bottius in different run modes
-    ############################################################################
-    #
+
+        ########################################################################
+        # User options for installing perquisites, downloading Bottius, and
+        # starting Bottius in different run modes
+        ########################################################################
         # Checks to see if it is necessary to download Bottius
         if [[ ! -d source && ! -d out ]]; then
             echo "${cyan}Bottius is not been downloaded. To continue," \

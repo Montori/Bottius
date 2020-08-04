@@ -140,12 +140,13 @@
 
     execute_debian_ubuntu_installer() {
         supported=true
-        ./installers/Debian-Ubuntu/debian-ubuntu-installer.sh || {
+        ./installers/Debian-Ubuntu/debian-ubuntu-installer.sh || ./debian-ubuntu-installer.sh || {
             # A.1. Downloads the corresponding sub-master installer if it
             # doesn't exist
             if [[ ! -f installers/Debian-Ubuntu/debian-ubuntu-installer.sh ]]; then
                 echo "Downloading 'debian-ubuntu-installer.sh'..."
                 while true; do
+                    #wget https://raw.githubusercontent.com/Montori/Bottius/installers/installers/Debian-Ubuntu/debian-ubuntu-installer.sh || {
                     wget -N https://raw.githubusercontent.com/Montori/Bottius/master/installers/Debian-Ubuntu/debian-ubuntu-installer.sh || {
                         echo "${red}Failed to download 'debian-ubuntu-installer.sh'" \
                             "${nc}" >&2
@@ -188,11 +189,12 @@
 
     execute_centos_rhel_installer() {
         supported=true
-        ./installers/CentOS-RHEL/centos-rhel-installer.sh || {
+        ./installers/CentOS-RHEL/centos-rhel-installer.sh || ./centos-rhel-installer.sh || {
             # A.1.
             if [[ ! -f installers/CentOS-RHEL/centos-rhel-installer.sh ]]; then
                 echo "Downloading 'centos-rhel-installer.sh'..."
                 while true; do
+                    #wget https://raw.githubusercontent.com/Montori/Bottius/installers/installers/CentOS-RHEL/centos-rhel-installer.sh || {
                     wget -N https://raw.githubusercontent.com/Montori/Bottius/master/installers/CentOS-RHEL/centos-rhel-installer.sh || {
                         echo "${red}Failed to download 'centos-rhel-installer.sh'" \
                             "${nc}" >&2

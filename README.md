@@ -4,11 +4,11 @@ Bottius is a simple discord Bot created out of boredom for the Bricc Cult Discor
 
 ## Deploying Bottius
 
-There are two ways of deploying Bottius. You can eithe use the installers or manually set everything up manually.
+There are two ways of deploying Bottius. You can either use the installers or manually set everything up.
 
 ### Installer Deployment
 
-The installer automatically installs and sets up everything required to run Bottius. To get started, simply execute the following command: `wget -N https://raw.githubusercontent.com/Montori/Bottius/master/linux-master-installer.sh && chmod +x linux-master-installer.sh && bash linux-master-installer.sh`
+The installer automatically installs and sets up everything required to run Bottius. To get started, simply execute the following command: `wget -N https://raw.githubusercontent.com/Montori/Bottius/master/linux-master-installer.sh && chmod +x linux-master-installer.sh && sudo bash linux-master-installer.sh`
 
 After using this command, simply follow the "instructions" in the installer menu.
 
