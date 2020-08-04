@@ -46,6 +46,8 @@
 #
 ################################################################################
 #
+    # Changes ownership of new files so that they are owned by the bottius
+    # system user
     change_ownership() {
         echo "Changing ownership of the file(s) added to '/home/bottius'..."
         chown bottius:bottius -R "$home"
@@ -58,6 +60,8 @@
         }
     }
 
+    # Moves Bottius's code to /home/bottius if it's executed outside of it's
+    # home directory
     move_to_home() {
         echo "Moving files/directories associated with Bottius to '$home'..."
         for dir in "${files[@]}"; do
@@ -75,18 +79,18 @@
     }
 
     # Installs software/applications used by the installers
-        required_software() {
-            if ! hash "$1" &>/dev/null; then
-                echo "${yellow}${1} is not installed${nc}"
-                echo "Installing ${1}..."
-                apt -y install "$1" || {
-                    echo "${red}Failed to install $1" >&2
-                    echo "${cyan}${1} must be installed to continue${nc}"
-                    echo -e "\nExiting..."
-                    exit 1
-                }
-            fi
-        }
+    required_software() {
+        if ! hash "$1" &>/dev/null; then
+            echo "${yellow}${1} is not installed${nc}"
+            echo "Installing ${1}..."
+            apt -y install "$1" || {
+                echo "${red}Failed to install $1" >&2
+                echo "${cyan}${1} must be installed to continue${nc}"
+                echo -e "\nExiting..."
+                exit 1
+            }
+        fi
+    }
 
     # Downloads and updates Bottius
     download_bot() {
@@ -105,7 +109,7 @@
             \"Exiting...\" && exit" SIGINT SIGTERM SIGTSTP
 
     ############################################################################
-    # Sub-functions
+    # Sub-function
     ############################################################################
     #   
         # Cleans up any loose ends/left over files
@@ -179,18 +183,19 @@
         done
      
         if [[ -d .git ]]; then
-            echo "Updating Bottius..."
             git checkout -- \*
             git pull || {
                 echo "${red}Failed to update Bottius${nc}" >&2
+                echo "${cyan}Forcefully resetting local changes may resolve" \
+                    "the issue that is occuring: 'git fetch --all && git reset" \
+                    "--hard origin/master'" 
                 clean_up
                 echo -e "\nExiting..."
                 exit 1
             }
         else
             echo "Downloading Bottius..."
-            #git clone "$repo" tmp/ || {
-            git clone --single-branch -b installers "$repo" tmp/ || {
+            git clone "$repo" tmp/ || {
                 echo "${red}Failed to download Bottius${nc}" >&2
                 clean_up
                 echo -e "\nExiting..."

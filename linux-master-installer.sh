@@ -3,7 +3,7 @@
 ################################################################################
 #
 # This master installer looks at the operating system, architecture, bit type,
-# etc., to determine whether or not the system is supported by Bottius.
+# etc., to determine whether or not Bottius supports OS/Distribution.
 # Once the system is deemed as supported, the appropriate sub-master installer
 # will be chosen, downloaded (if it isn't already), then executed.
 #
@@ -33,7 +33,7 @@
 ################################################################################
 #
     # The '--no-hostname' flag for journalctl only works with systemd 230 and
-    # above
+    # later
     if (($(journalctl --version | grep -oP "[0-9]+" | head -1) >= 230)); then
         no_hostname="--no-hostname"
         export no_hostname
@@ -52,6 +52,9 @@
 #
 ################################################################################
 #
+    # TODO: Figure out a way to solve the bug where this is printed x number of
+    # times, where x is the number of times the download options was used in
+    # the current setion +1
     trap "echo -e \"\n\nScript forcefully stopped\nExiting...\" && exit" SIGINT \
         SIGTSTP SIGTERM
     
@@ -143,7 +146,7 @@
             if [[ ! -f installers/Debian-Ubuntu/debian-ubuntu-installer.sh ]]; then
                 echo "Downloading 'debian-ubuntu-installer.sh'..."
                 while true; do
-                    wget -N https://raw.githubusercontent.com/Montori/Bottius/installers/installers/Debian-Ubuntu/debian-ubuntu-installer.sh || {
+                    wget -N https://raw.githubusercontent.com/Montori/Bottius/master/installers/Debian-Ubuntu/debian-ubuntu-installer.sh || {
                         echo "${red}Failed to download 'debian-ubuntu-installer.sh'" \
                             "${nc}" >&2
                         if ! hash wget &>/dev/null; then
@@ -190,7 +193,7 @@
             if [[ ! -f installers/CentOS-RHEL/centos-rhel-installer.sh ]]; then
                 echo "Downloading 'centos-rhel-installer.sh'..."
                 while true; do
-                    wget -N https://raw.githubusercontent.com/Montori/Bottius/installers/installers/CentOS-RHEL/centos-rhel-installer.sh || {
+                    wget -N https://raw.githubusercontent.com/Montori/Bottius/master/installers/CentOS-RHEL/centos-rhel-installer.sh || {
                         echo "${red}Failed to download 'centos-rhel-installer.sh'" \
                             "${nc}" >&2
                         if ! hash wget &>/dev/null; then
@@ -309,8 +312,8 @@
     fi
         
     if [[ $supported = false ]]; then
-        echo "${red}Your operating system/Linux Distribution does not support" \
-            "the installation, setup, and/or use of Bottius${nc}" >&2
+        echo "${red}Your operating system/Linux Distribution is not supported" \
+            "by the installation, setup, and/or use of Bottius${nc}" >&2
         echo -e "\nExiting..."
         exit 1
     fi
