@@ -8,7 +8,7 @@ There are two ways of deploying Bottius. You can eithe use the installers or man
 
 ### Installer Deployment
 
-The installer automatically installs and sets up everything required to run Bottius. To get started, simply execute the following command: `https://raw.githubusercontent.com/Montori/Bottius/installers/linux-master-installer.sh && chmod +x linux-master-installer.sh && bash linux-master-installer.sh`
+The installer automatically installs and sets up everything required to run Bottius. To get started, simply execute the following command: `https://raw.githubusercontent.com/Montori/Bottius/master/linux-master-installer.sh && chmod +x linux-master-installer.sh && bash linux-master-installer.sh`
 
 After using this command, simply follow the "instructions" in the installer menu.
 
