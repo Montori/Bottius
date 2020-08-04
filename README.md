@@ -12,6 +12,18 @@ The installer automatically installs and sets up everything required to run Bott
 
 After using this command, simply follow the "instructions" in the installer menu.
 
+#### Officially Supported Linux Distributions
+
+* Ubuntu
+   * 18.04
+   * 16.04
+* Debian
+   * 10
+   * 9
+* CentOS/RHEL
+   * 8
+   * 7
+
 ### Manual Deployment
 
 Follow the steps below to manually get your Bottius instance working:
