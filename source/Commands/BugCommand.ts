@@ -72,7 +72,7 @@ class BugCommandOptions extends AbstractCommandOptions
     constructor()
     {
         super();
-        this.commandName = "Bug";
+        this.commandName = "bug";
         this.description = "reports a bug to the developers!";
         this.usage = `${AbstractCommandOptions.prefix}bug report {description...},\n${AbstractCommandOptions.prefix}bug remove {ID},\n${AbstractCommandOptions.prefix}bug list`;
     }

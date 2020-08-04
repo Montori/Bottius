@@ -14,7 +14,6 @@ import { LyricCommand } from "../Commands/LyricCommand";
 import { HugCommand } from "../Commands/HugCommand";
 import { SlapCommand } from "../Commands/SlapCommand";
 import { BugCommand } from "../Commands/BugCommand";
-import { ServerCommand } from "../Commands/ServerCommand";
 import { BirthdayCommand } from "../Commands/BirthdayCommand";
 import { SpinnerCommand } from "../Commands/SpinnerCommand";
 import { UwUifyCommand } from "../Commands/UwUifyCommand";
@@ -23,6 +22,13 @@ import { SignCommand } from "../Commands/SignCommand";
 import { LickCommand } from "../Commands/LickCommand";
 import { InfoCommand } from "../Commands/InfoCommand";
 import { AvatarCommand } from "../Commands/AvatarCommand";
+import { TumbleweedCommand } from "../Commands/TumbleweedCommand";
+import { LeavemessageCommand } from "../Commands/LeaveMessageCommand";
+import { NomicCommand } from "../Commands/NomicCommand";
+import { PrefixCommand } from "../Commands/PrefixCommand";
+import { EnableCommand } from "../Commands/EnableCommand";
+import { DisableCommand } from "../Commands/DisableCommand";
+import { XPIgnoreCommand } from "../Commands/XPIgnoreCommand";
 
 export class CommandService
 {
@@ -54,7 +60,7 @@ export class CommandService
         this.commandMap.set("stats", new StatsCommand());
         this.commandMap.set("perk", new PerkCommand());
         this.commandMap.set("leaderboard", new LeaderboardCommand());
-        this.commandMap.set("setactivity", new ActivityCommand());
+        this.commandMap.set("activity", new ActivityCommand());
         this.commandMap.set("help", new HelpCommand());
         this.commandMap.set("permission", new PermissionCommand());
         this.commandMap.set("suggest", new SuggestCommand());
@@ -62,7 +68,6 @@ export class CommandService
         this.commandMap.set("hug", new HugCommand());
         this.commandMap.set("slap", new SlapCommand());
         this.commandMap.set("bug", new BugCommand());
-        this.commandMap.set("server", new ServerCommand());
         this.commandMap.set("birthday", new BirthdayCommand());
         this.commandMap.set("spin", new SpinnerCommand());
         this.commandMap.set("uwuify", new UwUifyCommand());
@@ -70,6 +75,13 @@ export class CommandService
         this.commandMap.set("lick", new LickCommand());
         this.commandMap.set("info", new InfoCommand());
         this.commandMap.set("avatar", new AvatarCommand());
+        this.commandMap.set("tumbleweed", new TumbleweedCommand());
+        this.commandMap.set("leavemessage", new LeavemessageCommand());
+        //this.commandMap.set("nomic", new NomicCommand()); disabled until vcxp is reimplemented
+        this.commandMap.set("xpignore", new XPIgnoreCommand());
+        this.commandMap.set("prefix", new PrefixCommand());
+        this.commandMap.set("enable", new EnableCommand());
+        this.commandMap.set("disable", new DisableCommand());
     }
 
     runCommand(name: string, bot: Client, message: Message, args: Array<string>)
