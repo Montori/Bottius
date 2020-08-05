@@ -115,7 +115,7 @@
         # Cleans up any loose ends/left over files
         clean_up() {
             echo "Cleaning up files and directories..."
-            if [[ -d tmp ]]; then rm -r tmp/; fi
+            if [[ -d tmp ]]; then rm -r tmp; fi
 
             if [[ ! -d source || ! -f package-lock.json || ! -f package.json ]]; then
                 echo "Restoring from 'Old_Bottius/${old_bottius}'"
@@ -133,10 +133,10 @@
         # Prepping
         ########################################################################
         if [[ $bottius_service_status = "active" ]]; then
-            # B.1. $bot_sysctl_active = true when 'bottius.service' is active,
-            # and is used to indicate to the user that the service was stopped
-            # and that they will need to start it
-            local bot_sysctl_active="true"
+            # B.1. $bottius_service_active = true when 'bottius.service' is
+            # active, and is used to indicate to the user that the service was
+            # stopped and that they will need to start it
+            local bottius_service_active="true"
             echo "Stopping 'bottius.service'..."
             systemctl stop bottius.service || {
                 echo "${red}Failed to stop 'bottius.service'" >&2
@@ -156,8 +156,8 @@
 
 
         ########################################################################
-        # Creating backups of current code in /home/Bottius before downloading/
-        # updating Bottius 
+        # Creating backups of current code in '/home/Bottius' then downloads/
+        # updates Bottius
         ########################################################################
         if [[ ! -d Old_Bottius ]]; then
             echo "Creating 'Old_Bottius/'..."
@@ -195,15 +195,15 @@
             }
         else
             echo "Downloading Bottius..."
-            #git clone --single-branch -b installers "$repo" tmp/ || {
-            git clone "$repo" tmp/ || {
+            #git clone --single-branch -b installers "$repo" tmp || {
+            git clone "$repo" tmp || {
                 echo "${red}Failed to download Bottius${nc}" >&2
                 clean_up
                 echo -e "\nExiting..."
                 exit 1
             }
             mv -f tmp/* . && mv -f tmp/.git* . || {
-                echo "${red}Failed to move updated code from tmp/ to ." >&2
+                echo "${red}Failed to move updated code from 'tmp/' to ." >&2
                 echo "${cyan}Manually move all the files from tmp to .${nc}"
                 echo -e "\nExiting..."
                 exit 1
@@ -245,7 +245,7 @@
         ########################################################################
         # Cleaning up and presenting results...
         ########################################################################
-        echo "Changing ownership of the file(s) added to '/home/bottius'..."
+        echo "Changing ownership of the file(s) added to '/home/bottius/'..."
         chown bottius:bottius -R "$home"
         echo -e "\n${green}Finished downloading/updating Bottius${nc}"
         
@@ -254,7 +254,7 @@
         fi
 
         # B.1.
-        if [[ $bot_sysctl_active ]]; then
+        if [[ $bottius_service_active ]]; then
             echo "${cyan}NOTE: 'bottius.service' was stopped to update" \
                 "Bottius and has to be started using the run modes in the" \
                 "installer menu${nc}"
@@ -343,7 +343,7 @@
         ########################################################################
         # Checks to see if it is necessary to download Bottius
         if [[ ! -d source && ! -d out ]]; then
-            echo "${cyan}Bottius is not been downloaded. To continue," \
+            echo "${cyan}Bottius is not downloaded. To continue," \
                 "please download Bottius using option 1.${nc}"
 
             echo "1. Download Bottius"
@@ -409,7 +409,7 @@
                 echo "6. Set up ormconfig.json ${green}(Already setup)${nc}"
             fi
 
-            if [[ ! -d out/ ]]; then
+            if [[ ! -d out ]]; then
                 echo "7. Compile code ${red}(Not compiled)${nc}"
             else
                 echo "7. Compile code ${green}(Already compiled)${nc}"

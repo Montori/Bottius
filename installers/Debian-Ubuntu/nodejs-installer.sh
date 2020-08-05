@@ -17,7 +17,7 @@
 ################################################################################
 #
     install_nodejs() {
-        echo "Downloading Node.js repo installer..." 
+        echo "Downloading the Node.js repo installer..." 
         curl -sL https://deb.nodesource.com/setup_14.x | sudo -E bash - || {
             echo "${red}Failed to download the Node.js installer${nc}" >&2
             read -p "Press [Enter] to return to the installer menu"

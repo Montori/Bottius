@@ -68,7 +68,7 @@
     echo "Enabling 'postgresql-12.service'..."
     systemctl enable postgresql-12.service || {
         echo "${red}Failed to enable 'postgresql.service'" >&2
-        echo "${cyan}'postgresql.service' must be enabled so that it is" \
+        echo "${cyan}'postgresql.service' must be enabled so PostgreSQL is" \
             "automatically started on system reboot${nc}"
     }
     echo "Starting 'postgresql-12.service'..."
