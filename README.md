@@ -1,27 +1,60 @@
-## Welcome to the Bottius Discord Bot
+# Welcome to the Bottius Discord Bot
 
 Bottius is a simple discord Bot created out of boredom for the Bricc Cult Discord server.
 
-### Deploying Bottius
-Follow these easy steps to get your Bottius instance working <sub><sup>obviously you need to install nodejs and npm first (duh)<sup><sub>:
+## Deploying Bottius
 
-1. Download PostgreSQL 12 and install it.
-2. Create a database with name "Bottius_DB"
-3. clone Bottius Repo
-4. do `npm ci` in the Bottius root directory
-5. create a `botconfig.json` in `source/` directory which should look like this:
-    ````json
+There are two ways of deploying Bottius. You can either use the installers or manually set everything up.
+
+### Installer Deployment
+
+The installer automatically installs and sets up everything required to run Bottius. To get started, simply execute the following command: `wget -N https://raw.githubusercontent.com/Montori/Bottius/master/linux-master-installer.sh && chmod +x linux-master-installer.sh && sudo bash linux-master-installer.sh`
+
+After using this command, simply follow the "instructions" in the installer menu.
+
+#### Officially Supported Linux Distributions
+
+* Ubuntu
+   * 18.04
+   * 16.04
+* Debian
+   * 10
+   * 9
+* CentOS/RHEL
+   * 8
+   * 7
+
+### Manual Deployment
+
+Follow the steps below to manually get your Bottius instance working:
+
+1. Clone the Bottius repo: `git clone https://github.com/Montori/Bottius`
+2. Download and install PostgreSQL 12, following the instructions at:
+    * Linux: <https://www.postgresql.org/download/linux/>
+    * Windows: <https://www.postgresql.org/download/windows/>
+3. Install Node.js at:
+    * Linux: <https://github.com/nodesource/distributions/blob/master/README.md>
+    * Windows: <https://nodejs.org/en/download/>
+4. Install TypeScript globally: `npm install -g typescript`
+5. From the Bottius root directory, install the required dependencies: `npm ci`
+6. Create `botconfig.json` in the `source/` directory, and place the following configurations into the file:
+
+    ```json
     {
       "token": "yourTotallySafeBotToken",
       "prefix": "!!",
-      "masters": ["275355515003863040", "182896862477549577"],
+      "masters": ["userID"],
       "activity": "",
       "activityStatus": ""
     }
-6. compile Bottius with TypeScript `tsc`
+    ```
 
-   if you dont have TypeScript installed do `npm install -g typescript`
-7. create a `ormconfig.json` in Bottius root directory. It should look like this
+    Notes:
+    * You may add more than one userID to the masters, by separating each ID with a comma
+    * Make sure to customize the `botconfig.json` (such as the token and masters) to your needs
+
+7. Create `ormconfig.json` in the Bottius root directory, and place the following configuration into the file:
+
      ```json
     {
         "type": "postgres",
@@ -32,13 +65,17 @@ Follow these easy steps to get your Bottius instance working <sub><sup>obviously
         "migrationsDir": "source/Migration"
         }
     }
-    
-    if you have a custom port or want Bottius work on another DB you need to change it.
-   
-8. now just start the bot from Bottius root directory `node out/bot.js`
+    ```
 
+    Note:
+    * Realistically, the only thing you should need to change about the configurations is `!DB_PASS!`, which is the password you will give the Bottius database user.
 
-### About Migration
+8. Compile Bottius with TypeScript: `tsc`
+9. Configure the Bottius database: `sudo -u postgres -H sh -c "createuser -P Bottius"; sudo -u postgres -H sh -c "createdb -O Bottius Bottius_DB"`
+    * When prompted to enter a password for the database user, provide the same password used when setting up `botconfig.json`
+10. You are now ready to run Bottius by executing the following command in the Bottius root directory: `node out/bot.js`
+
+## About Migration
 
 If you want to contribute to Bottius you might encounter that you want to store a thing in the database.
 In order to do that you must edit an existing type or create a new one, all types belong to source/Material/
