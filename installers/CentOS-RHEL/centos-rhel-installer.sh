@@ -27,9 +27,9 @@
         \n  \
         \n[Service]  \
         \nUser=bottius  \
-        \nWorkingDirectory=${home} \
+        \nWorkingDirectory=$home \
         \nExecStart=/usr/bin/node out/bot.js \
-        \n#ExecStart=/usr/bin/node ${home}/out/bot.js  \
+        \n#ExecStart=/usr/bin/node $home/out/bot.js  \
         \nRestart=always  \
         \nRestartSec=3  \
         \nStandardOutput=syslog  \
@@ -60,7 +60,7 @@
         }
     }
 
-    # Moves Bottius's code to /home/bottius if it's executed outside of it's
+    # Moves Bottius's code to '/home/bottius' if it's executed outside of it's
     # home directory
     move_to_home() {
         echo "Moving files/directories associated with Bottius to '$home'..."
@@ -555,6 +555,8 @@
             esac
         # Bottius run mode options
         else
+            echo "${cyan}Note: Running Bottius in the same mode it's currently" \
+                "running in, will restart the bot${nc}"
             if [[ $bottius_service_startup = 0 && -f $bottius_service &&
                     $bottius_service_status = "active" ]]; then
                 echo "1. Download/update Bottius"

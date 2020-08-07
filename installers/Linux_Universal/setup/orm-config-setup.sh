@@ -13,7 +13,7 @@
     clear
     read -p "We will now set up 'ormconfig.json'. Press [Enter] to begin."
 
-    epel_installed=false
+    epel_installed="false"
 
 #
 ################################################################################
@@ -28,16 +28,16 @@
         if [[ $distro = "centos" || $distro = "rhel" ]]; then
             # EPEL is required to install jq
             if [[ $sver = "7" ]]; then
-                if [[ $epel_installed = false ]]; then
-                    yum -y install https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm && epel_installed=true || {
+                if [[ $epel_installed = "false" ]]; then
+                    yum -y install https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm && epel_installed="true" || {
                         echo "${red}Failed to install Extra Packages for" \
                             "Enterprise Linux${nc}" >&2
                     }
                 fi
                 pkg_manager="yum"
             else
-                if [[ $epel_installed = false ]]; then
-                    dnf -y install https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm && epel_installed=true || {
+                if [[ $epel_installed = "false" ]]; then
+                    dnf -y install https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm && epel_installed="true" || {
                         echo "${red}Failed to install Extra Packages for" \
                             "Enterprise Linux${nc}" >&2
                     }
