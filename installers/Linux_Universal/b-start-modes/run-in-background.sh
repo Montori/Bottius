@@ -32,8 +32,8 @@
         echo "Disabling 'bottius.service'..."
         systemctl disable bottius.service || {
             echo "${red}Failed to disable 'bottius.service'" >&2
-            echo "${cyan}This service must be disabled in order to run" \
-                "Bottius in this run mode"
+            echo "${cyan}This service must be disabled in order to use" \
+                "this run mode${nc}"
             read -p "Press [Enter] to return to the installer menu"
             exit 1
         }

@@ -58,7 +58,7 @@
         if [[ $pgsql_status = "open" ]]; then
             if [[ $1 = "open" ]]; then
                 clear
-                echo "${yellow}External connections are already ALLOWED${nc}"
+                echo "${cyan}External connections are already ALLOWED${nc}"
                 return 1
             else
                 return 0
@@ -68,7 +68,7 @@
                 are_you_sure && return 0 || clear && return 1
             else
                 clear
-                echo "${yellow}External connections are already DENIED${nc}"
+                echo "${cyan}External connections are already DENIED${nc}"
                 return 1
             fi
         elif [[ $pgsql_status = "partial" ]]; then
@@ -130,25 +130,25 @@
                 echo "Modifying '$pg_hba'..."
                 if [[ $pgsql_hba_closed ]]; then
                     sed -i "s/^host .* all .* all .* \(127.0.0.1\(\/\([0-9]\|[1-2][0-9]\|3[0-2]\)\)\?\|localhost\) .* \(ident\|md5\)$/host   all   all   0.0.0.0\/0   md5/g" "$pg_hba" || {
-                        echo "${red}Failed to modify $pg_hba$nc" >&2
+                        echo "${red}Failed to modify '$pg_hba'${nc}" >&2
                     }
                 else
-                    echo "External connections are already ALLOWED"
+                    echo "${cyan}External connections are already ALLOWED${nc}"
                 fi
 
                 echo "Modifying '$gres'..."
                 if [[ ($pgsql_gres_closed || $pgsql_gres_closed2) ]]; then
                     if [[ $pgsql_gres_closed ]]; then
                         sed -i "s/$gres_close/listen_addresses = '\*'/g" "$gres" || {
-                            echo "${red}Failed to modify $gres$nc" >&2
+                            echo "${red}Failed to modify '$gres'${nc}" >&2
                         }
                     else
                         sed -i "s/$gres_close2/listen_addresses = '\*'/g" "$gres" || {
-                            echo "${red}Failed to modify $gres$nc" >&2
+                            echo "${red}Failed to modify '$gres'${nc}" >&2
                         }
                     fi
                 else
-                    echo "External connections are already ALLOWED"
+                    echo "${cyan}External connections are already ALLOWED${nc}"
                 fi
 
                 read -p "Press [Enter] to return to the advanced options menu"
@@ -163,19 +163,19 @@
 
                 echo "Modifying '$pg_hba'..."
                 if [[ $pgsql_hba_closed ]]; then
-                    echo "External connections are already DENIED"
+                    echo "${cyan}External connections are already DENIED${nc}"
                 else
                     sed -i "s/^host .* all .* all .* 0.0.0.0\/0 .* \(md5\|ident\)$/host   all   all   127.0.0.1\/32   md5/g" "$pg_hba" || {
-                        echo "${red}Failed to modify $pg_hba$nc" >&2
+                        echo "${red}Failed to modify '$pg_hba'${nc}" >&2
                     }
                 fi
 
                 echo "Modifying '$gres'..."
                 if [[ ($pgsql_gres_closed || $pgsql_gres_closed2) ]]; then
-                    echo "External connections are already DENIED"
+                    echo "${cyan}External connections are already DENIED${nc}"
                 else
                     sed -i "s/$gres_open/#listen_addresses = '\*'/g" "$gres" || {
-                        echo "${red}Failed to modify $gres$nc" >&2
+                        echo "${red}Failed to modify '$gres'${nc}" >&2
                     }
                 fi
 

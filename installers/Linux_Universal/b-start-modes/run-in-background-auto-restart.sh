@@ -34,8 +34,8 @@
         echo "Enabling 'bottius.service'..."
         systemctl enable bottius.service || {
             echo "${red}Failed to enable 'bottius.service'" >&2
-            echo "${cyan}This service must be enabled in order to run" \
-                "Bottius in this run mode${nc}"
+            echo "${cyan}This service must be enabled in order to use" \
+                "this run mode${nc}"
             read -p "Press [Enter] to return to the installer menu"
             exit 1
         }
