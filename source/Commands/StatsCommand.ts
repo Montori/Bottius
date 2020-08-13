@@ -37,7 +37,7 @@ export class StatsCommand extends AbstractCommand
         let embed: MessageEmbed = new MessageEmbed()
                                     .setAuthor(`Stats of ${member.user.tag} ${rank == 1 ? "🥇" : rank == 2 ? "🥈" : rank == 3 ? "🥉" : ""}`, member.user.displayAvatarURL())
                                     .addField("Level", `${user.getLevel()}`, true)
-                                    .addField("XP", `${user.xp}`, true)
+                                    .addField("XP", `${user.xp} / ${user.xp+user.getXPToNextLevel()}`, true)
                                     .addField("Leaderboard rank", `${rank}`)
                                     .addField("Headpats", `${user.headPats}`)
                                     .addField("Total messages", `${user.totalMessages}`)
