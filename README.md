@@ -45,7 +45,7 @@ Follow the steps below to manually get your Bottius instance working:
       "prefix": "!!",
       "masters": ["userID"],
       "activity": "",
-      "activityStatus": ""
+      "activityStatus": 0
     }
     ```
 
