@@ -72,7 +72,8 @@ Follow the steps below to manually get your Bottius instance working:
 
 8. Compile Bottius with TypeScript: `tsc`
 9. Configure the Bottius database: `sudo -u postgres -H sh -c "createuser -P Bottius"; sudo -u postgres -H sh -c "createdb -O Bottius Bottius_DB"`
-    * When prompted to enter a password for the database user, provide the same password used when setting up `botconfig.json`
+    * When prompted to enter a password for the database user, provide the same password used when setting up `ormconfig.json`
+    * On windows you may want to set up the database over pgadmin, a handy postgres database tool where you will need to create the `Bottius` database user and the `Bottius_DB` database manually
 10. You are now ready to run Bottius by executing the following command in the Bottius root directory: `node out/bot.js`
 
 ## About Migration
