@@ -3,15 +3,12 @@
     "target": "esnext",
     "module": "commonjs",
     "outDir": "./out",
-    "rootDir": "./source",
+    "rootDir": "./src",
     "moduleResolution": "node",
     "resolveJsonModule": true,
     "esModuleInterop": true,
     "noImplicitUseStrict": true,
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true
-  },
-  "exclude": [
-    "Old_Bottius"
-  ]
+  }
 }
