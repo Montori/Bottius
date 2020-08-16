@@ -1,4 +1,3 @@
-export enum DelayedTaskType
-{
+export enum DelayedTaskType {
     birthday = 0
 }

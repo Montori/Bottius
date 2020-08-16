@@ -1,5 +1,4 @@
-export enum PermissionLevel
-{
+export enum PermissionLevel {
     member = 0,
     trusted = 1,
     moderator = 2,

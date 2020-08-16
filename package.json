@@ -14,5 +14,17 @@
     "pg": "^8.3.0",
     "random-int": "^2.0.1",
     "typeorm": "^0.2.24"
+  },
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^3.9.0",
+    "@typescript-eslint/parser": "^3.9.0",
+    "eslint": "^7.7.0",
+    "eslint-config-airbnb-base": "^14.2.0",
+    "eslint-plugin-import": "^2.22.0",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-promise": "^4.2.1",
+    "eslint-plugin-standard": "^4.0.1",
+    "ttypescript": "^1.5.10",
+    "typescript": "^3.9.7"
   }
 }
