@@ -1,4 +1,4 @@
-import {Client, MessageEmbed, TextChannel} from 'discord.js';
+import {Client, MessageEmbed, TextChannel, Role} from 'discord.js';
 import { CommandService } from './Service/CommandService';
 import botConfig from "./botconfig.json";
 import { MessageService } from './Service/MessageService';
@@ -9,6 +9,7 @@ import { PartitionService } from './Service/PartitionService';
 import { DelayedTaskService } from './Service/DelayedTaskService';
 import { VoiceChatExperienceService } from './Service/VoiceChatExperienceService';
 import { TumbleWeedService } from './Service/TumbleWeedService';
+import { AutoRole } from './Entities/Persistent/AutoRole';
 
 const bot: Client = new Client({disableMentions: "everyone"});
 
@@ -69,6 +70,15 @@ bot.on("guildMemberRemove", async member =>
       let channel: TextChannel = member.guild.channels.resolve(partition.leaveChannel) as TextChannel;
       if(channel) channel.send(new MessageEmbed().setColor("ff0000").setDescription(`**${member.displayName}** ${partition.leaveMessage ? partition.leaveMessage : " has left the server."}`))
    }
+});
+
+bot.on("guildMemberAdd", async member => {
+   let partition = await partitionService.getPartition(member.guild);
+   let autoRoleList: Array<Role> = (await (AutoRole.find({where: {partition: partition}}))).map(autoRole => member.guild.roles.resolve(autoRole.roleID));
+
+   autoRoleList.forEach(role => {
+      if(role) member.roles.add(role);
+   });
 });
 
 

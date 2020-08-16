@@ -29,6 +29,7 @@ import { PrefixCommand } from "../Commands/PrefixCommand";
 import { EnableCommand } from "../Commands/EnableCommand";
 import { DisableCommand } from "../Commands/DisableCommand";
 import { XPIgnoreCommand } from "../Commands/XPIgnoreCommand";
+import { AutoRoleCommand } from "../Commands/AutoRoleCommand";
 
 export class CommandService
 {
@@ -82,6 +83,7 @@ export class CommandService
         this.commandMap.set("prefix", new PrefixCommand());
         this.commandMap.set("enable", new EnableCommand());
         this.commandMap.set("disable", new DisableCommand());
+        this.commandMap.set("autorole", new AutoRoleCommand());
     }
 
     runCommand(name: string, bot: Client, message: Message, args: Array<string>)
