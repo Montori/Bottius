@@ -9,11 +9,8 @@ import { User } from "../Entities/Persistent/User";
 export class BirthdayCommand extends AbstractCommand
 {
     public commandOptions: AbstractCommandOptions = new BirthdayCommandOptions();
-    private partitionService: PartitionService = PartitionService.getInstance();
-
     private readonly memberRegex = `<(@!?\\d+)>`;
     
-
     public runInternal(bot: Client, message: Message, messageArray: string[])
     {
         switch(messageArray[0])

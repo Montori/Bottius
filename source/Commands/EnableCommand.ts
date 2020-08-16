@@ -9,7 +9,6 @@ import { CommandService } from "../Service/CommandService";
 export class EnableCommand extends AbstractCommand
 {
     public commandOptions: EnableCommandOptions = new EnableCommandOptions();
-    private partitionService: PartitionService = PartitionService.getInstance();
 
     public async runInternal(bot: Client, message: Message, messageArray: Array<string>)
     {

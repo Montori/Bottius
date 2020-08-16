@@ -8,7 +8,6 @@ import { Partition } from "../Entities/Persistent/Partition";
 export class NomicCommand extends AbstractCommand
 {
     public commandOptions: NomicCommandOptions = new NomicCommandOptions();
-    private partitionService: PartitionService = PartitionService.getInstance();
 
     public async runInternal(bot: Client, message: Message, messageArray: Array<string>)
     {

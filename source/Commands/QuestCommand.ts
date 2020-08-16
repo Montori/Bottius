@@ -12,7 +12,6 @@ export class QuestCommand extends AbstractCommand
     public commandOptions: QuestCommandOptions = new QuestCommandOptions();
 
     private questService: QuestService = QuestService.getInstance();
-    private partitionService: PartitionService = PartitionService.getInstance();
 
     public async runInternal(bot: Client, message: Message, messageArray: string[]) 
     {

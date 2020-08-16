@@ -8,7 +8,6 @@ import { Partition } from "../Entities/Persistent/Partition";
 export class PrefixCommand extends AbstractCommand
 {
     public commandOptions: PrefixCommandOptions = new PrefixCommandOptions();
-    private partitionService: PartitionService = PartitionService.getInstance();
 
     public async runInternal(bot: Client, message: Message, messageArray: Array<string>)
     {

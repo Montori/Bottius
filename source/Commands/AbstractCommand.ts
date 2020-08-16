@@ -4,11 +4,13 @@ import { CooldownService } from '../Service/CooldownService';
 import { UserService } from '../Service/UserService';
 import { User } from '../Entities/Persistent/User';
 import { PermissionLevel } from '../Entities/Transient/PermissionLevel';
+import { PartitionService } from '../Service/PartitionService';
 
 export abstract class AbstractCommand 
 {
     public cooldownService: CooldownService = CooldownService.getInstance();
     public userService: UserService = UserService.getInstance();
+    public partitionService: PartitionService = PartitionService.getInstance();
 
     public async run(bot: Client, message: Message, messageArray: Array<string>)
     {

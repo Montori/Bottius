@@ -8,7 +8,6 @@ import { Partition } from "../Entities/Persistent/Partition";
 export class LeavemessageCommand extends AbstractCommand
 {
     public commandOptions: LeavemessageCommandOptions = new LeavemessageCommandOptions();
-    private partitionService: PartitionService = PartitionService.getInstance();
 
     public async runInternal(bot: Client, message: Message, messageArray: Array<string>)
     {

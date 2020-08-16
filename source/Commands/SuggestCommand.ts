@@ -9,8 +9,6 @@ export class SuggestCommand extends AbstractCommand
 {
     public commandOptions: AbstractCommandOptions = new SuggestCommandOptions();
 
-    private partitionService: PartitionService = PartitionService.getInstance();
-
     public async runInternal(bot: Client, message: Message, messageArray: Array<string>)
     {  
         let partition: Partition = await this.partitionService.getPartition(message.guild);

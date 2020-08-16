@@ -12,8 +12,6 @@ import { Months, getDateSuffix } from "../Entities/Transient/DateFormatting";
 export class StatsCommand extends AbstractCommand
 {
     public commandOptions: StatsCommandHelp = new StatsCommandHelp();
-    public userService: UserService = UserService.getInstance();
-    private partitionService: PartitionService = PartitionService.getInstance();
 
     public async runInternal(bot: Client, message: Message, messageArray: string[]) 
     {

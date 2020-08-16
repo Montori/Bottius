@@ -8,7 +8,6 @@ import { Partition } from "../Entities/Persistent/Partition";
 export class TumbleweedCommand extends AbstractCommand
 {
     public commandOptions: TumbleweedCommandOptions = new TumbleweedCommandOptions();
-    private partitionService: PartitionService = PartitionService.getInstance();
 
     public async runInternal(bot: Client, message: Message, messageArray: Array<string>)
     {

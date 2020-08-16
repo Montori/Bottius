@@ -9,7 +9,6 @@ import { CommandService } from "../Service/CommandService";
 export class DisableCommand extends AbstractCommand
 {
     public commandOptions: DisableCommandOptions = new DisableCommandOptions();
-    private partitionService: PartitionService = PartitionService.getInstance();
     private DO_NOT_DISABLE: Array<string> = ["disable", "enable", "server", "info", "permission", "bug", "prefix", "help"];
 
     public async runInternal(bot: Client, message: Message, messageArray: Array<string>)

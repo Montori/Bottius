@@ -8,7 +8,6 @@ import { Partition } from "../Entities/Persistent/Partition";
 export class XPIgnoreCommand extends AbstractCommand
 {
     public commandOptions: XPIgnoreCommandOptions = new XPIgnoreCommandOptions();
-    private partitionService: PartitionService = PartitionService.getInstance();
 
     public async runInternal(bot: Client, message: Message, messageArray: Array<string>)
     {
