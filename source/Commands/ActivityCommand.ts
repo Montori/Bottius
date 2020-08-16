@@ -17,7 +17,7 @@ export class ActivityCommand extends AbstractCommand
         let activity: string = messageArray.join(" ").substring(activityStatus >= 0 ? this.ACTIVITY_TYPE[activityStatus].length : 0);
         activityStatus = activityStatus >= 0 ? activityStatus : 0;
 
-        bot.user.setActivity(activity, {type : activityStatus, url : "https://twitch.tv/smexy-briccs"});
+        bot.user.setActivity(activity.trim(), {type : activityStatus, url : "https://twitch.tv/smexy-briccs"});
         message.channel.send(super.getSuccessEmbed("Activity changed").setDescription(`${messageArray.join(" ")}`));
     }
 }
