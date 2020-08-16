@@ -1,10 +1,11 @@
 import { AbstractCommand } from "./AbstractCommand";
-import { Client, Message, MessageEmbed, DiscordAPIError } from "discord.js";
+import { Client, Message, MessageEmbed, DiscordAPIError, GuildMember } from "discord.js";
 import { Quest } from "../Entities/Persistent/Quest";
 import { AbstractCommandOptions } from "../Entities/Transient/AbstractCommandOptions";
 import { QuestService } from "../Service/QuestService";
 import { PermissionLevel } from "../Entities/Transient/PermissionLevel";
 import { PartitionService } from "../Service/PartitionService";
+import { User } from "../Entities/Persistent/User";
 
 
 export class QuestCommand extends AbstractCommand
@@ -44,11 +45,17 @@ export class QuestCommand extends AbstractCommand
         else if(messageArray[0] == "list")
         {
             let allQuests: Array<Quest> = await this.questService.getAllQuest(message.guild);
+            let targetMember: GuildMember = message.mentions.members.first();
+            let targetUser: User; 
+
+            if(targetMember) targetUser = await this.userService.getUser(targetMember, message.guild);
+
+            if(targetUser) allQuests = allQuests.filter(quest => quest.assignees.some(assignee => assignee.discordID == targetUser.discordID));
 
             let questEmbed: MessageEmbed = new MessageEmbed();
             if(allQuests.length > 0)
             {
-                questEmbed.setAuthor("Here are your quests master");
+                questEmbed.setAuthor(`Quests ${targetUser ? "for " + targetMember.user.tag : "of " + message.guild.name}`);
                 allQuests.forEach(quest => questEmbed.addField(`A quest for ${bot.users.resolve(quest.assignees[0].discordID).tag} ID: ${quest.id}`, quest.description));
             }
             else
