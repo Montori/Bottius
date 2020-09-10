@@ -10,5 +10,8 @@
     "noImplicitUseStrict": true,
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true
-  }
+  },
+  "exclude": [
+        "Old_Bottius"
+    ]
 }
