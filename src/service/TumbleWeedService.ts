@@ -8,7 +8,7 @@ export class TumbleWeedService
     private partitionService: PartitionService = PartitionService.getInstance();
     private tumbleweedChannelMap: Map<string, Date> = new Map();
     
-    private readonly TUMBLEWEED_MESSAGE = "A lot of nothing in here... <:tumbleweed:734388519572603002>";
+    private readonly TUMBLEWEED_MESSAGE = "A lot of nothing in here... <:tumbleweed:764588927842910219>";
 
     public static getInstance(): TumbleWeedService
     {
