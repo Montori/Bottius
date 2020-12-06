@@ -55,6 +55,6 @@ export class UserService
     private async givePermission(user: User, member: GuildMember)
     {
         if(botConfig.masters.some(master => user.discordID == master)) user.permissionLevel = PermissionLevel.master;
-        else if(member.guild.owner.id == user.discordID) user.permissionLevel = PermissionLevel.owner;
+        else if(member.guild.ownerID == user.discordID) user.permissionLevel = PermissionLevel.owner;
     }
 }
