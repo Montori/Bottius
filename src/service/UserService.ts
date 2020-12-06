@@ -52,6 +52,12 @@ export class UserService
         return await User.find({where: {partition: partition}, order : {xp: "DESC"}, take: 10});
     }
 
+    public async getHeadpatLeaderboard(guild: Guild): Promise<Array<User>>
+    {
+        let partition: Partition = await this.partitionService.getPartition(guild);
+        return await User.find({where: {partition: partition}, order : {headPats: "DESC"}, take: 10});
+    }
+
     private async givePermission(user: User, member: GuildMember)
     {
         if(botConfig.masters.some(master => user.discordID == master)) user.permissionLevel = PermissionLevel.master;

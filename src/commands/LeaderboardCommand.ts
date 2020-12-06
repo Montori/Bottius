@@ -10,19 +10,36 @@ export class LeaderboardCommand extends AbstractCommand
     public async runInternal(bot: Client, message: Message, messageArray: string[]) 
     {
         let userService: UserService = UserService.getInstance();
-        let topUsers: Array<User> = await userService.getLeaderbaord(message.guild);
         let rank = 0;
+        let leaderboardEmbed: MessageEmbed;
+        if(messageArray[0] == "headpat")
+        {
+            leaderboardEmbed = super.getSuccessEmbed(`Headpat Leaderboard of ${message.guild.name}`)
+                                    .setDescription("Here are the most headpatted members of this server");
+            let topHeadpatUsers: Array<User> = await userService.getHeadpatLeaderboard(message.guild);
 
-        let leaderboardEmbed: MessageEmbed = super.getSuccessEmbed(`Leaderboard of ${message.guild.name}`)
-                                                    .setDescription("Here are the most honorable members of this server");
-
-        topUsers.forEach(user => 
-            {
-                let discordUser = bot.users.resolve(user.discordID);
-                let firstField = discordUser ? discordUser.tag : `<@${user.discordID}>`;
-                rank++
-                leaderboardEmbed.addField(`${rank == 1 ? "🥇" : rank == 2 ? "🥈" : rank == 3 ? "🥉" : `#${rank}`}  ${firstField}`, `Level: ${user.getLevel()} \nXP: ${user.xp}${rank == topUsers.length ? " " : "\n឵"}`)
-            });
+            topHeadpatUsers.forEach(user => 
+                {
+                    let discordUser = bot.users.resolve(user.discordID);
+                    let firstField = discordUser ? discordUser.tag : `<@${user.discordID}>`;
+                    rank++
+                    leaderboardEmbed.addField(`${rank == 1 ? "🥇" : rank == 2 ? "🥈" : rank == 3 ? "🥉" : `#${rank}`}  ${firstField}`, `Headpats: ${user.headPats}${rank == topHeadpatUsers.length ? " " : "\n឵"}`)
+                });
+        }
+        else
+        {   
+            leaderboardEmbed = super.getSuccessEmbed(`Leaderboard of ${message.guild.name}`)
+                                    .setDescription("Here are the most honorable members of this server");
+            let topUsers: Array<User> = await userService.getLeaderbaord(message.guild);
+    
+            topUsers.forEach(user => 
+                {
+                    let discordUser = bot.users.resolve(user.discordID);
+                    let firstField = discordUser ? discordUser.tag : `<@${user.discordID}>`;
+                    rank++
+                    leaderboardEmbed.addField(`${rank == 1 ? "🥇" : rank == 2 ? "🥈" : rank == 3 ? "🥉" : `#${rank}`}  ${firstField}`, `Level: ${user.getLevel()} \nXP: ${user.xp}${rank == topUsers.length ? " " : "\n឵"}`)
+                });
+        }
 
         message.channel.send(leaderboardEmbed);
     }
