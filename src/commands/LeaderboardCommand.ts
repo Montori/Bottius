@@ -10,38 +10,48 @@ export class LeaderboardCommand extends AbstractCommand
     public async runInternal(bot: Client, message: Message, messageArray: string[]) 
     {
         let userService: UserService = UserService.getInstance();
-        let rank = 0;
         let leaderboardEmbed: MessageEmbed;
+        
         if(messageArray[0] == "headpat")
         {
-            leaderboardEmbed = super.getSuccessEmbed(`Headpat Leaderboard of ${message.guild.name}`)
-                                    .setDescription("Here are the most headpatted members of this server");
             let topHeadpatUsers: Array<User> = await userService.getHeadpatLeaderboard(message.guild);
-
-            topHeadpatUsers.forEach(user => 
-                {
-                    let discordUser = bot.users.resolve(user.discordID);
-                    let firstField = discordUser ? discordUser.tag : `<@${user.discordID}>`;
-                    rank++
-                    leaderboardEmbed.addField(`${rank == 1 ? "🥇" : rank == 2 ? "🥈" : rank == 3 ? "🥉" : `#${rank}`}  ${firstField}`, `Headpats: ${user.headPats}${rank == topHeadpatUsers.length ? " " : "\n឵"}`)
-                });
+            leaderboardEmbed = await this.createLeaderboardEmbed(bot, topHeadpatUsers, true)
+            leaderboardEmbed.setAuthor(`Headpat Leaderboard of ${message.guild.name}`);
+            leaderboardEmbed.setDescription("Here are the most headpatted members of this server");
         }
         else
         {   
-            leaderboardEmbed = super.getSuccessEmbed(`Leaderboard of ${message.guild.name}`)
-                                    .setDescription("Here are the most honorable members of this server");
             let topUsers: Array<User> = await userService.getLeaderbaord(message.guild);
-    
-            topUsers.forEach(user => 
-                {
-                    let discordUser = bot.users.resolve(user.discordID);
-                    let firstField = discordUser ? discordUser.tag : `<@${user.discordID}>`;
-                    rank++
-                    leaderboardEmbed.addField(`${rank == 1 ? "🥇" : rank == 2 ? "🥈" : rank == 3 ? "🥉" : `#${rank}`}  ${firstField}`, `Level: ${user.getLevel()} \nXP: ${user.xp}${rank == topUsers.length ? " " : "\n឵"}`)
-                });
+            leaderboardEmbed = await this.createLeaderboardEmbed(bot, topUsers, false)
+            leaderboardEmbed.setAuthor(`Leaderboard of ${message.guild.name}`);
+            leaderboardEmbed.setDescription("Here are the most honorable members of this server");
         }
 
         message.channel.send(leaderboardEmbed);
+    }
+
+    private async createLeaderboardEmbed(bot: Client, topUserList: Array<User>, isHeadpatLeaderboard: boolean): Promise<MessageEmbed>
+    {
+        let leaderboardEmbed: MessageEmbed = new MessageEmbed().setColor("00ff00");
+        let rank = 0;
+
+        for(const user of topUserList)
+        {
+            let discordUser = await bot.users.fetch(user.discordID);
+            let firstField = discordUser ? discordUser.tag : `<@${user.discordID}>`;
+            rank++
+
+            if(isHeadpatLeaderboard)
+            {
+                leaderboardEmbed.addField(`${rank == 1 ? "🥇" : rank == 2 ? "🥈" : rank == 3 ? "🥉" : `#${rank}`}  ${firstField}`, `Headpats: ${user.headPats}${rank == topUserList.length ? " " : "\n឵"}`)
+            }
+            else
+            {
+                leaderboardEmbed.addField(`${rank == 1 ? "🥇" : rank == 2 ? "🥈" : rank == 3 ? "🥉" : `#${rank}`}  ${firstField}`, `Level: ${user.getLevel()} \nXP: ${user.xp}${rank == topUserList.length ? " " : "\n឵"}`)
+            }
+        }
+
+        return leaderboardEmbed;
     }
 }
 
