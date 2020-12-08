@@ -2,7 +2,6 @@ import { AbstractCommand } from "./AbstractCommand";
 import { Client, Message, MessageEmbed, TextChannel } from 'discord.js';
 import { AbstractCommandOptions } from "../entities/transient/AbstractCommandOptions";
 import { PermissionLevel } from "../entities/transient/PermissionLevel";
-import { PartitionService } from "../service/PartitionService";
 import { Partition } from "../entities/persistent/Partition";
 
 export class XPIgnoreCommand extends AbstractCommand

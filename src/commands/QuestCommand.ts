@@ -1,5 +1,5 @@
 import { AbstractCommand } from "./AbstractCommand";
-import { Client, Message, MessageEmbed, DiscordAPIError, GuildMember } from "discord.js";
+import { Client, Message, MessageEmbed, GuildMember } from "discord.js";
 import { Quest } from "../entities/persistent/Quest";
 import { AbstractCommandOptions } from "../entities/transient/AbstractCommandOptions";
 import { QuestService } from "../service/QuestService";

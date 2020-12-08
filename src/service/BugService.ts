@@ -2,13 +2,11 @@ import { Bug } from "../entities/persistent/Bug";
 import { GuildMember, Guild } from "discord.js";
 import { User } from "../entities/persistent/User";
 import { UserService } from "./UserService";
-import { PartitionService } from "./PartitionService";
 
 export class BugService
 {
     private static instance: BugService;
     private userService: UserService = UserService.getInstance();
-    private partitionService: PartitionService = PartitionService.getInstance();
     
     public static getInstance(): BugService
     {

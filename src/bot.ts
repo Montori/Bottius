@@ -1,5 +1,4 @@
 import {Client, MessageEmbed, TextChannel, Role} from 'discord.js';
-import { CommandService } from './service/CommandService';
 import botConfig from "./botconfig.json";
 import { MessageService } from './service/MessageService';
 import { UserService } from './service/UserService';
@@ -7,7 +6,6 @@ import { createConnection } from "typeorm";
 import { PerkService } from './service/PerkService';
 import { PartitionService } from './service/PartitionService';
 import { DelayedTaskService } from './service/DelayedTaskService';
-import { VoiceChatExperienceService } from './service/VoiceChatExperienceService';
 import { TumbleWeedService } from './service/TumbleWeedService';
 import { AutoRole } from './entities/persistent/AutoRole';
 
@@ -16,7 +14,6 @@ const bot: Client = new Client({disableMentions: "everyone"});
 //init all Services needing the bot here
 MessageService.init(bot);
 DelayedTaskService.init(bot);
-VoiceChatExperienceService.init(bot);
 
 const messageService: MessageService = MessageService.getInstance();
 const userService: UserService = UserService.getInstance();

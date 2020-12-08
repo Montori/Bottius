@@ -1,6 +1,6 @@
 import { AbstractCommand } from "./AbstractCommand";
 import { AbstractCommandOptions } from "../entities/transient/AbstractCommandOptions";
-import { Client, Message, GuildMember, MessageEmbed } from "discord.js";
+import { Client, Message, MessageEmbed } from "discord.js";
 import { User } from "../entities/persistent/User";
 import { UserService } from "../service/UserService";
 export class LeaderboardCommand extends AbstractCommand

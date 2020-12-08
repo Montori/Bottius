@@ -1,7 +1,6 @@
 import { AbstractCommand } from "./AbstractCommand";
 import { Client, Message, TextChannel, MessageEmbed, Role } from "discord.js";
 import { AbstractCommandOptions } from "../entities/transient/AbstractCommandOptions";
-import { PartitionService } from "../service/PartitionService";
 import { PermissionLevel } from "../entities/transient/PermissionLevel";
 import { Months, getDateSuffix } from "../entities/transient/DateFormatting";
 import { User } from "../entities/persistent/User";

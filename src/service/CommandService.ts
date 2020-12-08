@@ -24,7 +24,6 @@ import { InfoCommand } from "../commands/InfoCommand";
 import { AvatarCommand } from "../commands/AvatarCommand";
 import { TumbleweedCommand } from "../commands/TumbleweedCommand";
 import { LeavemessageCommand } from "../commands/LeaveMessageCommand";
-import { NomicCommand } from "../commands/NomicCommand";
 import { PrefixCommand } from "../commands/PrefixCommand";
 import { EnableCommand } from "../commands/EnableCommand";
 import { DisableCommand } from "../commands/DisableCommand";
@@ -79,7 +78,6 @@ export class CommandService
         this.commandMap.set("avatar", new AvatarCommand());
         this.commandMap.set("tumbleweed", new TumbleweedCommand());
         this.commandMap.set("leavemessage", new LeavemessageCommand());
-        //this.commandMap.set("nomic", new NomicCommand()); disabled until vcxp is reimplemented
         this.commandMap.set("xpignore", new XPIgnoreCommand());
         this.commandMap.set("prefix", new PrefixCommand());
         this.commandMap.set("enable", new EnableCommand());
