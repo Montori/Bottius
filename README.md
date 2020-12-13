@@ -59,7 +59,7 @@ Follow the steps below to manually get your Bottius instance working:
     {
         "type": "postgres",
         "url": "postgres://postgres:!DB_PASS!@localhost:5432/Bottius_DB",
-        "entities": ["out/entities/Persistent/*.js"],
+        "entities": ["out/entities/persistent/*.js"],
         "migrations": ["out/migration/*.js"],
         "cli": {
         "migrationsDir": "source/migration"
