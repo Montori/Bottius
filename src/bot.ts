@@ -65,7 +65,7 @@ bot.on("guildMemberRemove", async member =>
    if(partition.leaveMessageActive && partition.leaveChannel) 
    {
       let channel: TextChannel = member.guild.channels.resolve(partition.leaveChannel) as TextChannel;
-      if(channel) channel.send(new MessageEmbed().setColor("ff0000").setDescription(`**${member.displayName}** ${partition.leaveMessage ? partition.leaveMessage : " has left the server."}`))
+      if(channel) channel.send(new MessageEmbed().setColor("ff0000").setDescription(`**${member.user.tag} (${member.displayName})** ${partition.leaveMessage ? partition.leaveMessage : " has left the server."}`))
    }
 });
 
