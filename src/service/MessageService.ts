@@ -132,7 +132,7 @@ export class MessageService
         {
             let owoArray: Array<string> = ["owo", "uwu", "pwp", "qwq", "OwO", "UwU", "QwQ", "PwP", "TwT"];
     
-            if(new RegExp(this.uwuRegex).test(message.content))
+            if(new RegExp(this.uwuRegex).test(message.content.toLowerCase()))
             {
                 message.channel.send(owoArray[randomInt(0, owoArray.length-1)]);
                 this.cooldownService.addCooldown(message.member, "uwu", 10);
