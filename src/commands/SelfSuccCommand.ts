@@ -17,8 +17,8 @@ class SelfSuccCommandOptions extends AbstractCommandOptions
     constructor()
     {
         super();
-        this.commandName = "ping";
-        this.description = "returns the bots ping";
-        this.usage = `${AbstractCommandOptions.prefix}ping`;
+        this.commandName = "selfsucc";
+        this.description = "The sacred texts";
+        this.usage = `${AbstractCommandOptions.prefix}selfsucc`;
     }
 }
