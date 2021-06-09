@@ -85,7 +85,7 @@ export class CommandService
         this.commandMap.set("disable", new DisableCommand());
         this.commandMap.set("autorole", new AutoRoleCommand());
 		this.commandMap.set("kiss", new KissCommand());
-        this.commandMap.set("kiss", new SelfSuccCommand());
+        this.commandMap.set("selfsucc", new SelfSuccCommand());
     }
 
     runCommand(name: string, bot: Client, message: Message, args: Array<string>)
