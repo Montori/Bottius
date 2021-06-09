@@ -30,6 +30,7 @@ import { DisableCommand } from "../commands/DisableCommand";
 import { XPIgnoreCommand } from "../commands/XPIgnoreCommand";
 import { AutoRoleCommand } from "../commands/AutoRoleCommand";
 import { KissCommand } from "../commands/KissCommand";
+import { SelfSuccCommand } from "../commands/SelfSuccCommand";
 
 export class CommandService
 {
@@ -84,6 +85,7 @@ export class CommandService
         this.commandMap.set("disable", new DisableCommand());
         this.commandMap.set("autorole", new AutoRoleCommand());
 		this.commandMap.set("kiss", new KissCommand());
+        this.commandMap.set("kiss", new SelfSuccCommand());
     }
 
     runCommand(name: string, bot: Client, message: Message, args: Array<string>)
