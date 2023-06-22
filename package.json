@@ -11,7 +11,7 @@
   "dependencies": {
     "@types/node": "^13.11.0",
     "discord.js": "^12.1.1",
-    "pg": "^8.3.0",
+    "pg": "^8.11.0",
     "random-int": "^2.0.1",
     "typeorm": "^0.2.25"
   }
